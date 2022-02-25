@@ -1,48 +1,41 @@
-/*adding a black bg to the body to make things clearer*/
- body {
-    background: black;
-}
-canvas {
-    display: block;
-}
 span.option-bar {
-    width: calc(100% - 3px);
-    background:#0F0F0F;
-    display: block;
-    position:absolute;
-    color: #0f0;
-    height: 20px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    left: 1.5px;
+  width: calc(100% - 3px);
+  background: #0f0f0f;
+  display: block;
+  position: absolute;
+  color: #0f0;
+  height: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  left: 1.5px;
 }
 #textbox {
-    padding-top: 0;
-    display: block;
-    position:absolute;
-    width: calc(50% - 3px);
-    left: 0;
-    top:5px;
-    bottom:5px;
-    padding:0;
-    color: #0f0;
-    border:1px solid #0f0;
-    line-height: 20px;
+  padding-top: 0;
+  display: block;
+  position: absolute;
+  width: calc(50% - 3px);
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  padding: 0;
+  color: #0f0;
+  border: 1px solid #0f0;
+  line-height: 20px;
 }
 #colo {
-    padding-top: 0;
-    display: block;
-    position:absolute;
-    width: calc(50%);
-    right: 0;
-    top:5px;
-    bottom:5px;
-    padding:0;
-    color: #0f0;
-    border:1px solid #0f0;
-    line-height: 20px;
+  padding-top: 0;
+  display: block;
+  position: absolute;
+  width: calc(50%);
+  right: 0;
+  top: 5px;
+  bottom: 5px;
+  padding: 0;
+  color: #0f0;
+  border: 1px solid #0f0;
+  line-height: 20px;
 }
-[contentEditable=true]:empty:before {
-    content:attr(data-ph);
-    color: #080;
+[contentEditable="true"]:empty:before {
+  content: attr(data-ph);
+  color: #080;
 }

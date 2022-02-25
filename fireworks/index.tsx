@@ -20,7 +20,7 @@ type FireworkParticle = {
   ix: number;
 };
 
-export const Fireworks = () =>{
+export const Fireworks = () => {
   let containerRef: HTMLDivElement;
 
   let nodesRef: FireworkParticle[] = [];
@@ -34,9 +34,7 @@ export const Fireworks = () =>{
 
     canvasNode.width = width * dp;
     canvasNode.height = height * dp;
-    let context: CanvasRenderingContext2D = canvasNode.getContext(
-      "2d"
-    ) as CanvasRenderingContext2D;
+    let context: CanvasRenderingContext2D = canvasNode.getContext("2d") as CanvasRenderingContext2D;
 
     const tick = () => {
       context.resetTransform();
@@ -81,19 +79,15 @@ export const Fireworks = () =>{
           }
           context.globalCompositeOperation = "lighter";
           if (n.f_type === 1) {
-            context.fillStyle = `rgba(${Math.floor(
-              n.color.r * 255 * m
-            )},${Math.floor(n.color.g * 255 * m)},${Math.floor(
-              n.color.b * 255 * m
-            )},1)`;
+            context.fillStyle = `rgba(${Math.floor(n.color.r * 255 * m)},${Math.floor(
+              n.color.g * 255 * m
+            )},${Math.floor(n.color.b * 255 * m)},1)`;
             let rr = Math.min(n.r, 2);
             context.fillRect(n.x - rr / 2, n.y - rr / 2, rr, rr);
           } else {
-            context.strokeStyle = `rgba(${Math.floor(
-              n.color.r * 255 * m
-            )},${Math.floor(n.color.g * 255 * m)},${Math.floor(
-              n.color.b * 255 * m
-            )},1)`;
+            context.strokeStyle = `rgba(${Math.floor(n.color.r * 255 * m)},${Math.floor(
+              n.color.g * 255 * m
+            )},${Math.floor(n.color.b * 255 * m)},1)`;
             let rr = Math.min(n.r, 2);
             context.lineWidth = rr;
             context.beginPath();
@@ -108,9 +102,7 @@ export const Fireworks = () =>{
             n.color.g = Math.random();
             n.color.b = Math.random();
             if (n.split.length < n.ix + 2) {
-              n.split.push(
-                Math.floor(Math.random() * 2) + (n.ix === 0 ? 6 : 3)
-              );
+              n.split.push(Math.floor(Math.random() * 2) + (n.ix === 0 ? 6 : 3));
             }
 
             let nL = n.startLife / 2 + (Math.random() * n.startLife) / 8;
@@ -136,8 +128,7 @@ export const Fireworks = () =>{
             let q = Math.random();
             let sp = n.split[n.ix + 1];
             for (let i = 0; i < (n.type === 2 ? sp : 100); i++) {
-              let oa =
-                (n.type === 2 ? i / sp + q : Math.random()) * Math.PI * 2;
+              let oa = (n.type === 2 ? i / sp + q : Math.random()) * Math.PI * 2;
               let or = (n.type === 2 ? 0.4 : Math.random()) + 0.1;
               let ox = Math.cos(oa) * or;
               let oy = Math.sin(oa) * or;
@@ -176,4 +167,4 @@ export const Fireworks = () =>{
       </div>
     </div>
   );
-}
+};

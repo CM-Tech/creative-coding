@@ -1,4 +1,4 @@
-import "./style.css"
+import "./style.css";
 import { onMount } from "solid-js";
 
 function Check(e: KeyboardEvent) {
@@ -66,8 +66,7 @@ function main(c: HTMLCanvasElement, color: HTMLDivElement, yname: HTMLDivElement
 
       //sending the drop back to the top randomly after it has crossed the screen
       //adding a randomness to the reset to make the drops scattered on the Y axis
-      if (drops[i].x * font_size > c.height && Math.random() > 0.975)
-        drops[i].x = 0;
+      if (drops[i].x * font_size > c.height && Math.random() > 0.975) drops[i].x = 0;
 
       //incrementing Y coordinate
       drops[i].x++;
@@ -77,8 +76,7 @@ function main(c: HTMLCanvasElement, color: HTMLDivElement, yname: HTMLDivElement
         let ynames = yname.innerHTML;
         let splitt = ynames.split(", ");
         drops[i].loop = 0;
-        drops[i].name =
-          splitt[Math.floor(Math.random() * splitt.length)] + "_ ";
+        drops[i].name = splitt[Math.floor(Math.random() * splitt.length)] + "_ ";
       }
     }
     imagedata = ctx.getImageData(0, 0, c.width, c.height);
@@ -102,7 +100,7 @@ export const NameRain = () => {
   let colo: HTMLDivElement;
   let yname: HTMLDivElement;
   onMount(() => {
-    main(c,colo,yname);
+    main(c, colo, yname);
   });
   return (
     <>
@@ -114,13 +112,7 @@ export const NameRain = () => {
           contenteditable={true}
           ref={yname!}
         ></div>
-        <div
-          data-ph="color e.g. #00ff00"
-          id="colo"
-          onkeyup={Check}
-          contenteditable={true}
-          ref={colo!}
-        ></div>
+        <div data-ph="color e.g. #00ff00" id="colo" onkeyup={Check} contenteditable={true} ref={colo!}></div>
       </span>
       <canvas id="c" ref={c!}></canvas>
     </>

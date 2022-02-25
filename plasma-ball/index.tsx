@@ -1,4 +1,4 @@
-import "./style.css"
+import "./style.css";
 import { onMount } from "solid-js";
 
 function main(canvas: HTMLCanvasElement) {
@@ -47,14 +47,7 @@ function main(canvas: HTMLCanvasElement) {
         renderOn = afterLinesCanvasCtx;
       }
       renderOn.lineCap = "round";
-      let grd = renderOn.createRadialGradient(
-        250,
-        250,
-        Math.abs(130 * pitchM),
-        250,
-        250,
-        Math.abs(300 * pitchM)
-      );
+      let grd = renderOn.createRadialGradient(250, 250, Math.abs(130 * pitchM), 250, 250, Math.abs(300 * pitchM));
       grd.addColorStop(0, "#02f");
       grd.addColorStop(1, "white");
       renderOn.strokeStyle = grd;
@@ -87,10 +80,7 @@ function main(canvas: HTMLCanvasElement) {
       lineOffsets[i] = lineOffsets[i] % 1;
       for (let j = 0; j < lines.length; j++) {
         if (j != i) {
-          if (
-            Math.abs(lines[i] - lines[j]) > 0.7 ||
-            Math.abs(lines[i] - lines[j]) < 0.3
-          ) {
+          if (Math.abs(lines[i] - lines[j]) > 0.7 || Math.abs(lines[i] - lines[j]) < 0.3) {
           }
         }
       }

@@ -27,8 +27,7 @@ function main(c: HTMLCanvasElement) {
   };
 
   function timestamp() {
-    if (window.performance && window.performance.now)
-      return window.performance.now();
+    if (window.performance && window.performance.now) return window.performance.now();
     else return new Date().getTime();
   }
   for (let r = 0; r < w - 1; r++) {
@@ -53,36 +52,12 @@ function main(c: HTMLCanvasElement) {
   function tick() {
     if (pressed) {
       for (let i = 0; i < options.strength; i++) {
-        for (
-          let y = -1;
-          y <= options.size * options.expand;
-          y += options.expand
-        ) {
-          for (
-            let x = -1;
-            x <= options.size * options.expand;
-            x += options.expand
-          ) {
+        for (let y = -1; y <= options.size * options.expand; y += options.expand) {
+          for (let x = -1; x <= options.size * options.expand; x += options.expand) {
             nodes.push(
               new node(
-                Math.max(
-                  Math.min(
-                    w - 1,
-                    Math.floor(
-                      mouse.x + x - (options.size * options.expand) / 2
-                    )
-                  ),
-                  0
-                ),
-                Math.max(
-                  Math.min(
-                    h - 1,
-                    Math.floor(
-                      mouse.y + y - (options.size * options.expand) / 2
-                    )
-                  ),
-                  0
-                )
+                Math.max(Math.min(w - 1, Math.floor(mouse.x + x - (options.size * options.expand) / 2)), 0),
+                Math.max(Math.min(h - 1, Math.floor(mouse.y + y - (options.size * options.expand) / 2)), 0)
               )
             );
           }
@@ -129,10 +104,7 @@ function main(c: HTMLCanvasElement) {
   }
 
   function draw() {
-    if (
-      w != document.body.clientWidth - 4 ||
-      h != document.body.clientHeight - 4
-    ) {
+    if (w != document.body.clientWidth - 4 || h != document.body.clientHeight - 4) {
       w = document.body.clientWidth - 4;
       h = document.body.clientHeight - 4;
 
@@ -144,14 +116,7 @@ function main(c: HTMLCanvasElement) {
     for (let c = 0; c < nodes.length; c++) {
       ctx.beginPath();
       ctx.fillStyle = nodes[c].color;
-      ctx.arc(
-        nodes[c].x,
-        nodes[c].y,
-        options.squaresize,
-        0,
-        Math.PI * 2,
-        false
-      );
+      ctx.arc(nodes[c].x, nodes[c].y, options.squaresize, 0, Math.PI * 2, false);
       ctx.fill();
     }
   }

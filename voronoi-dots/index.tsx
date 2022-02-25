@@ -14,8 +14,8 @@ export const VoronoiDots = () => {
     y: Math.random() * height,
     vx: 0,
     vy: 0,
-    fx: 0,
-    fy: 0,
+    fx: undefined as number | undefined,
+    fy: undefined as number | undefined,
   }));
   let charge = d3.forceManyBody().theta(0.8).strength(0);
   let white = 0;
@@ -23,8 +23,7 @@ export const VoronoiDots = () => {
   onMount(() => {
     let context = canvas.getContext("2d")!;
 
-    let simulation = d3
-      .forceSimulation(nodes)
+    d3.forceSimulation(nodes)
       .alphaDecay(0)
       .velocityDecay(0.05)
       .force("charge", charge)
@@ -37,15 +36,12 @@ export const VoronoiDots = () => {
       )
       .on("tick", () => {
         brownian();
-        let diagram = d3.Delaunay.from(
-          nodes.slice(1).map((d) => [d.x, d.y])
-        ).voronoi([-1, -1, width + 1, height + 1]);
+        let diagram = d3.Delaunay.from(nodes.slice(1).map((d) => [d.x, d.y])).voronoi([-1, -1, width + 1, height + 1]);
         let polygons = diagram.cellPolygons();
         context.clearRect(0, 0, width, height);
         context.lineWidth = 1;
         let brightness = 128 + (white ? 100 : -60);
-        context.strokeStyle =
-          "rgb(" + brightness + "," + brightness + "," + brightness + ")";
+        context.strokeStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
         for (let j = 10; j < width + 10; j += 20) {
           context.beginPath();
           context.moveTo(j + 0.5, 10);
@@ -64,15 +60,13 @@ export const VoronoiDots = () => {
           context.lineWidth = 10;
           context.beginPath();
           context.moveTo(cell[0][0], cell[0][1]);
-          for (let j = 1, m = cell.length; j < m; ++j) {
+          for (let j = 1; j < cell.length; ++j) {
             context.lineTo(cell[j][0], cell[j][1]);
           }
           context.closePath();
           context.fill();
         }
       });
-
-      simulation.restart();
 
     function brownian() {
       for (let i = 0; i < nodes.length; i++) {
@@ -95,11 +89,7 @@ export const VoronoiDots = () => {
   return (
     <>
       <div class="well">
-        <button
-          class="btn btn-primary"
-          onclick={twhite}
-          style="left:10px;top:5px;padding:5px"
-        >
+        <button class="btn btn-primary" onclick={twhite} style="left:10px;top:5px;padding:5px">
           Toggle Theme
         </button>
         <input
@@ -117,8 +107,8 @@ export const VoronoiDots = () => {
         ref={canvas!}
         width={window.innerWidth}
         height={window.innerHeight}
-        onmousemove={() => {
-          let p1 = d3.pointer(canvas);
+        onmousemove={(e) => {
+          let p1 = d3.pointer(e);
           nodes[0].fx = p1[0];
           nodes[0].fy = p1[1];
         }}
@@ -132,9 +122,7 @@ export const VoronoiDots = () => {
         }}
         onwheel={(e) => {
           let delta = -e.deltaY;
-          slider.value = `${
-            +slider.value - Math.max(-1, Math.min(1, delta)) * 10
-          }`;
+          slider.value = `${+slider.value - Math.max(-1, Math.min(1, delta)) * 10}`;
 
           if (charged) charge.strength((_, i) => (i == 0 ? +slider.value : 0));
         }}

@@ -23,9 +23,7 @@ export const TrafficDots = () => {
       .select(canvasNode)
       .attr("width", width * dp)
       .attr("height", height * dp);
-    let context: CanvasRenderingContext2D = canvasNode.getContext(
-      "2d"
-    ) as CanvasRenderingContext2D;
+    let context: CanvasRenderingContext2D = canvasNode.getContext("2d") as CanvasRenderingContext2D;
 
     let blur = false;
     console.log("Q", width, height);
@@ -38,8 +36,7 @@ export const TrafficDots = () => {
     }));
     (nodes[0] as d3.SimulationNodeDatum & { r: number }).r = 20 * siz;
     chargeRef = d3.forceManyBody().strength(0);
-    d3
-      .forceSimulation(nodes)
+    d3.forceSimulation(nodes)
       .alphaDecay(0)
       .velocityDecay(0.05)
       .force("charge", chargeRef)
@@ -47,9 +44,7 @@ export const TrafficDots = () => {
         "collide",
         d3
           .forceCollide()
-          .radius(
-            (d) => (d as d3.SimulationNodeDatum & { r: number }).r + 2 * siz
-          )
+          .radius((d) => (d as d3.SimulationNodeDatum & { r: number }).r + 2 * siz)
           .iterations(20)
       )
       .on("tick", () => {
@@ -69,8 +64,7 @@ export const TrafficDots = () => {
         context.lineWidth = lc;
         let brightness = white() ? 255 - 27 - 27 : 77 * 2 - 104;
         let dbrightness = white() ? 255 : 104;
-        context.strokeStyle =
-          "rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
+        context.strokeStyle = "rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
 
         for (let jg = grd / 2; jg < width + grd / 2; jg += grd) {
           let j = Math.floor(jg * dp) / dp;
@@ -86,8 +80,7 @@ export const TrafficDots = () => {
           context.lineTo(width - grd / 2, j + 0.5);
           context.stroke();
         }
-        context.strokeStyle =
-          "rgb(" + brightness + "," + brightness + "," + brightness + ")";
+        context.strokeStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
         for (let jg = grd / 2; jg < width + grd / 2; jg += grd) {
           let j = Math.floor(jg * dp) / dp;
           context.beginPath();
@@ -105,12 +98,7 @@ export const TrafficDots = () => {
         nodes.slice(0).forEach((dg, i) => {
           const d = dg as d3.SimulationNodeDatum & { r: number };
           if (d.x !== undefined && d.y !== undefined && d.r !== undefined) {
-            let fC =
-              i === 0
-                ? white() === true
-                  ? "#4d4d4d"
-                  : "#fafafa"
-                : d3.schemeCategory10[i % 6];
+            let fC = i === 0 ? (white() === true ? "#4d4d4d" : "#fafafa") : d3.schemeCategory10[i % 6];
             context.fillStyle = fC;
             context.beginPath();
             context.moveTo(d.x + d.r, d.y);
@@ -153,12 +141,8 @@ export const TrafficDots = () => {
         if (node.x !== undefined && node.y !== undefined) {
           nodes[i].x = Math.max(Math.min(node.x, width - grd / 2), grd / 2);
           nodes[i].y = Math.max(Math.min(node.y, height - grd / 2), grd / 2);
-          nodes[i].x =
-            node.x * 0.9 +
-            (Math.round(node.x / grd + 0.5) * grd - grd / 2) * 0.1;
-          nodes[i].y =
-            node.y * 0.9 +
-            (Math.round(node.y / grd + 0.5) * grd - grd / 2) * 0.1;
+          nodes[i].x = node.x * 0.9 + (Math.round(node.x / grd + 0.5) * grd - grd / 2) * 0.1;
+          nodes[i].y = node.y * 0.9 + (Math.round(node.y / grd + 0.5) * grd - grd / 2) * 0.1;
           if (Math.random() < 0.0015) {
             nodes[i].vx = Math.random() < 0.5 ? 5 : -5;
           }
@@ -175,10 +159,7 @@ export const TrafficDots = () => {
     });
     const dV = 200;
     canvas.on("mousedown", () => {
-      chargeRef.strength(
-        (_, i) =>
-          (i == 0 ? sliderRef.valueAsNumber ?? dV : 0) * Math.pow(grd / 20, 2)
-      );
+      chargeRef.strength((_, i) => (i == 0 ? sliderRef.valueAsNumber ?? dV : 0) * Math.pow(grd / 20, 2));
     });
     canvas.on("mouseup", () => {
       chargeRef.strength(0);

@@ -110,19 +110,13 @@ const main = (canvas: HTMLCanvasElement) => {
       stringArray[i].vy = stringArray[i].vy * (1 - stringS) * SU;
       let m = P;
       let len =
-        ((stringArray[i - 1].x - stringArray[i].x) ** 2 +
-          (stringArray[i - 1].y - stringArray[i].y) ** 2) **
-        0.5;
+        ((stringArray[i - 1].x - stringArray[i].x) ** 2 + (stringArray[i - 1].y - stringArray[i].y) ** 2) ** 0.5;
       let qe = 0.0;
       stringArray[i].vx +=
-        (((stringArray[i - 1].x - stringArray[i].x) * stringS) / (len + 0.1)) *
-          (-dis + len) *
-          m +
+        (((stringArray[i - 1].x - stringArray[i].x) * stringS) / (len + 0.1)) * (-dis + len) * m +
         (stringArray[i - 1].vx - stringArray[i].vx) * qe;
       stringArray[i].vy +=
-        (((stringArray[i - 1].y - stringArray[i].y) * stringS) / (len + 0.1)) *
-          (-dis + len) *
-          m +
+        (((stringArray[i - 1].y - stringArray[i].y) * stringS) / (len + 0.1)) * (-dis + len) * m +
         (stringArray[i - 1].vy - stringArray[i].vy) * qe;
     }
     let ss = 600;
@@ -148,14 +142,9 @@ const main = (canvas: HTMLCanvasElement) => {
     //clear the old drawing
     let lk = 0.06;
 
-    let len =
-      ((Math.hypot(driftPos.x - targetPos.x, driftPos.y - targetPos.y) + 1) /
-        canvas.width) *
-      10;
-    drift2Pos.x =
-      drift2Pos.x * (1 - lk) + (lk * (driftPos.x - targetPos.x)) / len;
-    drift2Pos.y =
-      drift2Pos.y * (1 - lk) + (lk * (driftPos.y - targetPos.y)) / len;
+    let len = ((Math.hypot(driftPos.x - targetPos.x, driftPos.y - targetPos.y) + 1) / canvas.width) * 10;
+    drift2Pos.x = drift2Pos.x * (1 - lk) + (lk * (driftPos.x - targetPos.x)) / len;
+    drift2Pos.y = drift2Pos.y * (1 - lk) + (lk * (driftPos.y - targetPos.y)) / len;
     lk = 0.1;
     targetPos.x = targetPos.x * (1 - lk) + lk * (targetPos.x + drift2Pos.x);
     targetPos.y = targetPos.y * (1 - lk) + lk * (targetPos.y + drift2Pos.y);
@@ -178,8 +167,7 @@ const main = (canvas: HTMLCanvasElement) => {
   }
   window.setInterval(() => {
     for (let i = 0; i < strings.length; i++) {
-      let spd =
-        stringMinSpeed + (i / stringsCount) * (stringMaxSpeed - stringMinSpeed);
+      let spd = stringMinSpeed + (i / stringsCount) * (stringMaxSpeed - stringMinSpeed);
       moveString(strings[i], spd);
     }
   }, 5);

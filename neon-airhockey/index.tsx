@@ -90,21 +90,21 @@ void main() {
     window.requestAnimationFrame(render);
   }
   window.requestAnimationFrame(render);
-  window.onmousemove =  (e) => {
+  window.onmousemove = (e) => {
     mouse.x = e.clientX / window.innerWidth;
     mouse.y = e.clientY / window.innerHeight;
   };
-  window.onresize =  () => {
+  window.onresize = () => {
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     t1 = createTarget(window.innerWidth, window.innerHeight);
     t2 = createTarget(window.innerWidth, window.innerHeight);
   };
-  window.onmousedown =  () => {
+  window.onmousedown = () => {
     down = 1.0;
   };
-  window.onmouseup =  () =>{
+  window.onmouseup = () => {
     down = 0.0;
   };
 
@@ -115,17 +115,7 @@ void main() {
       texture: gl.createTexture(),
     };
     gl.bindTexture(gl.TEXTURE_2D, target.texture);
-    gl.texImage2D(
-      gl.TEXTURE_2D,
-      0,
-      gl.RGBA,
-      width,
-      height,
-      0,
-      gl.RGBA,
-      gl.UNSIGNED_BYTE,
-      null
-    );
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
 
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -134,28 +124,12 @@ void main() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, target.framebuffer);
-    gl.framebufferTexture2D(
-      gl.FRAMEBUFFER,
-      gl.COLOR_ATTACHMENT0,
-      gl.TEXTURE_2D,
-      target.texture,
-      0
-    );
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, target.texture, 0);
 
     gl.bindRenderbuffer(gl.RENDERBUFFER, target.renderbuffer);
 
-    gl.renderbufferStorage(
-      gl.RENDERBUFFER,
-      gl.DEPTH_COMPONENT16,
-      width,
-      height
-    );
-    gl.framebufferRenderbuffer(
-      gl.FRAMEBUFFER,
-      gl.DEPTH_ATTACHMENT,
-      gl.RENDERBUFFER,
-      target.renderbuffer
-    );
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, width, height);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, target.renderbuffer);
 
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);

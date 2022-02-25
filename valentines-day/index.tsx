@@ -44,22 +44,8 @@ function main(c: HTMLCanvasElement) {
       ctx.fillStyle = this.g;
       ctx.beginPath();
       ctx.moveTo(x + 0.5 * wi, y + 0.3 * he);
-      ctx.bezierCurveTo(
-        x + 0.1 * wi,
-        y,
-        x,
-        y + 0.6 * he,
-        x + 0.5 * wi,
-        y + 0.9 * he
-      );
-      ctx.bezierCurveTo(
-        x + 1 * wi,
-        y + 0.6 * he,
-        x + 0.9 * wi,
-        y,
-        x + 0.5 * wi,
-        y + 0.3 * he
-      );
+      ctx.bezierCurveTo(x + 0.1 * wi, y, x, y + 0.6 * he, x + 0.5 * wi, y + 0.9 * he);
+      ctx.bezierCurveTo(x + 1 * wi, y + 0.6 * he, x + 0.9 * wi, y, x + 0.5 * wi, y + 0.3 * he);
       ctx.closePath();
       ctx.fill();
     }
@@ -117,17 +103,9 @@ function main(c: HTMLCanvasElement) {
       w: measure.actualBoundingBoxRight - measure.actualBoundingBoxLeft,
       h: measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent,
     };
-    let heightOfFont = Math.floor(
-      Math.min(
-        (c.width - 200) / (bbox.w / 100),
-        (c.height - 200) / (bbox.h / 100)
-      )
-    );
+    let heightOfFont = Math.floor(Math.min((c.width - 200) / (bbox.w / 100), (c.height - 200) / (bbox.h / 100)));
 
-    hsize = Math.min(
-      Math.floor(heightOfFont / 20) + 1,
-      Math.floor(Math.min(size.x, size.y) / 20) + 1
-    );
+    hsize = Math.min(Math.floor(heightOfFont / 20) + 1, Math.floor(Math.min(size.x, size.y) / 20) + 1);
 
     ctx.font = heightOfFont + "px " + fontt;
     measure = ctx.measureText(t);
@@ -140,9 +118,7 @@ function main(c: HTMLCanvasElement) {
 
     ctx.fillText(
       t,
-      (size.x + bbox.w) / 2 -
-        measure.actualBoundingBoxRight +
-        measure.actualBoundingBoxLeft,
+      (size.x + bbox.w) / 2 - measure.actualBoundingBoxRight + measure.actualBoundingBoxLeft,
       size.y / 2 - bbox.y - bbox.h / 2
     );
 
@@ -177,17 +153,9 @@ export const ValentinesDay = () => {
   });
   return (
     <>
-      <canvas
-        id="c"
-        ref={c!}
-        width={window.innerWidth}
-        height={window.innerHeight}
-      ></canvas>
+      <canvas id="c" ref={c!} width={window.innerWidth} height={window.innerHeight}></canvas>
       <span class="option-bar">
-        <textarea
-          id="text"
-          onkeyup={(e) => fn(e.currentTarget.value)}
-        ></textarea>
+        <textarea id="text" onkeyup={(e) => fn(e.currentTarget.value)}></textarea>
       </span>
     </>
   );

@@ -102,10 +102,7 @@ function tick(delta: number) {
       ctx.lineCap = "round";
       ctx.beginPath();
       let deg = Math.atan2(part.lx - part.x, -part.ly + part.y);
-      ctx.moveTo(
-        part.x - Math.cos(deg + Math.PI) * 8,
-        part.y - Math.sin(deg + Math.PI) * 8
-      );
+      ctx.moveTo(part.x - Math.cos(deg + Math.PI) * 8, part.y - Math.sin(deg + Math.PI) * 8);
 
       ctx.moveTo(part.lx, part.ly);
       ctx.lineTo(part.x, part.y);
@@ -160,10 +157,7 @@ function tick(delta: number) {
       ctx.lineCap = "round";
       ctx.beginPath();
       let deg = Math.atan2(part.lx - part.x, -part.ly + part.y);
-      ctx.moveTo(
-        part.x - Math.cos(deg + Math.PI) * 8,
-        part.y - Math.sin(deg + Math.PI) * 8
-      );
+      ctx.moveTo(part.x - Math.cos(deg + Math.PI) * 8, part.y - Math.sin(deg + Math.PI) * 8);
 
       ctx.moveTo(part.lx, part.ly);
 
@@ -209,19 +203,11 @@ export const Attraction = () => {
 
     window.addEventListener("keypress", (e) => {
       if (e.which == 122) {
-        particles[n] = new Particle(
-          Math.random() * 200 + w / 2 - 100,
-          Math.random() * 200 + h / 2 - 100
-        );
+        particles[n] = new Particle(Math.random() * 200 + w / 2 - 100, Math.random() * 200 + h / 2 - 100);
         n++;
       }
     });
   });
 
-  return (
-    <>
-      <div id="overlay"></div>
-      <canvas ref={c}></canvas>
-    </>
-  );
+  return <canvas ref={c}></canvas>;
 };

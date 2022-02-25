@@ -1,4 +1,4 @@
-import "./style.css"
+import "./style.css";
 import { onMount } from "solid-js";
 
 const main = (chars: HTMLDivElement, audio: HTMLAudioElement) => {
@@ -41,8 +41,7 @@ const main = (chars: HTMLDivElement, audio: HTMLAudioElement) => {
     let red = false;
 
     for (let i = amount / 8; i < (amount * 7) / 8; i++) {
-      ac +=
-        audio.currentTime / audio.duration < i / ((amount * 3) / 4) ? "▓" : "░";
+      ac += audio.currentTime / audio.duration < i / ((amount * 3) / 4) ? "▓" : "░";
       for (let d = 0; d < freqArray[i]; d++) {
         ac += dt[Math.floor(Math.random() * 2)];
         ac += db[Math.floor(Math.random() * 2)];

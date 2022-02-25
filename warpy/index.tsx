@@ -49,9 +49,7 @@ export const Warpy = () => {
         ctx.fillRect(this.x - 5, this.y - 5, 10, 10);
       }
       die() {
-        return (
-          this.x > c.width || this.x < 0 || this.y > c.height || this.y < 0
-        );
+        return this.x > c.width || this.x < 0 || this.y > c.height || this.y < 0;
       }
     }
 
@@ -71,12 +69,7 @@ export const Warpy = () => {
       }
       draw() {
         ctx.fillStyle = "white";
-        ctx.fillRect(
-          this.x - this.time / 2,
-          this.y - this.time / 2,
-          this.time,
-          this.time
-        );
+        ctx.fillRect(this.x - this.time / 2, this.y - this.time / 2, this.time, this.time);
         this.time--;
       }
     }
@@ -98,8 +91,7 @@ export const Warpy = () => {
       ctx.textAlign = "left";
       ctx.fillStyle = "white";
       ctx.fillText(`${time}`, 10, 10);
-      if (time % (time > 1050 ? 20 : 40) == 0 && running)
-        bullets.push(new Bullet());
+      if (time % (time > 1050 ? 20 : 40) == 0 && running) bullets.push(new Bullet());
       bullets = bullets.filter((b) => !b.die());
       for (let b of bullets) {
         if (running && (time < 1000 || time > 1050)) b.move();
@@ -123,12 +115,7 @@ export const Warpy = () => {
       for (let i = -1; i < 2; i++) {
         for (let j = -1; j < 2; j++) {
           ctx.fillStyle = "white";
-          ctx.fillRect(
-            c.width / 2 + (min * i) / 4 - 3,
-            c.height / 2 + (min * j) / 4 - 3,
-            6,
-            6
-          );
+          ctx.fillRect(c.width / 2 + (min * i) / 4 - 3, c.height / 2 + (min * j) / 4 - 3, 6, 6);
         }
       }
 
@@ -141,9 +128,7 @@ export const Warpy = () => {
         ctx.textAlign = "center";
         ctx.fillStyle = "white";
         ctx.fillText(
-          "ontouchstart" in window
-            ? "Tap to play again"
-            : "Press space to play again",
+          "ontouchstart" in window ? "Tap to play again" : "Press space to play again",
           c.width / 2,
           c.height / 2
         );
@@ -184,14 +169,8 @@ export const Warpy = () => {
           running = true;
         }
       }
-      you.x = Math.min(
-        Math.max(you.x, c.width / 2 - min / 4),
-        c.width / 2 + min / 4
-      );
-      you.y = Math.min(
-        Math.max(you.y, c.height / 2 - min / 4),
-        c.height / 2 + min / 4
-      );
+      you.x = Math.min(Math.max(you.x, c.width / 2 - min / 4), c.width / 2 + min / 4);
+      you.y = Math.min(Math.max(you.y, c.height / 2 - min / 4), c.height / 2 + min / 4);
     });
 
     document.addEventListener("keyup", (e) => {
@@ -229,14 +208,8 @@ export const Warpy = () => {
           animations.push(new Blink());
           you.y += min / 4;
         }
-        you.x = Math.min(
-          Math.max(you.x, c.width / 2 - min / 4),
-          c.width / 2 + min / 4
-        );
-        you.y = Math.min(
-          Math.max(you.y, c.height / 2 - min / 4),
-          c.height / 2 + min / 4
-        );
+        you.x = Math.min(Math.max(you.x, c.width / 2 - min / 4), c.width / 2 + min / 4);
+        you.y = Math.min(Math.max(you.y, c.height / 2 - min / 4), c.height / 2 + min / 4);
       }
     });
     hammer.get("swipe").set({ direction: Hammer.DIRECTION_ALL });
@@ -253,12 +226,7 @@ export const Warpy = () => {
 
   return (
     <>
-      <canvas
-        id="c"
-        ref={c!}
-        width={window.innerWidth}
-        height={window.innerHeight}
-      ></canvas>
+      <canvas id="c" ref={c!} width={window.innerWidth} height={window.innerHeight}></canvas>
     </>
   );
 };

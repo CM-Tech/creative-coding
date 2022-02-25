@@ -1,12 +1,6 @@
-body {
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-}
-
 div.well {
-    position: absolute;
-    padding: 5px;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  padding: 5px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
 }

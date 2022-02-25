@@ -7,14 +7,7 @@ const main = (c: HTMLCanvasElement) => {
   c.width = window.innerWidth;
 
   let bubbles: bubble[] = [];
-  let colors = [
-    "#ff0000",
-    "#00ff00",
-    "#0000ff",
-    "#ffff00",
-    "#ff00ff",
-    "#00ffff",
-  ];
+  let colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
   let color = colors[Math.floor(Math.random() * colors.length)];
   let fake = colors[Math.floor(Math.random() * colors.length)];
   let score = 0;
@@ -118,22 +111,14 @@ const main = (c: HTMLCanvasElement) => {
     }
 
     let width = ctx.measureText(tcolor).width;
-    ctx.fillText(
-      tcolor,
-      (window.innerWidth - width) / 2,
-      (window.innerHeight - 30) / 2
-    );
+    ctx.fillText(tcolor, (window.innerWidth - width) / 2, (window.innerHeight - 30) / 2);
 
     ctx.font = "30px 'Comfortaa'";
     ctx.fillStyle = "black";
     if (clicked === false) {
       ctx.fillText(
         "Tap the bubble with the text you read, not the color you see",
-        (window.innerWidth -
-          ctx.measureText(
-            "Tap the bubble with the text you read, not the color you see"
-          ).width) /
-          2,
+        (window.innerWidth - ctx.measureText("Tap the bubble with the text you read, not the color you see").width) / 2,
         window.innerHeight - 30
       );
     }
@@ -141,11 +126,7 @@ const main = (c: HTMLCanvasElement) => {
     ctx.font = "30px 'Comfortaa'";
     ctx.fillStyle = "black";
     ctx.fillText("Score: " + score, 0, 30);
-    ctx.fillText(
-      "Lives: " + lives,
-      window.innerWidth - ctx.measureText("Lives: " + lives).width,
-      30
-    );
+    ctx.fillText("Lives: " + lives, window.innerWidth - ctx.measureText("Lives: " + lives).width, 30);
 
     ctx.beginPath();
     ctx.strokeStyle = "black";
@@ -285,7 +266,7 @@ const main = (c: HTMLCanvasElement) => {
       clicked = true;
     }
   };
-  document.body.onkeypress =  (event) => {
+  document.body.onkeypress = (event) => {
     if (lives < 0 && event.keyCode == 32) {
       console.log("restart");
       lives = 3;
@@ -295,7 +276,7 @@ const main = (c: HTMLCanvasElement) => {
       timer = 0;
     }
   };
-  document.body.onresize =  () => {
+  document.body.onresize = () => {
     c.height = window.innerHeight;
     c.width = window.innerWidth;
   };
@@ -324,14 +305,8 @@ const main = (c: HTMLCanvasElement) => {
       drawend();
     }
     if (timer == 100) {
-      for (
-        let i = 0;
-        i < (window.innerWidth * window.innerHeight) / 19000;
-        i++
-      ) {
-        bubbles.push(
-          new bubble(colors[Math.floor(Math.random() * colors.length)])
-        );
+      for (let i = 0; i < (window.innerWidth * window.innerHeight) / 19000; i++) {
+        bubbles.push(new bubble(colors[Math.floor(Math.random() * colors.length)]));
       }
       timer = 0;
     }

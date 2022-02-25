@@ -65,14 +65,8 @@ sigma.canvas.edges.goo = function (edge, source, target, context, settings) {
     )
   );
   context.moveTo(source[prefix + "x"], source[prefix + "y"]);
-  context.lineTo(
-    source[prefix + "x"],
-    target[prefix + "y"] - (targetYGreater ? 1 : -1) * Rad
-  );
-  context.lineTo(
-    source[prefix + "x"] + (targetXGreater ? 1 : -1) * Rad,
-    target[prefix + "y"]
-  );
+  context.lineTo(source[prefix + "x"], target[prefix + "y"] - (targetYGreater ? 1 : -1) * Rad);
+  context.lineTo(source[prefix + "x"] + (targetXGreater ? 1 : -1) * Rad, target[prefix + "y"]);
   context.lineTo(target[prefix + "x"], target[prefix + "y"]);
   context.stroke();
 
@@ -214,9 +208,7 @@ dom.addEventListener(
       y = p.y;
 
       neighbors = s.graph.nodes().filter(function (n) {
-        return (
-          Math.sqrt(Math.pow(n.x - x, 2) + Math.pow(n.y - y, 2)) - n.size < 0
-        );
+        return Math.sqrt(Math.pow(n.x - x, 2) + Math.pow(n.y - y, 2)) - n.size < 0;
       });
       if (!spaceMode)
         s.graph.addNode({
@@ -232,9 +224,7 @@ dom.addEventListener(
       if (!spaceMode) {
         s.graph.addEdge({
           id: ++eId + "",
-          source:
-            s.graph.nodes()[Math.floor(Math.random() * s.graph.nodes().length)]
-              .id,
+          source: s.graph.nodes()[Math.floor(Math.random() * s.graph.nodes().length)].id,
           target: id,
           type: "goo",
           color: colors[Math.floor(Math.random() * colors.length)],
@@ -277,6 +267,4 @@ setInterval(function () {
   });
 }, 1000);
 
-export const PulsingSquare = () => {
-
-};
+export const PulsingSquare = () => {};

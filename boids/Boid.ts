@@ -18,15 +18,10 @@ export class Boid {
   constructor(x: number, y: number) {
     this.pos = new Vec(x, y);
     this.vel = new Vec(Math.random() * 10 - 5, Math.random() * 2 - 1);
-    this.hue = new Vec(
-      Math.random() * Math.PI * 2 - Math.PI,
-      Math.random() * Math.PI * 2 - Math.PI
-    ).normalize();
+    this.hue = new Vec(Math.random() * Math.PI * 2 - Math.PI, Math.random() * Math.PI * 2 - Math.PI).normalize();
     this.neighbors = [];
     this.pointHistory = [new Vec(x, y)];
-    this.hueHistory = [
-      (Math.atan2(this.hue.x, this.hue.y) * 180) / Math.PI + 180,
-    ];
+    this.hueHistory = [(Math.atan2(this.hue.x, this.hue.y) * 180) / Math.PI + 180];
     this.updateTimer = Math.floor(Math.random() * 10);
   }
 
@@ -41,9 +36,7 @@ export class Boid {
       this.pointHistory.push(this.pos.copy());
       this.pointHistory.splice(0, this.pointHistory.length - 10);
 
-      this.hueHistory.push(
-        (Math.atan2(this.hue.x, this.hue.y) * 180) / Math.PI + 180
-      );
+      this.hueHistory.push((Math.atan2(this.hue.x, this.hue.y) * 180) / Math.PI + 180);
       this.hueHistory.splice(0, this.hueHistory.length - 10);
     }
 
@@ -74,9 +67,7 @@ export class Boid {
 
   getAverageColor() {
     var randomAngle = Math.random() * Math.PI * 2;
-    var total = new Vec(Math.cos(randomAngle), Math.sin(randomAngle)).mult(
-      50.0
-    );
+    var total = new Vec(Math.cos(randomAngle), Math.sin(randomAngle)).mult(50.0);
     this.neighbors.map((other) => {
       total.add(other.hue);
     });
@@ -88,7 +79,7 @@ export class Boid {
     var sum = new Vec(0, 0);
     var count = 0;
     var myPos = this.pos;
-    this.neighbors.map((other) =>{
+    this.neighbors.map((other) => {
       var d = myPos.dist(other.pos);
 
       if (d < friendRadius) {
@@ -178,7 +169,7 @@ export class Boid {
 
   getNeighbors(boids: Boid[]) {
     var me = this;
-    this.neighbors = boids.filter((bo) =>{
+    this.neighbors = boids.filter((bo) => {
       if (bo == me) return false;
       return bo.pos.distSquare(me.pos) < Math.pow(friendRadius, 2);
     });
@@ -188,26 +179,14 @@ export class Boid {
     ctx.fillStyle = "black";
     for (var ii = 1; ii < this.pointHistory.length; ii++) {
       ctx.beginPath();
-      ctx.arc(
-        this.pointHistory[ii].x,
-        this.pointHistory[ii].y,
-        3,
-        0,
-        Math.PI * 2
-      );
+      ctx.arc(this.pointHistory[ii].x, this.pointHistory[ii].y, 3, 0, Math.PI * 2);
       ctx.fill();
     }
 
     for (var ii = 1; ii < this.pointHistory.length; ii++) {
       ctx.fillStyle = "hsl(" + this.hueHistory[ii] + ", 100%, 50%)";
       ctx.beginPath();
-      ctx.arc(
-        this.pointHistory[ii].x,
-        this.pointHistory[ii].y,
-        2,
-        0,
-        Math.PI * 2
-      );
+      ctx.arc(this.pointHistory[ii].x, this.pointHistory[ii].y, 2, 0, Math.PI * 2);
       ctx.fill();
     }
   }

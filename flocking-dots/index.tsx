@@ -36,11 +36,7 @@ const draw = () => {
   root.radius = 0;
   root.fixed = true;
 
-  let svg = d3
-    .select("#app")
-    .append("svg:svg")
-    .attr("width", w)
-    .attr("height", h);
+  let svg = d3.select("#app").append("svg:svg").attr("width", w).attr("height", h);
 
   svg
     .selectAll("circle")
@@ -80,10 +76,8 @@ const draw = () => {
       if (nodes[i].totalNebs > 0) {
         nodes[i].fx += nodes[i].aveVX / nodes[i].totalNebs;
         nodes[i].fy += nodes[i].aveVY / nodes[i].totalNebs;
-        nodes[i].fx +=
-          (nodes[i].aveCenterX / nodes[i].totalNebs - nodes[i].x) / 40;
-        nodes[i].fy +=
-          (nodes[i].aveCenterY / nodes[i].totalNebs - nodes[i].y) / 40;
+        nodes[i].fx += (nodes[i].aveCenterX / nodes[i].totalNebs - nodes[i].x) / 40;
+        nodes[i].fy += (nodes[i].aveCenterY / nodes[i].totalNebs - nodes[i].y) / 40;
       }
       let fL = Math.sqrt(nodes[i].fx * nodes[i].fx + nodes[i].fy * nodes[i].fy);
       if (fL === 0) {
@@ -141,13 +135,7 @@ const draw = () => {
       nx2 = node.x + r,
       ny1 = node.y - r,
       ny2 = node.y + r;
-    return (
-      n2: QuadtreeInternalNode<Node> | QuadtreeLeaf<Node>,
-      x1: number,
-      y1: number,
-      x2: number,
-      y2: number
-    ) => {
+    return (n2: QuadtreeInternalNode<Node> | QuadtreeLeaf<Node>, x1: number, y1: number, x2: number, y2: number) => {
       if (!n2.length) {
         do {
           if (n2.data !== node) {
@@ -192,5 +180,5 @@ export const FlockingDots = () => {
   onMount(() => {
     draw();
   });
-  return <></>
+  return <></>;
 };

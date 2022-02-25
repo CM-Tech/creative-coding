@@ -1,11 +1,8 @@
-import { Delaunay } from "d3-delaunay";
+import { Delaunay } from "d3";
 import { onMount } from "solid-js";
 import "./styles.css";
 
-const main = (
-  textField: HTMLTextAreaElement,
-  ctx: CanvasRenderingContext2D
-) => {
+const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => {
   let hsize = 5;
   let speed = 1;
   let size = {
@@ -56,22 +53,8 @@ const main = (
       ctx.fillStyle = this.g;
       ctx.beginPath();
       ctx.moveTo(x + 0.5 * wi, y + 0.3 * he);
-      ctx.bezierCurveTo(
-        x + 0.1 * wi,
-        y,
-        x,
-        y + 0.6 * he,
-        x + 0.5 * wi,
-        y + 0.9 * he
-      );
-      ctx.bezierCurveTo(
-        x + 1 * wi,
-        y + 0.6 * he,
-        x + 0.9 * wi,
-        y,
-        x + 0.5 * wi,
-        y + 0.3 * he
-      );
+      ctx.bezierCurveTo(x + 0.1 * wi, y, x, y + 0.6 * he, x + 0.5 * wi, y + 0.9 * he);
+      ctx.bezierCurveTo(x + 1 * wi, y + 0.6 * he, x + 0.9 * wi, y, x + 0.5 * wi, y + 0.3 * he);
       ctx.closePath();
       ctx.fill();
     }
@@ -169,19 +152,13 @@ const main = (
     };
 
     let bbbox = {
-      h:
-        fontMeasures[fontMeasures.length - 1].y +
-        fontMeasures[fontMeasures.length - 1].h -
-        fontMeasures[0].y,
+      h: fontMeasures[fontMeasures.length - 1].y + fontMeasures[fontMeasures.length - 1].h - fontMeasures[0].y,
       w: 0,
     };
     let sScale = Math.min((size.x - 200) / 1000, (size.y - 200) / bbbox.h);
     let heightOfFont = Math.floor(sScale * Math.min(...fontSizes));
 
-    hsize = Math.min(
-      Math.floor(heightOfFont / 20) + 1,
-      Math.floor(Math.min(size.x, size.y) / 20) + 1
-    );
+    hsize = Math.min(Math.floor(heightOfFont / 20) + 1, Math.floor(Math.min(size.x, size.y) / 20) + 1);
     for (let i = 0; i < lines.length; i++) {
       ctx.font = fontSizes[i] * sScale + "px " + fontt;
       //   mtext = ctx.measureText(t).width;
@@ -195,13 +172,8 @@ const main = (
 
       ctx.fillText(
         lines[i],
-        (size.x + bbox.w) / 2 -
-          measure.actualBoundingBoxRight +
-          measure.actualBoundingBoxLeft,
-        size.y / 2 -
-          fontMeasures[0].y * sScale -
-          (bbbox.h * sScale) / 2 +
-          runningYS[i] * sScale
+        (size.x + bbox.w) / 2 - measure.actualBoundingBoxRight + measure.actualBoundingBoxLeft,
+        size.y / 2 - fontMeasures[0].y * sScale - (bbbox.h * sScale) / 2 + runningYS[i] * sScale
       );
     }
 
@@ -215,7 +187,7 @@ const main = (
         pa.push(p);
       }
     }
-    s = setInterval( () =>{
+    s = setInterval(() => {
       background();
       const points = [];
 
@@ -246,12 +218,7 @@ export const VoronoiDiagram = () => {
   });
   return (
     <>
-      <canvas
-        id="canvas"
-        ref={canvas!}
-        width={window.innerWidth}
-        height={window.innerHeight}
-      ></canvas>
+      <canvas id="canvas" ref={canvas!} width={window.innerWidth} height={window.innerHeight}></canvas>
       <span class="option-bar">
         <textarea id="text" ref={textField!}></textarea>
       </span>

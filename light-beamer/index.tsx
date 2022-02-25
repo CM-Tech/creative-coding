@@ -35,10 +35,7 @@ const main = (c: HTMLCanvasElement) => {
       this.y = y;
       this.ex = ex;
       this.ey = ey;
-      this.len = Math.sqrt(
-        (this.x - this.ex) * (this.x - this.ex) +
-          (this.y - this.ey) * (this.y - this.ey)
-      );
+      this.len = Math.sqrt((this.x - this.ex) * (this.x - this.ex) + (this.y - this.ey) * (this.y - this.ey));
     }
   }
   function dotLines(a: Line, b: Line) {
@@ -52,9 +49,7 @@ const main = (c: HTMLCanvasElement) => {
       this.x = x;
       this.y = y;
 
-      this.len = Math.sqrt(
-        (this.x - 0) * (this.x - 0) + (this.y - 0) * (this.y - 0)
-      );
+      this.len = Math.sqrt((this.x - 0) * (this.x - 0) + (this.y - 0) * (this.y - 0));
     }
   }
   function inside(point: [number, number], vs: [number, number][]) {
@@ -71,8 +66,7 @@ const main = (c: HTMLCanvasElement) => {
       let xj = vs[j][0],
         yj = vs[j][1];
 
-      let intersect =
-        yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+      let intersect = yi > y != yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
       if (intersect) inside = !inside;
     }
 
@@ -104,20 +98,10 @@ const main = (c: HTMLCanvasElement) => {
       this.allLines = allLines;
       this.children = [];
       this.boxLines = [
-        new Line(
-          this.nearClip.x,
-          this.nearClip.y,
-          this.horizon.x,
-          this.horizon.y
-        ),
+        new Line(this.nearClip.x, this.nearClip.y, this.horizon.x, this.horizon.y),
         this.horizon,
         this.nearClip,
-        new Line(
-          this.nearClip.ex,
-          this.nearClip.ey,
-          this.horizon.ex,
-          this.horizon.ey
-        ),
+        new Line(this.nearClip.ex, this.nearClip.ey, this.horizon.ex, this.horizon.ey),
       ];
       this.nearMirror = null;
     }
@@ -127,14 +111,7 @@ const main = (c: HTMLCanvasElement) => {
         let splitter = this.linesLeft[0];
         let restLines = this.linesLeft.slice(1);
         if (!this.lineInCone(splitter)) {
-          let l = new LineProjection(
-            this.origin,
-            this.horizon,
-            this.hFar,
-            this.nearClip,
-            restLines,
-            this.allLines
-          );
+          let l = new LineProjection(this.origin, this.horizon, this.hFar, this.nearClip, restLines, this.allLines);
           if (this.nearMirror !== null) {
             l.nearMirror = this.nearMirror;
           }
@@ -142,12 +119,7 @@ const main = (c: HTMLCanvasElement) => {
         } else {
           let lineToTest = splitter;
           if (dotLines(this.horizon, lineToTest) < 0) {
-            lineToTest = new Line(
-              splitter.ex,
-              splitter.ey,
-              splitter.x,
-              splitter.y
-            );
+            lineToTest = new Line(splitter.ex, splitter.ey, splitter.x, splitter.y);
           }
           let AIN = this.pointInCone(new Point(lineToTest.x, lineToTest.y));
           let BIN = this.pointInCone(new Point(lineToTest.ex, lineToTest.ey));
@@ -164,12 +136,7 @@ const main = (c: HTMLCanvasElement) => {
             let LI = lineIntersect(this.boxLines[0], lineToTest);
             let RI = lineIntersect(this.boxLines[3], lineToTest);
             if (!(LI.onLine1 && LI.onLine2)) {
-              if (
-                dotLines(
-                  new Line(this.origin.x, this.origin.y, LI.x, LI.y),
-                  this.boxLines[0]
-                ) > 0
-              ) {
+              if (dotLines(new Line(this.origin.x, this.origin.y, LI.x, LI.y), this.boxLines[0]) > 0) {
                 pts.push(LI);
               } else {
                 pts.push(new Point(this.horizon.x, this.horizon.y));
@@ -177,29 +144,18 @@ const main = (c: HTMLCanvasElement) => {
             }
 
             if (!(RI.onLine1 && RI.onLine2)) {
-              if (
-                dotLines(
-                  new Line(this.origin.x, this.origin.y, RI.x, RI.y),
-                  this.boxLines[3]
-                ) > 0
-              ) {
+              if (dotLines(new Line(this.origin.x, this.origin.y, RI.x, RI.y), this.boxLines[3]) > 0) {
                 pts.push(RI);
               } else {
                 pts.push(new Point(this.horizon.ex, this.horizon.ey));
               }
             }
-            let leftAtan = Math.atan2(
-              this.horizon.y - this.origin.y,
-              this.horizon.x - this.origin.x
-            );
+            let leftAtan = Math.atan2(this.horizon.y - this.origin.y, this.horizon.x - this.origin.x);
             let q = pts.map(
               (x) =>
                 [
                   x,
-                  (((Math.atan2(x.y - this.origin.y, x.x - this.origin.x) -
-                    leftAtan) %
-                    (Math.PI * 2)) +
-                    Math.PI * 2) %
+                  (((Math.atan2(x.y - this.origin.y, x.x - this.origin.x) - leftAtan) % (Math.PI * 2)) + Math.PI * 2) %
                     (Math.PI * 2),
                 ] as const
             );
@@ -212,39 +168,17 @@ const main = (c: HTMLCanvasElement) => {
               let lineC = new Line(leftPt.x, leftPt.y, rightPt.x, rightPt.y);
               let newNC = this.nearClip;
               if (newNC.len > 0) {
-                let newNCLeft = lineIntersect(
-                  newNC,
-                  new Line(this.origin.x, this.origin.y, leftPt.x, leftPt.y)
-                );
-                let newNCRight = lineIntersect(
-                  newNC,
-                  new Line(this.origin.x, this.origin.y, rightPt.x, rightPt.y)
-                );
+                let newNCLeft = lineIntersect(newNC, new Line(this.origin.x, this.origin.y, leftPt.x, leftPt.y));
+                let newNCRight = lineIntersect(newNC, new Line(this.origin.x, this.origin.y, rightPt.x, rightPt.y));
 
-                newNC = new Line(
-                  newNCLeft.x,
-                  newNCLeft.y,
-                  newNCRight.x,
-                  newNCRight.y
-                );
+                newNC = new Line(newNCLeft.x, newNCLeft.y, newNCRight.x, newNCRight.y);
               }
               let newFC = this.horizon;
               if (newFC.len > 0) {
-                let newFCLeft = lineIntersect(
-                  newFC,
-                  new Line(this.origin.x, this.origin.y, leftPt.x, leftPt.y)
-                );
-                let newFCRight = lineIntersect(
-                  newFC,
-                  new Line(this.origin.x, this.origin.y, rightPt.x, rightPt.y)
-                );
+                let newFCLeft = lineIntersect(newFC, new Line(this.origin.x, this.origin.y, leftPt.x, leftPt.y));
+                let newFCRight = lineIntersect(newFC, new Line(this.origin.x, this.origin.y, rightPt.x, rightPt.y));
 
-                newFC = new Line(
-                  newFCLeft.x,
-                  newFCLeft.y,
-                  newFCRight.x,
-                  newFCRight.y
-                );
+                newFC = new Line(newFCLeft.x, newFCLeft.y, newFCRight.x, newFCRight.y);
               }
               let hitLine = false;
               hitLine = true;
@@ -257,14 +191,7 @@ const main = (c: HTMLCanvasElement) => {
               if (hitLine) {
                 newFC = lineC;
               }
-              let l = new LineProjection(
-                this.origin,
-                newFC,
-                this.hFar && !hitLine,
-                newNC,
-                restLines,
-                this.allLines
-              );
+              let l = new LineProjection(this.origin, newFC, this.hFar && !hitLine, newNC, restLines, this.allLines);
               if (this.nearMirror !== null) {
                 l.nearMirror = this.nearMirror;
               }
@@ -280,28 +207,14 @@ const main = (c: HTMLCanvasElement) => {
         }
       } else if (!this.hFar && depth > 0) {
         let reflectionLine = this.horizon;
-        let newNC = new Line(
-          reflectionLine.ex,
-          reflectionLine.ey,
-          reflectionLine.x,
-          reflectionLine.y
-        );
-        let newOrigin = reflectOverLine(
-          this.origin.x,
-          this.origin.y,
-          reflectionLine
-        );
+        let newNC = new Line(reflectionLine.ex, reflectionLine.ey, reflectionLine.x, reflectionLine.y);
+        let newOrigin = reflectOverLine(this.origin.x, this.origin.y, reflectionLine);
 
         let newAllLines = this.allLines;
 
         let nearNear = lineIntersect(
           newNC,
-          new Line(
-            newOrigin.x,
-            newOrigin.y,
-            newOrigin.x - (newNC.ey - newNC.y),
-            newOrigin.y + (newNC.ex - newNC.x)
-          )
+          new Line(newOrigin.x, newOrigin.y, newOrigin.x - (newNC.ey - newNC.y), newOrigin.y + (newNC.ex - newNC.x))
         );
         let d = new Line(newOrigin.x, newOrigin.y, nearNear.x, nearNear.y).len;
         let S = 1 + Math.sqrt(w * w + h * h) / d;
@@ -338,14 +251,7 @@ const main = (c: HTMLCanvasElement) => {
         ctx.closePath();
 
         let range = 10000;
-        let gradient = ctx.createRadialGradient(
-          this.origin.x,
-          this.origin.y,
-          0,
-          this.origin.x,
-          this.origin.y,
-          range
-        );
+        let gradient = ctx.createRadialGradient(this.origin.x, this.origin.y, 0, this.origin.x, this.origin.y, range);
         let slices = 1000;
         for (let i = 0; i < slices; i++) {
           let r = (range / slices) * i;
@@ -432,44 +338,16 @@ const main = (c: HTMLCanvasElement) => {
     let origin = new Point(w / 2.0, h / 2.0);
     let originClip = new Line(w / 2.0, h / 2.0, w / 2.0, h / 2.0);
     let cl = 20;
-    let proj1 = new LineProjection(
-      origin,
-      topHorizon,
-      true,
-      originClip,
-      mirrors.slice(),
-      mirrors.slice()
-    );
+    let proj1 = new LineProjection(origin, topHorizon, true, originClip, mirrors.slice(), mirrors.slice());
     proj1.calc(cl);
     proj1.draw(ctx);
-    let proj2 = new LineProjection(
-      origin,
-      new Line(w, 0, w, h),
-      true,
-      originClip,
-      mirrors.slice(),
-      mirrors.slice()
-    );
+    let proj2 = new LineProjection(origin, new Line(w, 0, w, h), true, originClip, mirrors.slice(), mirrors.slice());
     proj2.calc(cl);
     proj2.draw(ctx);
-    let proj3 = new LineProjection(
-      origin,
-      new Line(w, h, 0, h),
-      true,
-      originClip,
-      mirrors.slice(),
-      mirrors.slice()
-    );
+    let proj3 = new LineProjection(origin, new Line(w, h, 0, h), true, originClip, mirrors.slice(), mirrors.slice());
     proj3.calc(cl);
     proj3.draw(ctx);
-    let proj4 = new LineProjection(
-      origin,
-      new Line(0, h, 0, 0),
-      true,
-      originClip,
-      mirrors.slice(),
-      mirrors.slice()
-    );
+    let proj4 = new LineProjection(origin, new Line(0, h, 0, 0), true, originClip, mirrors.slice(), mirrors.slice());
     proj4.calc(cl);
     proj4.draw(ctx);
 
@@ -513,16 +391,7 @@ const main = (c: HTMLCanvasElement) => {
   }
 
   function lineIntersect(line1: Line, line2: Line) {
-    return checkLineIntersection(
-      line1.x,
-      line1.y,
-      line1.ex,
-      line1.ey,
-      line2.x,
-      line2.y,
-      line2.ex,
-      line2.ey
-    );
+    return checkLineIntersection(line1.x, line1.y, line1.ex, line1.ey, line2.x, line2.y, line2.ex, line2.ey);
   }
 
   function checkLineIntersection(
@@ -548,8 +417,7 @@ const main = (c: HTMLCanvasElement) => {
         onLine2: false,
       };
     denominator =
-      (line2EndY - line2StartY) * (line1EndX - line1StartX) -
-      (line2EndX - line2StartX) * (line1EndY - line1StartY);
+      (line2EndY - line2StartY) * (line1EndX - line1StartX) - (line2EndX - line2StartX) * (line1EndY - line1StartY);
     if (denominator == 0) {
       return result;
     }
@@ -586,10 +454,5 @@ export const LightBeamer = () => {
   onMount(() => {
     main(c);
   });
-  return (
-    <>
-      <div id="overlay"></div>
-      <canvas id="c" width="1059" height="662" ref={c!}></canvas>
-    </>
-  );
+  return <canvas id="c" width="1059" height="662" ref={c!}></canvas>;
 };

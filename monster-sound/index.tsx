@@ -7,9 +7,7 @@ function main(canvas: HTMLCanvasElement) {
   let anim: number;
   let MIN_RADIUS = 32;
   let JITTER_RANGE =
-    window.innerHeight <= window.innerWidth
-      ? window.innerHeight / 2 - MIN_RADIUS
-      : window.innerWidth / 2 - MIN_RADIUS;
+    window.innerHeight <= window.innerWidth ? window.innerHeight / 2 - MIN_RADIUS : window.innerWidth / 2 - MIN_RADIUS;
   JITTER_RANGE = JITTER_RANGE * 1.2;
   let NUM_NODES = 256; // only 1/2 of these are actually drawn
 
@@ -83,14 +81,7 @@ function main(canvas: HTMLCanvasElement) {
     }
     points.forEach((element, index, array) => {
       if (array[index + 1]) {
-        wdraw.push(
-          element.x,
-          element.y,
-          array[index + 1].x,
-          array[index + 1].y,
-          0,
-          0
-        );
+        wdraw.push(element.x, element.y, array[index + 1].x, array[index + 1].y, 0, 0);
       } else {
         wdraw.push(element.x, element.y, array[0].x, array[0].y, 0, 0);
       }
@@ -99,13 +90,11 @@ function main(canvas: HTMLCanvasElement) {
     anim = window.requestAnimationFrame(update.bind(null, analyser));
   }
 
-  fetch(
-    "https://cdn.glitch.com/33316a32-724f-4318-9d21-00250ecbdafb%2Fmonsters.mp3?1524420405532"
-  )
+  fetch("https://cdn.glitch.com/33316a32-724f-4318-9d21-00250ecbdafb%2Fmonsters.mp3?1524420405532")
     .then((x) => x.arrayBuffer())
-    .then( (res) =>{
+    .then((res) => {
       let audioContext = new AudioContext();
-      audioContext.decodeAudioData(res,  (buffer) =>{
+      audioContext.decodeAudioData(res, (buffer) => {
         let analyser = audioContext.createAnalyser();
         let sourceNode = audioContext.createBufferSource();
         analyser.smoothingTimeConstant = 0.6;
@@ -126,7 +115,7 @@ function main(canvas: HTMLCanvasElement) {
         control.className = "fa fa-pause";
         control.textContent = "";
 
-        window.onclick =  () =>{
+        window.onclick = () => {
           sourceNode[`${playing ? "dis" : ""}connect`](analyser);
           control.className = "fa fa-" + (playing ? "play" : "pause");
           playing ? window.cancelAnimationFrame(anim) : update(analyser);
@@ -154,11 +143,11 @@ function main(canvas: HTMLCanvasElement) {
     time++;
   }
 
-  window.onmousemove =  (e) => {
+  window.onmousemove = (e) => {
     mouse.x = e.clientX / window.innerWidth;
     mouse.y = e.clientY / window.innerHeight;
   };
-  window.onresize =  () => {
+  window.onresize = () => {
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;

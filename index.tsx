@@ -1,3 +1,4 @@
+import "./style.css";
 import { render } from "solid-js/web";
 import { Link, Route, Router, Routes } from "solid-app-router";
 import { Attraction } from "./attraction";
@@ -29,36 +30,38 @@ import { VoronoiDots } from "./voronoi-dots";
 import { Warpy } from "./warpy";
 
 const Default = () => {
-    return <>
-        <Link href="/attraction">Attraction</Link>
-        <Link href="/boid-beats">Boid Beats</Link>
-        <Link href="/boids">Boids</Link>
-        <Link href="/character-rain">Character Rain</Link>
-        <Link href="/character-type">Character Type</Link>
-        <Link href="/cobwebify">Cobwebify</Link>
-        <Link href="/color-blind">Color Blind</Link>
-        <Link href="/diacritic-sound">Diacritic Sound</Link>
-        <Link href="/fireworks">Fireworks</Link>
-        <Link href="/flocking-dots">Flocking Dots</Link>
-        <Link href="/foosball">Foosball</Link>
-        <Link href="/hex-life">Hex Life</Link>
-        <Link href="/light-beamer">Light Beamer</Link>
-        <Link href="/lights-motion">Lights Motion</Link>
-        <Link href="/monster-sound">Monster Sound</Link>
-        <Link href="/name-rain">Name Rain</Link>
-        <Link href="/neon-airhockey">Neon Airhockey</Link>
-        <Link href="/pen-flame">Pen Flame</Link>
-        <Link href="/pixel-rush">Pixel Rush</Link>
-        <Link href="/plasma-ball">Plasma Ball</Link>
-        <Link href="/prismatic">Prismatic</Link>
-        <Link href="/sph-water">SPH Water</Link>
-        <Link href="/traffic-dots">Traffic Dots</Link>
-        <Link href="/valentines-day">Valentines Day</Link>
-        <Link href="/voronoi-diagram">Voronoi Diagram</Link>
-        <Link href="/voronoi-dots">Voronoi Dots</Link>
-        <Link href="/warpy">Warpy</Link>
+  return (
+    <>
+      <Link href="/attraction">Attraction</Link>
+      <Link href="/boid-beats">Boid Beats</Link>
+      <Link href="/boids">Boids</Link>
+      <Link href="/character-rain">Character Rain</Link>
+      <Link href="/character-type">Character Type</Link>
+      <Link href="/cobwebify">Cobwebify</Link>
+      <Link href="/color-blind">Color Blind</Link>
+      <Link href="/diacritic-sound">Diacritic Sound</Link>
+      <Link href="/fireworks">Fireworks</Link>
+      <Link href="/flocking-dots">Flocking Dots</Link>
+      <Link href="/foosball">Foosball</Link>
+      <Link href="/hex-life">Hex Life</Link>
+      <Link href="/light-beamer">Light Beamer</Link>
+      <Link href="/lights-motion">Lights Motion</Link>
+      <Link href="/monster-sound">Monster Sound</Link>
+      <Link href="/name-rain">Name Rain</Link>
+      <Link href="/neon-airhockey">Neon Airhockey</Link>
+      <Link href="/pen-flame">Pen Flame</Link>
+      <Link href="/pixel-rush">Pixel Rush</Link>
+      <Link href="/plasma-ball">Plasma Ball</Link>
+      <Link href="/prismatic">Prismatic</Link>
+      <Link href="/sph-water">SPH Water</Link>
+      <Link href="/traffic-dots">Traffic Dots</Link>
+      <Link href="/valentines-day">Valentines Day</Link>
+      <Link href="/voronoi-diagram">Voronoi Diagram</Link>
+      <Link href="/voronoi-dots">Voronoi Dots</Link>
+      <Link href="/warpy">Warpy</Link>
     </>
-}
+  );
+};
 const App = () => {
   return (
     <Routes>

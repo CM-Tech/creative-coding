@@ -22,7 +22,6 @@ export const CharacterRain = () => {
     let timer = 0;
     let speed = 3;
 
-
     document.getElementById("textbox")!.innerHTML = "❆✵⛄";
     //characters characters - taken from the unicode charset
     let characters = "0123456789-+-+==XX-+-+==XX".split("");
@@ -96,18 +95,8 @@ export const CharacterRain = () => {
   return (
     <>
       <span class="option-bar">
-        <div
-          id="textbox"
-          data-ph="Rain Content"
-          onkeypress={Check}
-          contenteditable={true}
-        ></div>
-        <div
-          data-ph="color e.g. #00ff00"
-          id="colo"
-          onkeypress={Check}
-          contenteditable={true}
-        ></div>
+        <div id="textbox" data-ph="Rain Content" onkeypress={Check} contenteditable={true}></div>
+        <div data-ph="color e.g. #00ff00" id="colo" onkeypress={Check} contenteditable={true}></div>
       </span>
       <canvas id="c" ref={c!}></canvas>
     </>

@@ -81,11 +81,7 @@ export const Boids = () => {
         c.height = h;
 
         avoids = [];
-        for (
-          let i = 0;
-          i < (window.innerWidth * window.innerHeight) / 11000;
-          i++
-        ) {
+        for (let i = 0; i < (window.innerWidth * window.innerHeight) / 11000; i++) {
           avoids.push(new Avoid(Math.random() * w, Math.random() * h));
         }
       },
@@ -104,10 +100,7 @@ export const Boids = () => {
       (e) => {
         if (e.keyCode == 32) {
           boids = boids.map((bo) => {
-            bo.hue = new Vec(
-              Math.random() * Math.PI * 2 - Math.PI,
-              Math.random() * Math.PI * 2 - Math.PI
-            ).normalize();
+            bo.hue = new Vec(Math.random() * Math.PI * 2 - Math.PI, Math.random() * Math.PI * 2 - Math.PI).normalize();
             return bo;
           });
         }
@@ -121,8 +114,7 @@ export const Boids = () => {
       <div id="center">
         BOIDS
         <p id="desc">
-          Click to add a new boid. <br /> Boids avoid red circles. Press space
-          to reset colors <br /> Built by:{" "}
+          Click to add a new boid. <br /> Boids avoid red circles. Press space to reset colors <br /> Built by:{" "}
           <a href="https://github.com/cm-tech/">modderme123 and coler706</a>
           <br />
           Based off: <a href="https://github.com/jackaperkins/boids">boids</a>.
