@@ -18,6 +18,7 @@ import { MonsterSound } from "./monster-sound";
 import { NameRain } from "./name-rain";
 import { NeonAirhockey } from "./neon-airhockey";
 import { PenFlame } from "./pen-flame";
+import { PixelRush } from "./pixel-rush";
 import { PlasmaBall } from "./plasma-ball";
 import { TrafficDots } from "./traffic-dots";
 import { Prismatic } from "./prismatic";
@@ -47,6 +48,7 @@ const Default = () => {
         <Link href="/name-rain">Name Rain</Link>
         <Link href="/neon-airhockey">Neon Airhockey</Link>
         <Link href="/pen-flame">Pen Flame</Link>
+        <Link href="/pixel-rush">Pixel Rush</Link>
         <Link href="/plasma-ball">Plasma Ball</Link>
         <Link href="/prismatic">Prismatic</Link>
         <Link href="/sph-water">SPH Water</Link>
@@ -78,6 +80,7 @@ const App = () => {
       <Route path="/name-rain" element={NameRain} />
       <Route path="/neon-airhockey" element={NeonAirhockey} />
       <Route path="/pen-flame" element={PenFlame} />
+      <Route path="/pixel-rush" element={PixelRush} />
       <Route path="/plasma-ball" element={PlasmaBall} />
       <Route path="/prismatic" element={Prismatic} />
       <Route path="/sph-water" element={SPHWater} />
