@@ -1,0 +1,40 @@
+body {
+  background: rgb(0, 0, 0);
+  overflow: hidden;
+}
+
+body,
+html {
+  margin: 0px;
+  padding: 0px;
+}
+
+circle {
+  stroke: white;
+  stroke-opacity: 0.25;
+  stroke-width: 2px;
+}
+#audio {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 1s;
+}
+#audio:hover {
+  opacity: 0.8;
+}
+#audio.paused {
+  opacity: 0.8;
+}
+#overlay {
+  color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+a {
+  color: white;
+  font-family: Arial;
+}

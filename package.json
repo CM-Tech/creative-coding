@@ -1,0 +1,38 @@
+{
+  "name": "creative-coding",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CM-Tech/creative-coding.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chroma-js": "^2.1.3",
+    "@types/d3": "^7.1.0",
+    "@types/dat.gui": "^0.7.7",
+    "@types/hammerjs": "^2.0.41",
+    "prettier": "^2.5.1",
+    "typescript": "^4.5.5",
+    "vite": "^2.8.4",
+    "vite-plugin-solid": "^2.2.5"
+  },
+  "dependencies": {
+    "@tweenjs/tween.js": "^18.6.4",
+    "chroma-js": "^2.4.2",
+    "d3": "^7.3.0",
+    "dat.gui": "^0.7.9",
+    "hammerjs": "^2.0.8",
+    "pixi.js": "^6.2.2",
+    "regl": "^2.1.0",
+    "solid-app-router": "^0.3.0",
+    "solid-js": "^1.3.8",
+    "stats-js": "^1.0.1"
+  }
+}

@@ -1,0 +1,45 @@
+html,
+body,
+canvas {
+  display: block;
+  padding: 0;
+  margin: 0;
+}
+canvas {
+  position: fixed;
+  background: url(http://blog.spoongraphics.co.uk/wp-content/uploads/2012/textures/19.jpg);
+}
+#center {
+  margin: 0;
+  padding: 0;
+  display: block;
+  position: absolute;
+  height: 20vh;
+  width: 50vh;
+  top: calc(50% - 0.5px);
+  left: calc(50% - 0.5px);
+  transform: translate(-50%, -50%);
+  line-height: 10vh;
+  color: black;
+  font-family: Arial;
+  font-size: 4vh;
+  text-align: center;
+  background: hsla(207, 90%, 54%, 0.9);
+}
+#center {
+  border: 1px solid #f0615b;
+  background: #efefef;
+}
+#desc {
+  color: black;
+  margin: 0;
+  padding: 0;
+  font-size: 2vh;
+  line-height: 3vh;
+  margin-top: -3vh;
+}
+a {
+  color: #5892d8;
+  font-weight: bold;
+  text-decoration: none;
+}

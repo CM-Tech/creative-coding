@@ -1,0 +1,21 @@
+html, body, canvas {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background:rgb(56,35,37);
+}
+p {
+    position:absolute;
+    top:calc( 50% - 7px);
+    left:calc( 50% - 7px);
+    pointer-events: none;
+    margin: 2px 0 0 0;
+    font-family: monospace;
+    color: #fff;
+    
+}
+.fa {
+    font-size: 24px;
+    color: #fff;
+}
