@@ -1,6 +1,4 @@
 import { onMount } from "solid-js";
-import classes from "./App.module.css";
-import "./index.css";
 
 const dpr = () => window.devicePixelRatio ?? 1;
 
@@ -21,8 +19,6 @@ type FireworkParticle = {
 };
 
 export const Fireworks = () => {
-  let containerRef: HTMLDivElement;
-
   let nodesRef: FireworkParticle[] = [];
 
   let canvasNode: HTMLCanvasElement;
@@ -160,11 +156,5 @@ export const Fireworks = () => {
     };
   });
 
-  return (
-    <div className={classes.App}>
-      <div className={classes.canvasContainer} ref={containerRef!}>
-        <canvas ref={canvasNode!} className={classes.canvas} />
-      </div>
-    </div>
-  );
+  return <canvas ref={canvasNode!} />;
 };

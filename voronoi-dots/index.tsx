@@ -1,6 +1,5 @@
 import * as d3 from "d3";
 import { onMount } from "solid-js";
-import "./style.css";
 
 export const VoronoiDots = () => {
   let width = window.innerWidth,

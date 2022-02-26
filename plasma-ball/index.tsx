@@ -1,4 +1,3 @@
-import "./style.css";
 import { onMount } from "solid-js";
 
 function main(canvas: HTMLCanvasElement) {

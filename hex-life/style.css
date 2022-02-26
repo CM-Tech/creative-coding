@@ -1,7 +1,0 @@
-div.well {
-  position: absolute;
-  padding: 5px;
-  margin-bottom: 0;
-  width: calc(100%);
-  background: rgba(255, 255, 255, 0.5);
-}

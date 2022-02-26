@@ -1,27 +1,12 @@
 .option-bar {
-  width: calc(100% - 3px);
-  background: #333;
-  display: block;
-  position: absolute;
   color: #f77;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  left: 1.5px;
 }
 #text {
-  width: calc(100% - 1px);
-  padding: 0;
   color: #f77;
-  line-height: 20px;
-  margin: 0;
-  border: none;
-  background-color: rgba(0, 0, 0, 0);
 }
 #text:focus {
   outline: #f77 auto 5px;
-  border: none;
 }
 [contentEditable="true"]:empty:before {
-  content: attr(data-ph);
   color: #f99;
 }

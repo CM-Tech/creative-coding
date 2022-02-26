@@ -24,6 +24,7 @@ import { PlasmaBall } from "./plasma-ball";
 import { TrafficDots } from "./traffic-dots";
 import { Prismatic } from "./prismatic";
 import { PulsingSquare } from "./pulsing-square";
+import { RainbowGoo } from "./rainbow-goo";
 import { SPHWater } from "./sph-water";
 import { ValentinesDay } from "./valentines-day";
 import { VoronoiDiagram } from "./voronoi-diagram";
@@ -32,7 +33,7 @@ import { Warpy } from "./warpy";
 
 const Default = () => {
   return (
-    <>
+    <div style={{ display: "flex", "flex-direction": "column" }}>
       <Link href="/attraction">Attraction</Link>
       <Link href="/boid-beats">Boid Beats</Link>
       <Link href="/boids">Boids</Link>
@@ -55,13 +56,14 @@ const Default = () => {
       <Link href="/plasma-ball">Plasma Ball</Link>
       <Link href="/prismatic">Prismatic</Link>
       <Link href="/pulsing-square">Pulsing Square</Link>
+      <Link href="/rainbow-goo">Rainbow Goo</Link>
       <Link href="/sph-water">SPH Water</Link>
       <Link href="/traffic-dots">Traffic Dots</Link>
       <Link href="/valentines-day">Valentines Day</Link>
       <Link href="/voronoi-diagram">Voronoi Diagram</Link>
       <Link href="/voronoi-dots">Voronoi Dots</Link>
       <Link href="/warpy">Warpy</Link>
-    </>
+    </div>
   );
 };
 const App = () => {
@@ -89,6 +91,7 @@ const App = () => {
       <Route path="/plasma-ball" element={PlasmaBall} />
       <Route path="/prismatic" element={Prismatic} />
       <Route path="/pulsing-square" element={PulsingSquare} />
+      <Route path="/rainbow-goo" element={RainbowGoo} />
       <Route path="/sph-water" element={SPHWater} />
       <Route path="/traffic-dots" element={TrafficDots} />
       <Route path="/valentines-day" element={ValentinesDay} />

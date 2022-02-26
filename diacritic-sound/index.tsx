@@ -1,4 +1,3 @@
-import "./style.css";
 import { onMount } from "solid-js";
 
 const main = (chars: HTMLDivElement, audio: HTMLAudioElement) => {

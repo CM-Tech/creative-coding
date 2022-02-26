@@ -1,5 +1,4 @@
 import { onMount } from "solid-js";
-import "./styles.css";
 
 const main = (canvas: HTMLCanvasElement) => {
   let ctx = canvas.getContext("2d")!;
@@ -196,5 +195,5 @@ export const LightsMotion = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas id="canvas" ref={c!}></canvas>;
+  return <canvas ref={c!} style={{ cursor: "none" }}></canvas>;
 };

@@ -1,5 +1,4 @@
 import { onMount } from "solid-js";
-import "./index.css";
 
 let w = window.innerWidth;
 let h = window.innerHeight;

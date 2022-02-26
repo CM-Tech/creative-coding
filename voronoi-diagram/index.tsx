@@ -1,6 +1,5 @@
 import { Delaunay } from "d3";
 import { onMount } from "solid-js";
-import "./styles.css";
 
 const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => {
   let hsize = 5;

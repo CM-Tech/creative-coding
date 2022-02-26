@@ -1,4 +1,3 @@
-import "./index.css";
 import * as d3 from "d3";
 import { createSignal, onMount } from "solid-js";
 
@@ -6,7 +5,6 @@ const dpr = () => window.devicePixelRatio ?? 1;
 
 export const TrafficDots = () => {
   const [white, setWhite] = createSignal(true);
-  let containerRef: HTMLDivElement;
   let sliderRef: HTMLInputElement;
 
   let canvasNode: HTMLCanvasElement;
@@ -167,7 +165,7 @@ export const TrafficDots = () => {
   });
 
   return (
-    <div className="App">
+    <>
       <div
         style={{
           "background-color": white() === false ? "#4d4d4d" : "#fafafa",
@@ -211,9 +209,7 @@ export const TrafficDots = () => {
           )}
         </button>
       </div>
-      <div className="canvasContainer" ref={containerRef!}>
-        <canvas ref={canvasNode!} className="canvas" />
-      </div>
-    </div>
+      <canvas ref={canvasNode!} className="canvas" />
+    </>
   );
 };

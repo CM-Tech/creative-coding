@@ -1,4 +1,3 @@
-import "./index.css";
 import { Boid } from "./Boid";
 import { Vec } from "./Vec";
 import { onMount } from "solid-js";
@@ -110,7 +109,12 @@ export const Boids = () => {
   });
   return (
     <>
-      <canvas ref={c!}></canvas>
+      <canvas
+        ref={c!}
+        style={{
+          background: "url(http://blog.spoongraphics.co.uk/wp-content/uploads/2012/textures/19.jpg)",
+        }}
+      ></canvas>
       <div id="center">
         BOIDS
         <p id="desc">

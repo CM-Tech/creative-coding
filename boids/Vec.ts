@@ -28,7 +28,7 @@ export class Vec {
     return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
   }
   normalize() {
-    var len = this.lengt();
+    let len = this.lengt();
     this.x /= len;
     this.y /= len;
     return this;

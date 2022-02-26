@@ -1,7 +1,6 @@
 import { onMount } from "solid-js";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
-import "./style.css";
 
 function main(canvas: HTMLCanvasElement) {
   let anim: number;

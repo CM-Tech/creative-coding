@@ -1,6 +1,5 @@
 import { onMount } from "solid-js";
 import frag from "./frag.glsl?raw";
-import "./index.css";
 
 function main(canvas: HTMLCanvasElement) {
   const vertex = `

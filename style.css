@@ -1,3 +1,5 @@
+@import url(https://fonts.googleapis.com/css?family=Flavors);
+
 body,
 html {
   width: 100%;
@@ -13,4 +15,209 @@ canvas {
   width: 100%;
   height: 100%;
   position: absolute;
+}
+
+#audio {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 1s;
+}
+#audio:hover {
+  opacity: 0.8;
+}
+#audio.paused {
+  opacity: 0.8;
+}
+.well {
+  position: absolute;
+  padding: 5px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.5);
+}
+.option-bar {
+  width: calc(100% - 3px);
+  background: #333;
+  display: block;
+  position: absolute;
+  color: white;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  left: 1.5px;
+}
+#text {
+  width: calc(100% - 1px);
+  padding: 0;
+  color: white;
+  line-height: 20px;
+  margin: 0;
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+}
+#text:focus {
+  outline: white auto 5px;
+  border: none;
+}
+.pick-song {
+  font-family: "Electrolize", sans-serif;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  color: #fff;
+}
+.pick-song a {
+  color: #fff;
+  text-decoration: none;
+}
+#center {
+  margin: 0;
+  padding: 0;
+  display: block;
+  position: absolute;
+  height: 20vh;
+  width: 50vh;
+  top: calc(50% - 0.5px);
+  left: calc(50% - 0.5px);
+  transform: translate(-50%, -50%);
+  line-height: 10vh;
+  color: black;
+  font-family: Arial;
+  font-size: 4vh;
+  text-align: center;
+  border: 1px solid #f0615b;
+  background: #efefef;
+}
+#desc {
+  color: black;
+  margin: 0;
+  padding: 0;
+  font-size: 2vh;
+  line-height: 3vh;
+  margin-top: -3vh;
+}
+#desc a {
+  color: #5892d8;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+#textbox {
+  padding-top: 0;
+  display: block;
+  position: absolute;
+  width: calc(50% - 3px);
+  left: 0;
+  top: 5px;
+  bottom: 5px;
+  padding: 0;
+  color: #0f0;
+  border: 1px solid #0f0;
+  line-height: 20px;
+}
+#colo {
+  padding-top: 0;
+  display: block;
+  position: absolute;
+  width: calc(50%);
+  right: 0;
+  top: 5px;
+  bottom: 5px;
+  padding: 0;
+  color: #0f0;
+  border: 1px solid #0f0;
+  line-height: 20px;
+}
+[contentEditable="true"]:empty:before {
+  content: attr(data-ph);
+  color: #080;
+}
+#graph-container {
+  background: #dddddb;
+  height: 100vh;
+  max-width: 100vw;
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+#disc {
+  position: absolute;
+  background-color: #5892d8;
+  border-radius: 100%;
+}
+
+#ground {
+  position: absolute;
+  background: #2f3436;
+  top: 100%;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.instruct {
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  position: absolute;
+  top: calc(50% - 200px);
+  left: 0%;
+  right: 0%;
+  color: rgba(132, 79, 0, 1);
+  text-align: center;
+}
+.instruct h1 {
+  text-align: center;
+  width: 100%;
+  font-family: "Flavors", "Cursive";
+}
+progress[value] {
+  /* Reset the default appearance */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  position: absolute;
+  appearance: none;
+  width: calc(100%);
+  height: 20px;
+  background-color: #f00;
+}
+progress[value]::-webkit-progress-bar {
+  background-color: #f00;
+}
+progress[value]::-webkit-progress-value {
+  background-color: #0f0;
+}
+.loading {
+  position: absolute;
+  top: calc(50% - 7px);
+  left: calc(50% - 7px);
+  margin: 2px 0 0 0;
+  font-family: monospace;
+  color: #fff;
+}
+.fa {
+  font-size: 24px;
+  color: #fff;
+}
+body,
+#chars {
+  transition: background 0.5s ease-in-out, color 0.1s ease-in-out;
+  -moz-transition: background 0.5s ease-in-out, color 0.1s ease-in-out;
+  -webkit-transition: background 0.5s ease-in-out, color 0.1s ease-in-out;
+}
+
+#chars {
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  line-height: 100vh;
+  font-size: 3vh;
+  transform: translate(-50%, 0);
+  padding-top: calc(50% - 120vh);
+  bottom: 0;
 }

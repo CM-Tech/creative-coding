@@ -1,4 +1,3 @@
-import "./style.css";
 import { onMount } from "solid-js";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
@@ -165,8 +164,8 @@ export const MonsterSound = () => {
   });
   return (
     <>
-      <canvas id="shader" ref={c!}></canvas>
-      <p>Loading...</p>
+      <canvas style={{ background: "rgb(56, 35, 37)" }} ref={c!}></canvas>
+      <p class="loading">Loading...</p>
     </>
   );
 };

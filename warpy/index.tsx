@@ -1,6 +1,5 @@
 import Hammer from "hammerjs";
 import { onMount } from "solid-js";
-import "./style.css";
 
 export const Warpy = () => {
   let c: HTMLCanvasElement;

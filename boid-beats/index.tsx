@@ -1,5 +1,3 @@
-import "./style.css";
-
 import * as dat from "dat.gui";
 import * as d3 from "d3";
 import { QuadtreeInternalNode, QuadtreeLeaf } from "d3";

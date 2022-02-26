@@ -1,11 +1,11 @@
 import { Avoid, w, h } from ".";
 import { Vec } from "./Vec";
 
-var maxSpeed = 2;
-var friendRadius = 20;
-var crowdRadius = 10;
-var avoidRadius = 30;
-var coheseRadius = friendRadius;
+let maxSpeed = 2;
+let friendRadius = 20;
+let crowdRadius = 10;
+let avoidRadius = 30;
+let coheseRadius = friendRadius;
 
 export class Boid {
   pos: Vec;
@@ -45,11 +45,11 @@ export class Boid {
   }
 
   flock(avoids: Avoid[]) {
-    var allign = this.getAverageDir();
-    var avoidDir = this.getAvoidDir();
-    var avoidObjects = this.getAvoidAvoids(avoids);
-    var noise = new Vec(Math.random() * 2 - 1, Math.random() * 2 - 1);
-    var cohese = this.getCohesion();
+    let allign = this.getAverageDir();
+    let avoidDir = this.getAvoidDir();
+    let avoidObjects = this.getAvoidAvoids(avoids);
+    let noise = new Vec(Math.random() * 2 - 1, Math.random() * 2 - 1);
+    let cohese = this.getCohesion();
 
     avoidObjects.mult(10);
     noise.mult(0.5);
@@ -66,8 +66,8 @@ export class Boid {
   }
 
   getAverageColor() {
-    var randomAngle = Math.random() * Math.PI * 2;
-    var total = new Vec(Math.cos(randomAngle), Math.sin(randomAngle)).mult(50.0);
+    let randomAngle = Math.random() * Math.PI * 2;
+    let total = new Vec(Math.cos(randomAngle), Math.sin(randomAngle)).mult(50.0);
     this.neighbors.map((other) => {
       total.add(other.hue);
     });
@@ -76,14 +76,14 @@ export class Boid {
   }
 
   getAverageDir() {
-    var sum = new Vec(0, 0);
-    var count = 0;
-    var myPos = this.pos;
+    let sum = new Vec(0, 0);
+    let count = 0;
+    let myPos = this.pos;
     this.neighbors.map((other) => {
-      var d = myPos.dist(other.pos);
+      let d = myPos.dist(other.pos);
 
       if (d < friendRadius) {
-        var copy = other.vel.copy();
+        let copy = other.vel.copy();
         copy.normalize();
         copy.div(d);
         sum.add(copy);
@@ -94,13 +94,13 @@ export class Boid {
   }
 
   getAvoidDir() {
-    var steer = new Vec(0, 0);
-    var count = 0;
-    var myPos = this.pos;
+    let steer = new Vec(0, 0);
+    let count = 0;
+    let myPos = this.pos;
     this.neighbors.map((other) => {
-      var d = myPos.dist(other.pos);
+      let d = myPos.dist(other.pos);
       if (d < crowdRadius) {
-        var diff = myPos.copy().sub(other.pos);
+        let diff = myPos.copy().sub(other.pos);
         diff.normalize();
         diff.div(d); // Weight by distance
         steer.add(diff);
@@ -112,20 +112,20 @@ export class Boid {
   }
 
   getAvoidAvoids(avoids: Avoid[]) {
-    var steer = new Vec(0, 0);
-    var myPos = this.pos;
+    let steer = new Vec(0, 0);
+    let myPos = this.pos;
     avoids.map((other) => {
-      var d = myPos.dist(other.pos);
+      let d = myPos.dist(other.pos);
       if (d < avoidRadius) {
-        var diff = myPos.copy().sub(other.pos);
+        let diff = myPos.copy().sub(other.pos);
         diff.normalize();
         diff.div(d); // Weight by distance
         steer.add(diff);
       }
     });
-    var cardWidth = document.getElementById("center")!.clientWidth;
-    var cardHeight = document.getElementById("center")!.clientHeight;
-    //console.log(cardWidth,cardHeight,w,h,document.getElementById("center"));
+    let cardWidth = document.getElementById("center")!.clientWidth;
+    let cardHeight = document.getElementById("center")!.clientHeight;
+
     /*avoid description*/
     if (Math.abs(this.pos.y - h / 2) - cardHeight / 2 < avoidRadius - 8) {
       if (Math.abs(this.pos.x - w / 2) - cardWidth / 2 < 0) {
@@ -142,11 +142,11 @@ export class Boid {
   }
 
   getCohesion() {
-    var sum = new Vec(0, 0);
-    var count = 0;
-    var myPos = this.pos;
+    let sum = new Vec(0, 0);
+    let count = 0;
+    let myPos = this.pos;
     this.neighbors.map((other) => {
-      var d = myPos.dist(other.pos);
+      let d = myPos.dist(other.pos);
       if (d < coheseRadius) {
         sum.add(other.pos); // Add location
         count++;
@@ -155,7 +155,7 @@ export class Boid {
     if (count > 0) {
       sum.div(count);
 
-      var desired = sum.sub(myPos);
+      let desired = sum.sub(myPos);
       return desired.setMag(0.05);
     } else {
       return new Vec(0, 0);
@@ -168,7 +168,7 @@ export class Boid {
   }
 
   getNeighbors(boids: Boid[]) {
-    var me = this;
+    let me = this;
     this.neighbors = boids.filter((bo) => {
       if (bo == me) return false;
       return bo.pos.distSquare(me.pos) < Math.pow(friendRadius, 2);
@@ -177,13 +177,13 @@ export class Boid {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = "black";
-    for (var ii = 1; ii < this.pointHistory.length; ii++) {
+    for (let ii = 1; ii < this.pointHistory.length; ii++) {
       ctx.beginPath();
       ctx.arc(this.pointHistory[ii].x, this.pointHistory[ii].y, 3, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    for (var ii = 1; ii < this.pointHistory.length; ii++) {
+    for (let ii = 1; ii < this.pointHistory.length; ii++) {
       ctx.fillStyle = "hsl(" + this.hueHistory[ii] + ", 100%, 50%)";
       ctx.beginPath();
       ctx.arc(this.pointHistory[ii].x, this.pointHistory[ii].y, 2, 0, Math.PI * 2);

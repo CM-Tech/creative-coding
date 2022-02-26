@@ -135,7 +135,7 @@ function main(c: HTMLCanvasElement) {
     s = setInterval(() => {
       background();
       for (let i in pa) {
-        p = pa[i];
+        let p = pa[i];
         p.i();
         p.heart();
       }
