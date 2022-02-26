@@ -23,6 +23,7 @@ import { PixelRush } from "./pixel-rush";
 import { PlasmaBall } from "./plasma-ball";
 import { TrafficDots } from "./traffic-dots";
 import { Prismatic } from "./prismatic";
+import { PulsingSquare } from "./pulsing-square";
 import { SPHWater } from "./sph-water";
 import { ValentinesDay } from "./valentines-day";
 import { VoronoiDiagram } from "./voronoi-diagram";
@@ -53,6 +54,7 @@ const Default = () => {
       <Link href="/pixel-rush">Pixel Rush</Link>
       <Link href="/plasma-ball">Plasma Ball</Link>
       <Link href="/prismatic">Prismatic</Link>
+      <Link href="/pulsing-square">Pulsing Square</Link>
       <Link href="/sph-water">SPH Water</Link>
       <Link href="/traffic-dots">Traffic Dots</Link>
       <Link href="/valentines-day">Valentines Day</Link>
@@ -86,6 +88,7 @@ const App = () => {
       <Route path="/pixel-rush" element={PixelRush} />
       <Route path="/plasma-ball" element={PlasmaBall} />
       <Route path="/prismatic" element={Prismatic} />
+      <Route path="/pulsing-square" element={PulsingSquare} />
       <Route path="/sph-water" element={SPHWater} />
       <Route path="/traffic-dots" element={TrafficDots} />
       <Route path="/valentines-day" element={ValentinesDay} />
