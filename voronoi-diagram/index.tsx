@@ -1,5 +1,6 @@
 import { Delaunay } from "d3";
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => {
   let hsize = 5;
@@ -104,7 +105,6 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
     //   c.height = size.y;
     speed = 1;
     pa = [];
-    clearInterval(s);
 
     background();
 
@@ -186,24 +186,24 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
         pa.push(p);
       }
     }
-    s = setInterval(() => {
-      background();
-      const points = [];
-
-      for (let i in pa) {
-        let p = pa[i];
-        p.tick();
-        // p.heart();
-        points.push([p.x, p.y]);
-      }
-      const delaunay = Delaunay.from(points);
-      const voronoi = delaunay.voronoi([0, 0, size.x, size.y]);
-      ctx.beginPath();
-      ctx.strokeStyle = "white";
-      voronoi.render(ctx);
-      ctx.stroke();
-    }, speed);
   }
+  createAnimationFrame(() => {
+    background();
+    const points = [];
+
+    for (let i in pa) {
+      let p = pa[i];
+      p.tick();
+      // p.heart();
+      points.push([p.x, p.y]);
+    }
+    const delaunay = Delaunay.from(points);
+    const voronoi = delaunay.voronoi([0, 0, size.x, size.y]);
+    ctx.beginPath();
+    ctx.strokeStyle = "white";
+    voronoi.render(ctx);
+    ctx.stroke();
+  });
   window.onresize = () => {
     setText(textField.value);
   };

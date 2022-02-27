@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
 
@@ -86,7 +87,6 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
       }
     });
     render();
-    anim = window.requestAnimationFrame(update.bind(null, analyser));
   }
 
   fetch("/sounds/monsters.mp3")
@@ -104,7 +104,7 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
         analyser.connect(audioContext.destination);
         sourceNode.connect(analyser);
         sourceNode.start(0);
-        update(analyser);
+        createAnimationFrame(update.bind(null, analyser));
 
         render();
 

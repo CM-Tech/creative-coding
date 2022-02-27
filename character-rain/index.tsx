@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 export const CharacterRain = () => {
   let c: HTMLCanvasElement;
@@ -80,13 +81,12 @@ export const CharacterRain = () => {
         draw();
         timer = 0;
       }
-      requestAnimationFrame(animloop);
     }
 
     for (let i = 0; i < 100; i++) {
       draw();
     }
-    animloop();
+    createAnimationFrame(animloop);
   });
   return (
     <>

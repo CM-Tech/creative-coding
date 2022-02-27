@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 function main(c: HTMLCanvasElement) {
   let ctx = c.getContext("2d")!;
   let arr = [];
@@ -150,10 +151,9 @@ function main(c: HTMLCanvasElement) {
     }
     draw();
     last = now;
-    requestAnimationFrame(frame);
   }
 
-  frame(); // start the first frame
+  createAnimationFrame(frame); // start the first frame
 }
 
 export const PenFlame = () => {

@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
 
@@ -63,9 +64,8 @@ const draw = (canvas: HTMLCanvasElement, slider: HTMLInputElement) => {
     gl.uniform1i(backbuffer, 0);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
     [t1, t2] = [t2, t1];
-    window.requestAnimationFrame(render);
   }
-  window.requestAnimationFrame(render);
+  createAnimationFrame(render);
 
   window.onmousemove = (e) => {
     mouse.x = e.clientX / window.innerWidth;

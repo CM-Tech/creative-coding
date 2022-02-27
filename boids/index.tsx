@@ -1,6 +1,7 @@
 import { Boid } from "./Boid";
 import { Vec } from "./Vec";
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 export let w = window.innerWidth;
 export let h = window.innerHeight;
@@ -59,8 +60,6 @@ function tick() {
   avoids.map((av) => {
     av.draw();
   });
-
-  window.requestAnimationFrame(tick);
 }
 
 export const Boids = () => {
@@ -69,7 +68,7 @@ export const Boids = () => {
     c.width = w;
     c.height = h;
     ctx = c.getContext("2d")!;
-    window.requestAnimationFrame(tick);
+    createAnimationFrame(tick);
 
     window.addEventListener(
       "resize",

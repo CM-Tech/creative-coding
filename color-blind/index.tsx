@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 import "./style.css";
 
 const main = (c: HTMLCanvasElement) => {
@@ -289,7 +290,6 @@ const main = (c: HTMLCanvasElement) => {
   }
   let timer = 0;
   function animloop() {
-    requestAnimationFrame(animloop);
     if (lives >= 0) {
       draw();
       if (time === 0) {
@@ -313,7 +313,7 @@ const main = (c: HTMLCanvasElement) => {
     time--;
     timer++;
   }
-  animloop();
+  createAnimationFrame(animloop);
 };
 
 export const ColorBlind = () => {

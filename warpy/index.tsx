@@ -1,5 +1,6 @@
 import Hammer from "hammerjs";
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 export const Warpy = () => {
   let c: HTMLCanvasElement;
@@ -133,9 +134,8 @@ export const Warpy = () => {
         );
       }
       if (running) time++;
-      window.requestAnimationFrame(tick);
     }
-    tick();
+    createAnimationFrame(tick);
 
     document.addEventListener("keydown", (e) => {
       if (running) {

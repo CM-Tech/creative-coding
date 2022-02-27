@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 const main = (chars: HTMLDivElement, audio: HTMLAudioElement) => {
   let dt = ["̄", "̅͡"];
@@ -51,10 +52,9 @@ const main = (chars: HTMLDivElement, audio: HTMLAudioElement) => {
       chars.style.color = "black";
     }
     chars.innerText = ac;
-    anim = window.requestAnimationFrame(update.bind(null, analyser));
   }
 
-  update();
+  createAnimationFrame(update);
 };
 
 export const DiacriticSound = () => {

@@ -1,6 +1,7 @@
 import * as dat from "dat.gui";
 import chroma from "chroma-js";
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 type MouseData = {
   x: number;
   y: number;
@@ -92,7 +93,11 @@ function main(canvas: HTMLCanvasElement) {
     ctx.font = "30px Arial";
   }
 
-  function draw() {
+  createAnimationFrame(() => {
+    frame();
+    tick();
+    calc();
+
     ctx.resetTransform();
 
     ctx.scale(1 / simScale, 1 / simScale);
@@ -162,9 +167,7 @@ function main(canvas: HTMLCanvasElement) {
 
     ctx.filter = "none";
     ctx.globalCompositeOperation = "source-over";
-
-    requestAnimationFrame(draw);
-  }
+  });
 
   function pour() {
     if (count % 1 == 0) {
@@ -396,10 +399,6 @@ function main(canvas: HTMLCanvasElement) {
     },
     false
   );
-  window.setInterval(frame, 1000 / 60);
-  window.setInterval(tick, 1000 / 60);
-  window.setTimeout(calc, 1000 / 60);
-  requestAnimationFrame(draw);
 }
 export const SPHWater = () => {
   let c: HTMLCanvasElement;

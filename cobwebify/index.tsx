@@ -1,6 +1,7 @@
 import webShader from "./shaders/web.frag?raw";
 import reglLib from "regl";
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
   const regl = reglLib();
@@ -167,13 +168,13 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
       b.move(tm);
     }
   }
-  let t = 0;
+  let t = Date.now();
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, s, s);
   let tex_canvas = regl.texture(c);
-  function draw(t2: number) {
-    let delta = Math.min(t2 - t, 100);
-    t = t2;
+  function draw() {
+    let delta = Math.min(Date.now() - t, 100);
+    t = Date.now();
     for (let i = 0; i < 3; i++) physics(delta / 1500);
 
     ctx.fillStyle = `#00000040`;
@@ -199,9 +200,8 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
     ctx.strokeStyle = "#eee";
 
     tex_canvas(c);
-    window.requestAnimationFrame(draw);
   }
-  draw(t);
+  createAnimationFrame(draw);
   function offset(el: HTMLElement) {
     let rect = el.getBoundingClientRect(),
       scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,

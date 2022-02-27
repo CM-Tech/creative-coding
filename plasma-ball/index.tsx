@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 function main(canvas: HTMLCanvasElement) {
   let ctx = canvas.getContext("2d")!;
@@ -89,9 +90,8 @@ function main(canvas: HTMLCanvasElement) {
     }
     fcirc(ctx, 250, 250, 45, 30, 55, "white");
     ctx.drawImage(afterLinesCanvas, 0, 0);
-    requestAnimationFrame(tick);
   }
-  tick();
+  createAnimationFrame(tick);
 
   function fcirc(
     canva: CanvasRenderingContext2D,

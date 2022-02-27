@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 import frag from "./frag.glsl?raw";
 
 function main(canvas: HTMLCanvasElement) {
@@ -85,10 +86,9 @@ void main() {
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
     [t1, t2] = [t2, t1];
-
-    window.requestAnimationFrame(render);
   }
-  window.requestAnimationFrame(render);
+  createAnimationFrame(render);
+
   window.onmousemove = (e) => {
     mouse.x = e.clientX / window.innerWidth;
     mouse.y = e.clientY / window.innerHeight;

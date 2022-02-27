@@ -1,11 +1,11 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 const main = (canvas: HTMLCanvasElement) => {
   let ctx = canvas.getContext("2d")!;
   let s = 4;
   let P = 0.25; //0.33333;
   let mouse = { x: 0, y: 0, down: false };
-  let noGo = false;
   let stringLength = 16;
   let stringMinSpeed = 0.25;
   let stringMaxSpeed = 0.75;
@@ -160,26 +160,19 @@ const main = (canvas: HTMLCanvasElement) => {
     for (let i = 0; i < strings.length; i++) {
       drawString(strings[i], thicknesses[i]);
     }
-    if (!noGo) {
-      requestAnimationFrame(render);
-    }
   }
-  window.setInterval(() => {
+  createAnimationFrame(() => {
     for (let i = 0; i < strings.length; i++) {
       let spd = stringMinSpeed + (i / stringsCount) * (stringMaxSpeed - stringMinSpeed);
       moveString(strings[i], spd);
     }
-  }, 5);
-  render();
+    render();
+  });
+
   window.addEventListener("mousemove", (event) => {
     mouse.x = event.clientX * s;
     mouse.y = event.clientY * s;
     lastMove = new Date().getTime();
-  });
-  window.addEventListener("keyup", (event) => {
-    if (event.keyCode == 32) {
-      noGo = !noGo;
-    }
   });
 
   function resizeH() {

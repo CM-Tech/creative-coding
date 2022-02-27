@@ -1,4 +1,5 @@
 import { createSignal, onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 let [radius, setRadius] = createSignal(50);
 let [scale, setScale] = createSignal(1);
@@ -201,11 +202,9 @@ function main(dom: HTMLCanvasElement) {
     for (let i = 0; i < nodes.length; i++) {
       draw_node(nodes[i], ctx);
     }
-
-    requestAnimationFrame(frame);
   }
 
-  frame();
+  createAnimationFrame(frame);
 
   dom.addEventListener("click", (e) => {
     let x = e.clientX - dom.width / 2 - c.x;

@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 let w = window.innerWidth;
 let h = window.innerHeight;
@@ -67,9 +68,10 @@ class Particle {
   }
 }
 
-function tick(delta: number) {
-  requestAnimationFrame(tick);
-
+let lastTime = Date.now();
+function tick() {
+  let delta = Date.now() - lastTime;
+  lastTime = Date.now();
   for (let i = 0; i < n; i++) {
     let part = particles[i];
     part.updateLastPos(delta / 1000);
@@ -190,7 +192,7 @@ export const Attraction = () => {
     c.width = w;
     c.height = h;
     ctx = c.getContext("2d")!;
-    tick(0);
+    createAnimationFrame(tick);
 
     window.addEventListener("mousemove", getCoords);
 

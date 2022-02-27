@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 import { epicWin, loses, wins, pauses } from "./ascii";
 let chinese = "田由甲申甴电甶男甸甹町画甼甽甾甿畀畁畂畃畄畅畆畇畈畉畊畋界畍畎畏畐畑".split("");
 
@@ -263,9 +264,8 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
         timer2 = 0;
       }
     }
-    requestAnimationFrame(animloop);
   }
-  animloop();
+  createAnimationFrame(animloop);
 }
 export const CharacterType = () => {
   let c: HTMLCanvasElement;

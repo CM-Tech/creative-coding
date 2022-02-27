@@ -64,6 +64,7 @@ canvas {
   text-align: center;
   border: 1px solid #f0615b;
   background: #efefef;
+  z-index: 1;
 }
 .desc {
   color: black;

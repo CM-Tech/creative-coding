@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 const main = (c: HTMLCanvasElement) => {
   let w = window.innerWidth;
@@ -310,7 +311,7 @@ const main = (c: HTMLCanvasElement) => {
     }
   });
 
-  tick();
+  createAnimationFrame(tick);
 
   function drawMirror(line: Line) {
     ctx.strokeStyle = "green";
@@ -320,7 +321,6 @@ const main = (c: HTMLCanvasElement) => {
     ctx.stroke();
   }
   function tick() {
-    requestAnimationFrame(tick);
     ctx.fillStyle = "rgba(1,1,1,1)";
 
     ctx.globalCompositeOperation = "source-over";

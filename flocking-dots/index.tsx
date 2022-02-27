@@ -1,6 +1,7 @@
 import * as d3 from "d3";
 import { QuadtreeInternalNode, QuadtreeLeaf } from "d3";
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 const draw = (svge: SVGSVGElement) => {
   let w = window.innerWidth;
@@ -102,9 +103,8 @@ const draw = (svge: SVGSVGElement) => {
       .attr("cy", (d) => {
         return (d as Node).ay;
       });
-    window.requestAnimationFrame(draw);
   }
-  draw();
+  createAnimationFrame(draw);
 
   svg.on("mousemove", (e) => {
     let p1 = d3.pointer(e);

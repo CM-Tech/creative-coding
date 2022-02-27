@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 function main(dom: HTMLCanvasElement) {
   let ctx = dom.getContext("2d")!,
@@ -225,10 +226,8 @@ function main(dom: HTMLCanvasElement) {
     for (let i = 0; i < nodes.length; i++) {
       draw_node(nodes[i], ctx);
     }
-
-    requestAnimationFrame(animate);
   }
-  animate();
+  createAnimationFrame(animate);
 
   setInterval(brownian, 1000);
 }

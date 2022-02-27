@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
   let ctx = c.getContext("2d")!;
@@ -131,15 +132,16 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
         pa.push(p);
       }
     }
-    s = setInterval(() => {
-      background();
-      for (let i in pa) {
-        let p = pa[i];
-        p.i();
-        p.heart();
-      }
-    }, speed);
   }
+
+  createAnimationFrame(() => {
+    background();
+    for (let i in pa) {
+      let p = pa[i];
+      p.i();
+      p.heart();
+    }
+  });
 
   return setText;
 }

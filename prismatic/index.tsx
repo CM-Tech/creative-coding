@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
 function main(canvas: HTMLCanvasElement) {
@@ -82,9 +83,9 @@ function main(canvas: HTMLCanvasElement) {
     t2 = tmp;
 
     time += 1;
-    window.requestAnimationFrame(render);
   }
-  window.requestAnimationFrame(render);
+  createAnimationFrame(render);
+
   window.onmousemove = (e) => {
     mouse.x = e.clientX / window.innerWidth;
     mouse.y = e.clientY / window.innerHeight;

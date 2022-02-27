@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 const dpr = () => window.devicePixelRatio ?? 1;
 
@@ -150,10 +151,7 @@ export const Fireworks = () => {
       }
       nodesRef = newNodes;
     };
-    const handle = window.setInterval(tick, 1000 / 60);
-    return () => {
-      window.clearInterval(handle);
-    };
+    createAnimationFrame(tick);
   });
 
   return <canvas ref={canvasNode!} />;

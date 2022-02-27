@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { createAnimationFrame } from "../utils";
 
 function Check(e: KeyboardEvent) {
   let keyCode = e.keyCode ? e.keyCode : e.which;
@@ -83,15 +84,13 @@ function main(c: HTMLCanvasElement, color: HTMLInputElement, yname: HTMLInputEle
 
   let timer = 0;
   function animloop() {
-    requestAnimationFrame(animloop);
-
     if (timer == 5) {
       draw();
       timer = 0;
     }
     timer++;
   }
-  animloop();
+  createAnimationFrame(animloop);
 }
 
 export const NameRain = () => {
