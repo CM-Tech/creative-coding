@@ -238,5 +238,5 @@ export const PulsingSquare = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!} width={window.innerWidth} height={window.innerHeight}></canvas>;
+  return <canvas ref={c!} width={window.innerWidth} height={window.innerHeight} />;
 };

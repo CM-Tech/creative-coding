@@ -12,7 +12,7 @@ class BoidBeat {
   directions = 6;
   turning = true;
   lineWidth = 1;
-  song = window.location.hash.slice(1) ? "/#" + window.location.hash.slice(1) : "/#300%20Violin%20Orchestra";
+  song = window.location.hash.slice(1) ? "/#" + window.location.hash.slice(1) : "/#300-Violin-Orchestra";
   tThreshold = 0.3;
 }
 
@@ -32,7 +32,7 @@ function songchange(value: string) {
   window.location.hash = value.split("#").pop()!;
 }
 function hashchange() {
-  audio.src = "https://cdn.glitch.com/7c659aa6-fe5f-4610-bdf3-3fd76117d9a5%2F" + window.location.hash.slice(1) + ".mp3";
+  audio.src = "/sounds/" + window.location.hash.slice(1) + ".mp3";
   audio.classList.add("paused");
 }
 
@@ -44,14 +44,14 @@ function gui() {
       "Glorious Morning": "/#Glorious_morning",
       Jumper: "/#Jumper",
       Stride: "/#Stride-",
-      "300 Violin Orchestra": "/#300%20Violin%20Orchestra",
-      "ThunderZone v2": "/#638150_-ThunderZone-v2-",
-      "Portugal The Man - Feel it Still": "/#Portugal.%20The%20Man%20-%20Feel%20It%20Still",
-      "The XX - Intro": "/#00%20Intro",
-      "Hall of the Mountain King": "/#Hall%20of%20the%20Mountain%20King",
-      'Everybody Wants To Rule The World (7" Version)': "/#Everybody%20Wants%20To%20Rule%20The%20World%20(7%20Version)",
+      "300 Violin Orchestra": "/#300-Violin-Orchestra",
+      "ThunderZone v2": "/#ThunderZone-v2",
+      "Portugal The Man - Feel it Still": "/#Feel-it-Still",
+      "The XX - Intro": "/#XX-Intro",
+      "Hall of the Mountain King": "/#Hall-of-the-Mountain-King",
+      'Everybody Wants To Rule The World (7" Version)': "/#Everybody-wants-to-rule-the-world",
       Flight: "/#Flight",
-      "Electroman Adventures V2": "/#Waterflame%20-%20Electroman%20Adventures%20V2",
+      "Electroman Adventures V2": "/#Electroman-Adventures",
       Rasputin: "/#Rasputin",
     })
     .onChange(songchange);
@@ -229,7 +229,7 @@ function main() {
     let ddir = controls.directions;
     let spd = (Math.sqrt(nodes[i].vx * nodes[i].vx + nodes[i].vy * nodes[i].vy) / 3) * spdm * controls.speed * 2.0;
     let hdir = (Math.round((Math.atan2(nodes[i].vy, nodes[i].vx) / Math.PI / 2) * ddir) / ddir) * Math.PI * 2;
-    if ("/#00%20Intro" == controls.song) {
+    if ("/#XX-Intro" == controls.song) {
       ddir = 4;
       spd = (Math.sqrt(nodes[i].vx * nodes[i].vx + nodes[i].vy * nodes[i].vy) / 3) * spdm * controls.speed * 2.0;
       hdir =
@@ -257,7 +257,7 @@ function main() {
 
     spd = Math.sqrt(nodes[i].vx * nodes[i].vx + nodes[i].vy * nodes[i].vy) * spdm * controls.speed;
     hdir = (Math.round((Math.atan2(nodes[i].vy, nodes[i].vx) / Math.PI / 2) * ddir) / ddir) * Math.PI * 2;
-    if ("/#00%20Intro" == controls.song) {
+    if ("/#XX-Intro" == controls.song) {
       ddir = 4;
       spd = (Math.sqrt(nodes[i].vx * nodes[i].vx + nodes[i].vy * nodes[i].vy) / 3) * spdm * controls.speed * 2.0;
       hdir =
@@ -276,7 +276,7 @@ function main() {
   ctx.fillStyle = "rgba(5,5,5,1)";
   ctx.rect(0, 0, w, h);
   ctx.fill();
-  if ("/#00%20Intro" == controls.song) {
+  if ("/#XX-Intro" == controls.song) {
     setFilter("sepia(0.8) hue-rotate(180deg) saturate(2)");
     let v = getRMS(music);
     let sso = Math.min(w, h) / 8;
@@ -465,13 +465,12 @@ export const BoidBeats = () => {
 
   return (
     <>
-      <canvas ref={c!} style={{ filter: filter() }}></canvas>
+      <canvas ref={c!} style={{ filter: filter() }} />
       <audio
         ref={audio!}
-        id="audio"
         crossorigin="anonymous"
-        class="paused"
-        src="https://cdn.glitch.com/7c659aa6-fe5f-4610-bdf3-3fd76117d9a5%2F300%20Violin%20Orchestra.mp3?1551626906037"
+        class="paused audio"
+        src="/sounds/300-Violin-Orchestra.mp3"
         loop
         controls
       ></audio>

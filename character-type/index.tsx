@@ -277,8 +277,8 @@ export const CharacterType = () => {
 
   return (
     <>
-      <progress id="progress" value="20" max="100" ref={progressbar!}></progress>
-      <canvas id="c" width={window.innerWidth} height={window.innerHeight} ref={c!}></canvas>
+      <progress value="20" max="100" ref={progressbar!}></progress>
+      <canvas width={window.innerWidth} height={window.innerHeight} ref={c!} />
     </>
   );
 };

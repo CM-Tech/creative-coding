@@ -253,10 +253,10 @@ export const RainbowGoo = () => {
     main(c);
   });
   return (
-    <div id="graph-container">
-      <canvas ref={c!} width={window.innerWidth} height={window.innerHeight}></canvas>
+    <>
+      <canvas ref={c!} width={window.innerWidth} height={window.innerHeight} />
       <div
-        id="disc"
+        class="disc"
         style={{
           borderRadius: radius() * scale() + "px",
           width: 2 * radius() * scale() + "px",
@@ -267,11 +267,11 @@ export const RainbowGoo = () => {
         }}
       ></div>
       <div
-        id="ground"
+        class="ground"
         style={{
           top: gtop(),
         }}
       ></div>
-    </div>
+    </>
   );
 };

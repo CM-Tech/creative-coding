@@ -118,5 +118,5 @@ export const PlasmaBall = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas id="c" ref={c!} width="500" height="500" />;
+  return <canvas ref={c!} width="500" height="500" />;
 };

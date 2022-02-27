@@ -225,7 +225,7 @@ export const Warpy = () => {
 
   return (
     <>
-      <canvas id="c" ref={c!} width={window.innerWidth} height={window.innerHeight}></canvas>
+      <canvas ref={c!} width={window.innerWidth} height={window.innerHeight} />
     </>
   );
 };

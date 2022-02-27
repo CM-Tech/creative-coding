@@ -114,10 +114,10 @@ export const Boids = () => {
         style={{
           background: "url(http://blog.spoongraphics.co.uk/wp-content/uploads/2012/textures/19.jpg)",
         }}
-      ></canvas>
-      <div id="center">
+      />
+      <div class="center">
         BOIDS
-        <p id="desc">
+        <p class="desc">
           Click to add a new boid. <br /> Boids avoid red circles. Press space to reset colors <br /> Built by:{" "}
           <a href="https://github.com/cm-tech/">modderme123 and coler706</a>
           <br />

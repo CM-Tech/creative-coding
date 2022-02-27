@@ -120,26 +120,16 @@ export const HexLife = () => {
     <>
       <div class="well">
         <button
-          class="btn btn-primary"
           onclick={() => {
             document.body.classList.toggle("white");
             twhite();
           }}
-          style="left: 10px; top: 5px; height: 30; padding: 5px"
         >
           Toggle Theme
         </button>
-        <input
-          type="range"
-          id="slider"
-          max="10"
-          min="1"
-          value="1"
-          style="display: initial; margin: 0; width: 400px"
-          ref={slider!}
-        />
+        <input type="range" max="10" min="1" value="1" style="width: 400px" ref={slider!} />
       </div>
-      <canvas id="shader" ref={c!}></canvas>
+      <canvas ref={c!} />
     </>
   );
 };

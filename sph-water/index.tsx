@@ -406,5 +406,5 @@ export const SPHWater = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas id="canvas" ref={c!}></canvas>;
+  return <canvas ref={c!} />;
 };

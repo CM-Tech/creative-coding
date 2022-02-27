@@ -2,7 +2,7 @@ import { onMount } from "solid-js";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
 
-function main(canvas: HTMLCanvasElement) {
+function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   let anim: number;
   let MIN_RADIUS = 32;
   let JITTER_RANGE =
@@ -89,7 +89,7 @@ function main(canvas: HTMLCanvasElement) {
     anim = window.requestAnimationFrame(update.bind(null, analyser));
   }
 
-  fetch("https://cdn.glitch.com/33316a32-724f-4318-9d21-00250ecbdafb%2Fmonsters.mp3?1524420405532")
+  fetch("/sounds/monsters.mp3")
     .then((x) => x.arrayBuffer())
     .then((res) => {
       let audioContext = new AudioContext();
@@ -110,13 +110,11 @@ function main(canvas: HTMLCanvasElement) {
 
         let playing = true;
 
-        let control = document.querySelector("p")!;
-        control.className = "fa fa-pause";
-        control.textContent = "";
+        btn.textContent = "⏸";
 
         window.onclick = () => {
           sourceNode[`${playing ? "dis" : ""}connect`](analyser);
-          control.className = "fa fa-" + (playing ? "play" : "pause");
+          btn.textContent = playing ? "▶️" : "⏸";
           playing ? window.cancelAnimationFrame(anim) : update(analyser);
           playing = !playing;
         };
@@ -158,14 +156,16 @@ function main(canvas: HTMLCanvasElement) {
 }
 export const MonsterSound = () => {
   let c: HTMLCanvasElement;
-
+  let btn: HTMLParagraphElement;
   onMount(() => {
-    main(c);
+    main(c, btn);
   });
   return (
     <>
-      <canvas style={{ background: "rgb(56, 35, 37)" }} ref={c!}></canvas>
-      <p class="loading">Loading...</p>
+      <canvas style={{ background: "rgb(56, 35, 37)" }} ref={c!} />
+      <p class="btn" ref={btn!}>
+        Loading...
+      </p>
     </>
   );
 };

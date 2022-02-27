@@ -2,7 +2,7 @@ import { onMount } from "solid-js";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
 
-function main(canvas: HTMLCanvasElement) {
+function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   let anim: number;
   let playing = false;
   let musicD: number[] = [];
@@ -58,7 +58,7 @@ function main(canvas: HTMLCanvasElement) {
     anim = window.requestAnimationFrame(update.bind(null, analyser));
   }
 
-  fetch("https://cdn.glitch.com/ef364f9b-9364-4bf2-b3e5-eff45054f075%2F" + songP + ".mp3")
+  fetch("/sounds/" + songP + ".mp3")
     .then((x) => x.arrayBuffer())
     .then((res) => {
       let audioContext = new window.AudioContext();
@@ -79,13 +79,11 @@ function main(canvas: HTMLCanvasElement) {
 
         playing = true;
 
-        let control = document.querySelector("p")!;
-        control.className = "fa fa-pause";
-        control.textContent = "";
+        btn.textContent = "⏸";
 
-        control.onclick = () => {
+        btn.onclick = () => {
           sourceNode[`${playing ? "dis" : ""}connect`](analyser);
-          control.className = "fa fa-" + (playing ? "play" : "pause");
+          btn.textContent = playing ? "▶️" : "⏸";
           playing ? window.cancelAnimationFrame(anim) : update(analyser);
           playing = !playing;
         };
@@ -125,12 +123,13 @@ function main(canvas: HTMLCanvasElement) {
 }
 export const PixelRush = () => {
   let c: HTMLCanvasElement;
+  let btn: HTMLParagraphElement;
   onMount(() => {
-    main(c);
+    main(c, btn);
   });
   return (
     <>
-      <canvas id="shader" ref={c!}></canvas>
+      <canvas ref={c!} />
       <div class="pick-song">
         Song:
         <br />
@@ -140,7 +139,9 @@ export const PixelRush = () => {
         <br />
         <a href="/?FM">Finn McMissile</a>
       </div>
-      <p id="btn">Loading...</p>
+      <p class="btn" ref={btn!}>
+        Loading...
+      </p>
     </>
   );
 };

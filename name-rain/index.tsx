@@ -7,14 +7,14 @@ function Check(e: KeyboardEvent) {
   }
 }
 
-function main(c: HTMLCanvasElement, color: HTMLDivElement, yname: HTMLDivElement) {
+function main(c: HTMLCanvasElement, color: HTMLInputElement, yname: HTMLInputElement) {
   let ctx = c.getContext("2d")!;
 
   //making the canvas full screen
   c.height = window.innerHeight;
   c.width = window.innerWidth;
-  color.innerHTML = "#00ff00";
-  yname.innerHTML = "Bob, Bob JR";
+  color.value = "#00ff00";
+  yname.value = "Bob, Bob JR";
 
   let imagedata = ctx.getImageData(0, 0, c.width, c.height);
 
@@ -45,7 +45,7 @@ function main(c: HTMLCanvasElement, color: HTMLDivElement, yname: HTMLDivElement
     ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
     ctx.fillRect(0, 0, c.width, c.height);
 
-    ctx.fillStyle = color.innerHTML; //green text
+    ctx.fillStyle = color.value; //green text
     ctx.font = "800 " + font_size + "px 'Andale Mono'";
 
     //looping over drops
@@ -72,7 +72,7 @@ function main(c: HTMLCanvasElement, color: HTMLDivElement, yname: HTMLDivElement
       drops[i].loop++;
 
       if (drops[i].loop >= drops[i].name.length) {
-        let ynames = yname.innerHTML;
+        let ynames = yname.value;
         let splitt = ynames.split(", ");
         drops[i].loop = 0;
         drops[i].name = splitt[Math.floor(Math.random() * splitt.length)] + "_ ";
@@ -96,24 +96,18 @@ function main(c: HTMLCanvasElement, color: HTMLDivElement, yname: HTMLDivElement
 
 export const NameRain = () => {
   let c: HTMLCanvasElement;
-  let colo: HTMLDivElement;
-  let yname: HTMLDivElement;
+  let colo: HTMLInputElement;
+  let yname: HTMLInputElement;
   onMount(() => {
     main(c, colo, yname);
   });
   return (
     <>
-      <span class="option-bar">
-        <div
-          id="textbox"
-          data-ph="Names of people in your family e.g. Bob, Greta, Sherman"
-          onkeypress={Check}
-          contenteditable={true}
-          ref={yname!}
-        ></div>
-        <div data-ph="color e.g. #00ff00" id="colo" onkeyup={Check} contenteditable={true} ref={colo!}></div>
-      </span>
-      <canvas id="c" ref={c!}></canvas>
+      <div class="well inputs">
+        <input placeholder="Names of people in your family e.g. Bob, Greta, Sherman" onkeypress={Check} ref={yname!} />
+        <input placeholder="color e.g. #00ff00" onkeyup={Check} ref={colo!} />
+      </div>
+      <canvas ref={c!} />
     </>
   );
 };

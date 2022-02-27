@@ -163,7 +163,7 @@ export const PenFlame = () => {
   });
   return (
     <>
-      <canvas id="c" ref={c!}></canvas>
+      <canvas ref={c!} />
       <div class="instruct">
         <h1>Draw With Fire</h1>
       </div>

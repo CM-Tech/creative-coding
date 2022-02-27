@@ -454,5 +454,5 @@ export const LightBeamer = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!}></canvas>;
+  return <canvas ref={c!} />;
 };

@@ -2,7 +2,8 @@ import { onMount } from "solid-js";
 
 export const CharacterRain = () => {
   let c: HTMLCanvasElement;
-
+  let textbox: HTMLInputElement;
+  let col: HTMLInputElement;
   function Check(e: KeyboardEvent) {
     let keyCode = e.keyCode ? e.keyCode : e.which;
     if (keyCode == 13) {
@@ -16,18 +17,16 @@ export const CharacterRain = () => {
     c.width = window.innerWidth;
 
     let ctx = c.getContext("2d")!;
-    let textbox = document.getElementById("textbox")!;
-    let imagedata = ctx.getImageData(0, 0, c.width, c.height);
 
     let timer = 0;
     let speed = 3;
 
-    document.getElementById("textbox")!.innerHTML = "❆✵⛄";
+    textbox.value = "❆✵⛄";
     //characters characters - taken from the unicode charset
     let characters = "0123456789-+-+==XX-+-+==XX".split("");
     //converting the string into an array of single characters
-    let col = document.getElementById("colo")!;
-    col.innerHTML = "#0f0";
+
+    col.value = "#0f0";
     let columns = (c.width * 100) / c.width; //number of columns for the rain
     //an array of drops - one per column
     let drops: { x: number; size: number; y: number }[] = [];
@@ -44,19 +43,17 @@ export const CharacterRain = () => {
     //drawing the characters
 
     function draw() {
-      ctx.clearRect(0, 0, c.width, c.height);
-      ctx.putImageData(imagedata, 0, 0);
       //Black BG for the canvas
       //translucent BG to show trail
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
       ctx.fillRect(0, 0, c.width, c.height);
-      ctx.fillStyle = /* "'"+*/ col.innerHTML; //"'" //green text
+      ctx.fillStyle = /* "'"+*/ col.value; //"'" //green text
 
       //a random characters character to print
-      if (textbox.innerHTML == "") {
+      if (textbox.value == "") {
         characters = [" "];
       } else {
-        characters = textbox.innerHTML.split("");
+        characters = textbox.value.split("");
       }
       //looping over drops
       for (let i = 0; i < drops.length; i++) {
@@ -75,7 +72,6 @@ export const CharacterRain = () => {
 
         drops[i].y++;
       }
-      imagedata = ctx.getImageData(0, 0, c.width, c.height);
     }
 
     function animloop() {
@@ -94,11 +90,11 @@ export const CharacterRain = () => {
   });
   return (
     <>
-      <span class="option-bar">
-        <div id="textbox" data-ph="Rain Content" onkeypress={Check} contenteditable={true}></div>
-        <div data-ph="color e.g. #00ff00" id="colo" onkeypress={Check} contenteditable={true}></div>
-      </span>
-      <canvas id="c" ref={c!}></canvas>
+      <div class="well inputs">
+        <input ref={textbox!} placeholder="Rain Content" onkeypress={Check} />
+        <input placeholder="color e.g. #00ff00" ref={col!} onkeypress={Check} />
+      </div>
+      <canvas ref={c!} />
     </>
   );
 };

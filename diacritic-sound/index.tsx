@@ -9,31 +9,27 @@ const main = (chars: HTMLDivElement, audio: HTMLAudioElement) => {
   let audioContext = new AudioContext();
   let anim: number;
 
-  window.addEventListener("load", () => {
-    let analyser = audioContext.createAnalyser();
-    let source = audioContext.createMediaElementSource(audio);
+  let analyser = audioContext.createAnalyser();
+  let source = audioContext.createMediaElementSource(audio);
 
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
+  source.connect(analyser);
+  analyser.connect(audioContext.destination);
 
-    analyser.smoothingTimeConstant = 0.6;
-    analyser.fftSize = amount * 2;
-    analyser.minDecibels = -90;
-    analyser.maxDecibels = -10;
+  analyser.smoothingTimeConstant = 0.6;
+  analyser.fftSize = amount * 2;
+  analyser.minDecibels = -90;
+  analyser.maxDecibels = -10;
 
-    let playing = false;
+  let playing = false;
 
-    window.addEventListener("click", () => {
-      audioContext.resume();
-      playing ? audio.pause() : audio.play();
-      playing ? window.cancelAnimationFrame(anim) : update(analyser);
-      playing = !playing;
-    });
-
-    update(analyser);
+  window.addEventListener("click", () => {
+    audioContext.resume();
+    playing ? audio.pause() : audio.play();
+    playing ? window.cancelAnimationFrame(anim) : update();
+    playing = !playing;
   });
 
-  function update(analyser: AnalyserNode) {
+  function update() {
     let freqArray = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(freqArray);
     let ac = "";
@@ -57,6 +53,8 @@ const main = (chars: HTMLDivElement, audio: HTMLAudioElement) => {
     chars.innerText = ac;
     anim = window.requestAnimationFrame(update.bind(null, analyser));
   }
+
+  update();
 };
 
 export const DiacriticSound = () => {
@@ -67,14 +65,8 @@ export const DiacriticSound = () => {
   });
   return (
     <>
-      <audio
-        id="audio"
-        crossOrigin="anonymous"
-        src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1715/the_xx_-_intro.mp3"
-        loop
-        ref={audio!}
-      ></audio>
-      <div id="chars" ref={chars!}>
+      <audio crossOrigin="anonymous" src="/sounds/XX-Intro.mp3" loop ref={audio!}></audio>
+      <div class="chars" ref={chars!}>
         Loading...
       </div>
     </>

@@ -1,9 +1,8 @@
-import "./styles.css";
 import webShader from "./shaders/web.frag?raw";
 import reglLib from "regl";
 import { onMount } from "solid-js";
 
-const main = (c: HTMLCanvasElement, input: HTMLInputElement) => {
+const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
   const regl = reglLib();
   const ctx = c.getContext("2d")!;
   let mousePos = { x: 100, y: 100 };
@@ -281,14 +280,16 @@ const main = (c: HTMLCanvasElement, input: HTMLInputElement) => {
 
 export const Cobwebify = () => {
   let c: HTMLCanvasElement;
-  let tex: HTMLInputElement;
+  let tex: HTMLTextAreaElement;
   onMount(() => {
     main(c, tex);
   });
   return (
     <>
-      <input id="tex" ref={tex!} />
-      <canvas id="c" ref={c!}></canvas>
+      <div class="well">
+        <textarea ref={tex!} />
+      </div>
+      <canvas ref={c!} />
     </>
   );
 };

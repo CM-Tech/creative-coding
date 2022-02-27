@@ -123,8 +123,8 @@ export class Boid {
         steer.add(diff);
       }
     });
-    let cardWidth = document.getElementById("center")!.clientWidth;
-    let cardHeight = document.getElementById("center")!.clientHeight;
+    let cardWidth = document.querySelector(".center")!.clientWidth;
+    let cardHeight = document.querySelector(".center")!.clientHeight;
 
     /*avoid description*/
     if (Math.abs(this.pos.y - h / 2) - cardHeight / 2 < avoidRadius - 8) {

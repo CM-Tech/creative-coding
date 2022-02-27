@@ -140,5 +140,5 @@ export const Prismatic = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!} id="shader"></canvas>;
+  return <canvas ref={c!} />;
 };

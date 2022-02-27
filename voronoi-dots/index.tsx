@@ -88,19 +88,8 @@ export const VoronoiDots = () => {
   return (
     <>
       <div class="well">
-        <button class="btn btn-primary" onclick={twhite} style="left:10px;top:5px;padding:5px">
-          Toggle Theme
-        </button>
-        <input
-          type="range"
-          id="slider"
-          ref={slider!}
-          max="200"
-          min="-200"
-          value="-200"
-          step="10"
-          style="margin:0;width:400px"
-        />
+        <button onclick={twhite}>Toggle Theme</button>
+        <input type="range" ref={slider!} max="200" min="-200" value="-200" step="10" style="width:400px" />
       </div>
       <canvas
         ref={canvas!}
@@ -125,7 +114,7 @@ export const VoronoiDots = () => {
 
           if (charged) charge.strength((_, i) => (i == 0 ? +slider.value : 0));
         }}
-      ></canvas>
+      />
     </>
   );
 };

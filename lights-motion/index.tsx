@@ -195,5 +195,5 @@ export const LightsMotion = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!} style={{ cursor: "none" }}></canvas>;
+  return <canvas ref={c!} style={{ cursor: "none" }} />;
 };

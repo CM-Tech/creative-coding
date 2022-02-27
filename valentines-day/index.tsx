@@ -1,7 +1,6 @@
-import "./style.css";
 import { onMount } from "solid-js";
 
-function main(c: HTMLCanvasElement) {
+function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
   let ctx = c.getContext("2d")!;
   let hsize = 5;
   let n = 1000;
@@ -83,7 +82,7 @@ function main(c: HTMLCanvasElement) {
   let s = 0;
   let pa: f[] = [];
 
-  document.getElementById("text")!.innerHTML = "happy";
+  textField.innerHTML = "happy";
   setText("happy");
 
   function setText(t: string) {
@@ -147,16 +146,17 @@ function main(c: HTMLCanvasElement) {
 
 export const ValentinesDay = () => {
   let c: HTMLCanvasElement;
+  let field: HTMLTextAreaElement;
   let fn: (t: string) => void;
   onMount(() => {
-    fn = main(c);
+    fn = main(c, field);
   });
   return (
     <>
-      <canvas id="c" ref={c!} width={window.innerWidth} height={window.innerHeight}></canvas>
-      <span class="option-bar">
-        <textarea id="text" onkeyup={(e) => fn(e.currentTarget.value)}></textarea>
-      </span>
+      <canvas ref={c!} width={window.innerWidth} height={window.innerHeight} />
+      <div class="well">
+        <textarea ref={field!} onkeyup={(e) => fn(e.currentTarget.value)} />
+      </div>
     </>
   );
 };

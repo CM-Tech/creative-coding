@@ -143,5 +143,5 @@ export const NeonAirhockey = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas id="shader" ref={c!}></canvas>;
+  return <canvas ref={c!} />;
 };

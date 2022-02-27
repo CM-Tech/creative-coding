@@ -321,5 +321,5 @@ export const ColorBlind = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas id="c" ref={c!}></canvas>;
+  return <canvas ref={c!} />;
 };

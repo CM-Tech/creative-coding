@@ -21,7 +21,7 @@ export const TrafficDots = () => {
       .select(canvasNode)
       .attr("width", width * dp)
       .attr("height", height * dp);
-    let context: CanvasRenderingContext2D = canvasNode.getContext("2d") as CanvasRenderingContext2D;
+    let context = canvasNode.getContext("2d")!;
 
     let blur = false;
     console.log("Q", width, height);
@@ -171,6 +171,7 @@ export const TrafficDots = () => {
           "background-color": white() === false ? "#4d4d4d" : "#fafafa",
           color: "black",
         }}
+        class="well"
       >
         <span>Strength</span>
         <input type="range" min={-250} max={250} value={250} ref={sliderRef!} />
@@ -209,7 +210,7 @@ export const TrafficDots = () => {
           )}
         </button>
       </div>
-      <canvas ref={canvasNode!} className="canvas" />
+      <canvas ref={canvasNode!} />
     </>
   );
 };

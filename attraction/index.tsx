@@ -7,13 +7,9 @@ let mouseX = 0;
 let mouseY = 0;
 let particles: Particle[] = [];
 let n = 0;
-let _d = 0;
-let _x1 = 0;
-let _y1 = 0;
 let mass = 5;
 let friction = 0.05;
 let speed = 0.04;
-let i: number;
 
 function getCoords(event: MouseEvent) {
   mouseX = event.clientX;
@@ -38,19 +34,17 @@ class Particle {
     this.ly = this.y;
     for (let j = 0; j < n; j++) {
       let part = particles[j];
-      if (j != i) {
-        _x1 = part.x - this.x;
-        _y1 = part.y - this.y;
-        _d = mass / Math.max(_x1 * _x1 + _y1 * _y1, 25);
-        this.dx += _x1 * _d * delta;
-        this.dy += _y1 * _d * delta;
-      }
+      let _x1 = part.x - this.x;
+      let _y1 = part.y - this.y;
+      let _d = mass / Math.max(_x1 * _x1 + _y1 * _y1, 25);
+      this.dx += _x1 * _d * delta;
+      this.dy += _y1 * _d * delta;
       this.x += this.dx * speed * delta;
       this.y += this.dy * speed * delta;
     }
-    _x1 = mouseX - this.x;
-    _y1 = mouseY - this.y;
-    _d = 100 / Math.max(_x1 * _x1 + _y1 * _y1, 25);
+    let _x1 = mouseX - this.x;
+    let _y1 = mouseY - this.y;
+    let _d = 100 / Math.max(_x1 * _x1 + _y1 * _y1, 25);
     this.dx += _x1 * _d * delta;
     this.dy += _y1 * _d * delta;
 
@@ -76,7 +70,7 @@ class Particle {
 function tick(delta: number) {
   requestAnimationFrame(tick);
 
-  for (i = 0; i < n; i++) {
+  for (let i = 0; i < n; i++) {
     let part = particles[i];
     part.updateLastPos(delta / 1000);
   }
@@ -92,7 +86,7 @@ function tick(delta: number) {
       ctx.globalCompositeOperation = "normal";
     }
 
-    for (i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
       let part = particles[i];
 
       ctx.strokeStyle = "hsl(" + part.color + ",100%,50%)";
@@ -110,7 +104,7 @@ function tick(delta: number) {
   }
   ctx.globalCompositeOperation = "normal";
   ctx.strokeStyle = "white";
-  for (i = 0; i < n; i++) {
+  for (let i = 0; i < n; i++) {
     let part = particles[i];
 
     ctx.strokeStyle = "hsl(" + part.color + ",100%,50%)";
@@ -125,7 +119,7 @@ function tick(delta: number) {
   ctx.globalCompositeOperation = "hue";
 
   ctx.strokeStyle = "white";
-  for (i = 0; i < n; i++) {
+  for (let i = 0; i < n; i++) {
     let part = particles[i];
 
     ctx.strokeStyle = "hsl(" + part.color + ",100%,50%)";
@@ -147,7 +141,7 @@ function tick(delta: number) {
       ctx.globalCompositeOperation = "normal";
     }
 
-    for (i = 0; i < n; i++) {
+    for (let i = 0; i < n; i++) {
       let part = particles[i];
 
       ctx.strokeStyle = "hsl(" + part.color + ",100%,50%)";
@@ -167,7 +161,7 @@ function tick(delta: number) {
 
   ctx.globalCompositeOperation = "destination-out";
   ctx.strokeStyle = "white";
-  for (i = 0; i < n; i++) {
+  for (let i = 0; i < n; i++) {
     let part = particles[i];
 
     ctx.lineWidth = 14;
@@ -208,5 +202,5 @@ export const Attraction = () => {
     });
   });
 
-  return <canvas ref={c}></canvas>;
+  return <canvas ref={c} />;
 };

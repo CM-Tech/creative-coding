@@ -1,7 +1,8 @@
 import TWEEN from "@tweenjs/tween.js";
 import * as PIXI from "pixi.js";
+import { onMount } from "solid-js";
 
-export const Foosball = () => {
+const main = (c: HTMLCanvasElement) => {
   let w = window.innerWidth;
   let h = window.innerHeight;
 
@@ -17,12 +18,12 @@ export const Foosball = () => {
   const colors = "00101011".split("").map((index) => myPalette[+index]);
 
   const app = new PIXI.Application({
+    view: c,
     width: w,
     height: h,
     backgroundColor: 0xebe8e7,
     antialias: true,
   });
-  document.body.appendChild(app.view);
 
   app.stage.interactive = true;
 
@@ -341,6 +342,11 @@ export const Foosball = () => {
     move();
     draw();
   });
-
-  return <></>;
+};
+export const Foosball = () => {
+  let c: HTMLCanvasElement;
+  onMount(() => {
+    main(c);
+  });
+  return <canvas ref={c!} />;
 };

@@ -93,7 +93,7 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
   if (window.location.hash !== "") {
     t = decodeURIComponent(window.location.hash.substring(1));
   }
-  document.getElementById("text")!.innerHTML = t;
+  textField.innerHTML = t;
   setText(t);
 
   function setText(t: string) {
@@ -217,10 +217,10 @@ export const VoronoiDiagram = () => {
   });
   return (
     <>
-      <canvas id="canvas" ref={canvas!} width={window.innerWidth} height={window.innerHeight}></canvas>
-      <span class="option-bar">
-        <textarea id="text" ref={textField!}></textarea>
-      </span>
+      <canvas ref={canvas!} width={window.innerWidth} height={window.innerHeight} />
+      <div class="well">
+        <textarea ref={textField!}></textarea>
+      </div>
     </>
   );
 };

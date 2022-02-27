@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import { QuadtreeInternalNode, QuadtreeLeaf } from "d3";
 import { onMount } from "solid-js";
 
-const draw = () => {
+const draw = (svge: SVGSVGElement) => {
   let w = window.innerWidth;
   let h = window.innerHeight;
   let baseRad = Math.max(Math.min(w, h) / 200, 4);
@@ -36,7 +36,7 @@ const draw = () => {
   root.radius = 0;
   root.fixed = true;
 
-  let svg = d3.select("#app").append("svg:svg").attr("width", w).attr("height", h);
+  let svg = d3.select(svge).attr("width", w).attr("height", h);
 
   svg
     .selectAll("circle")
@@ -48,12 +48,7 @@ const draw = () => {
     })
     .style("fill", "transparent");
 
-  window.setInterval(() => {
-    if (w != window.innerWidth || h != window.innerHeight) {
-      w = window.innerWidth;
-      h = window.innerHeight;
-      d3.select("svg").attr("width", w).attr("height", h);
-    }
+  function draw() {
     let q = d3.quadtree(nodes),
       i = 0,
       n = nodes.length;
@@ -107,7 +102,9 @@ const draw = () => {
       .attr("cy", (d) => {
         return (d as Node).ay;
       });
-  }, 10);
+    window.requestAnimationFrame(draw);
+  }
+  draw();
 
   svg.on("mousemove", (e) => {
     let p1 = d3.pointer(e);
@@ -172,13 +169,18 @@ const draw = () => {
   window.onresize = () => {
     w = window.innerWidth;
     h = window.innerHeight;
-    d3.select("svg").attr("width", w).attr("height", h);
+    svg.attr("width", w).attr("height", h);
   };
 };
 
 export const FlockingDots = () => {
+  let svg: SVGSVGElement;
   onMount(() => {
-    draw();
+    draw(svg);
   });
-  return <></>;
+  return (
+    <>
+      <svg ref={svg!} width={window.innerWidth} height={window.innerHeight} class="flocking"></svg>
+    </>
+  );
 };
