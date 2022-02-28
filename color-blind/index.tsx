@@ -321,5 +321,5 @@ export const ColorBlind = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!} />;
+  return <canvas ref={c!} style={{ width: "100%", height: "100%" }} />;
 };
