@@ -55,7 +55,8 @@ export const VoronoiDots = () => {
       context.globalCompositeOperation = "multiply";
       for (const cell of polygons) {
         const color = [CYAN_MUL, MAGENTA_MUL, YELLOW_MUL][(cell.index + white) % 3];
-        // context.fillStyle = "white";//color;
+        const node = nodes[cell.index + 1];
+        context.fillStyle = color; //color;
         context.strokeStyle = color;
         context.lineWidth = 2;
         context.beginPath();
@@ -66,6 +67,9 @@ export const VoronoiDots = () => {
         context.closePath();
         // context.fill();
         context.stroke();
+        context.beginPath();
+        context.arc(node.x, node.y, 4, 0, Math.PI * 2);
+        context.fill();
       }
 
       context.globalCompositeOperation = "source-over";
