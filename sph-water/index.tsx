@@ -2,12 +2,12 @@ import * as dat from "dat.gui";
 import chroma from "chroma-js";
 import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
-type MouseData = {
+interface MouseData {
   x: number;
   y: number;
   down: boolean;
-};
-let mouse: MouseData = { x: 0, y: 0, down: false };
+}
+const mouse: MouseData = { x: 0, y: 0, down: false };
 
 function main(canvas: HTMLCanvasElement) {
   const ctx = canvas.getContext("2d")!;
@@ -43,7 +43,7 @@ function main(canvas: HTMLCanvasElement) {
     PRESSURE: number;
     VISCOSITY: number;
     DARK: boolean;
-    ARC: boolean = false;
+    ARC = false;
     constructor() {
       this.GRAVITY_Y = 0.125;
       this.GRAVITY_X = 0;
@@ -62,29 +62,29 @@ function main(canvas: HTMLCanvasElement) {
   gui.add(SPH, "GRAVITY_X").name("gravity x").max(1).min(-1).step(0.125);
   gui.add(SPH, "GRAVITY_Y").name("gravity y").max(1).min(-1).step(0.125);
   resize();
-  let RANGE2 = SPH.RANGE * SPH.RANGE;
-  let DENSITY = 0.1;
-  let NUM_GRIDSX = Math.ceil(WW / SPH.RANGE);
-  let NUM_GRIDSY = Math.ceil(WW / SPH.RANGE);
+  const RANGE2 = SPH.RANGE * SPH.RANGE;
+  const DENSITY = 0.1;
+  const NUM_GRIDSX = Math.ceil(WW / SPH.RANGE);
+  const NUM_GRIDSY = Math.ceil(WW / SPH.RANGE);
   let INV_GRID_SIZEX = 1 / (w / NUM_GRIDSX);
   let INV_GRID_SIZEY = 1 / (h / NUM_GRIDSY);
-  let particles: Particle[] = [];
+  const particles: Particle[] = [];
   let numParticles = 0;
-  let neighbors: Neighbor[] = [];
+  const neighbors: Neighbor[] = [];
   let numNeighbors = 0;
   let count = 0;
-  let grids: Grid[][] = [];
+  const grids: Grid[][] = [];
   let delta = 0;
   let lastTick = new Date();
 
   function tick() {
-    let tick = new Date();
+    const tick = new Date();
     delta += Math.min((+tick - +lastTick) / 60, 2);
     lastTick = tick;
   }
 
   function frame() {
-    let tempDelta = delta + 0;
+    const tempDelta = delta + 0;
     delta = 0;
 
     if (mouse.down) pour();
@@ -104,7 +104,7 @@ function main(canvas: HTMLCanvasElement) {
     ctx.fillStyle = "#EBE8E7";
 
     ctx.fillStyle = "#312D32";
-    let BK = SPH.DARK ? "#312D32" : "#EBE8E7";
+    const BK = SPH.DARK ? "#312D32" : "#EBE8E7";
     ctx.fillStyle = BK;
     ctx.fillRect(0, 0, w, h);
     ctx.fillStyle = "blue";
@@ -115,13 +115,13 @@ function main(canvas: HTMLCanvasElement) {
     ctx.fillStyle = chroma.blend(chroma("#55EEEE"), BK, SPH.DARK ? "screen" : "multiply").hex(); //chroma.hsl(hsl[0]+p.color*360,hsl[1],hsl[2]);
 
     for (let i = 0; i < numParticles; i++) {
-      let p = particles[i];
+      const p = particles[i];
 
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(Math.atan2(p.rx, -p.ry));
-      let ry = Math.max(SPH.RANGE / 2 - (p.min_dc < 1 ? SPH.RANGE / 2 : p.min_d / p.min_dc / 2), 0) / 2;
-      let rx = ry;
+      const ry = Math.max(SPH.RANGE / 2 - (p.min_dc < 1 ? SPH.RANGE / 2 : p.min_d / p.min_dc / 2), 0) / 2;
+      const rx = ry;
       if (SPH.ARC) {
         ctx.beginPath();
         ctx.arc(0, 0, rx + 2, 0, 2 * Math.PI, false);
@@ -138,13 +138,13 @@ function main(canvas: HTMLCanvasElement) {
       .hex();
 
     for (let i = 0; i < numParticles; i++) {
-      let p = particles[i];
+      const p = particles[i];
       //   ctx.beginPath();
       ctx.save();
       ctx.translate(p.x, p.y);
       ctx.rotate(Math.atan2(p.rx, -p.ry));
-      let ry = Math.max(0, SPH.RANGE / 2 - (p.min_dc < 1 ? SPH.RANGE / 2 : p.min_d / p.min_dc / 2)) / 2;
-      let rx = ry;
+      const ry = Math.max(0, SPH.RANGE / 2 - (p.min_dc < 1 ? SPH.RANGE / 2 : p.min_d / p.min_dc / 2)) / 2;
+      const rx = ry;
 
       if (SPH.ARC) {
         ctx.beginPath();
@@ -156,7 +156,7 @@ function main(canvas: HTMLCanvasElement) {
       ctx.restore();
     }
 
-    let gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, SPH.RANGE / Math.sqrt(2));
+    const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, SPH.RANGE / Math.sqrt(2));
 
     // Add three color stops
     gradient.addColorStop(0, `hsla(180, ${67 + 0 * (50 - 67)}%, ${55 + 0 * (82 - 55)}%,100%)`);
@@ -171,7 +171,7 @@ function main(canvas: HTMLCanvasElement) {
 
   function pour() {
     if (count % 1 == 0) {
-      let p = new Particle(mouse.x + (Math.random() - 0.5) * SPH.RANGE, mouse.y + (Math.random() - 0.5) * SPH.RANGE);
+      const p = new Particle(mouse.x + (Math.random() - 0.5) * SPH.RANGE, mouse.y + (Math.random() - 0.5) * SPH.RANGE);
 
       particles[numParticles++] = p;
     }
@@ -189,7 +189,7 @@ function main(canvas: HTMLCanvasElement) {
   function move(steps: number) {
     count++;
     for (let i = 0; i < numParticles; i++) {
-      let p = particles[i];
+      const p = particles[i];
       for (let j = 0; j < steps; j++) {
         p.move();
       }
@@ -203,7 +203,7 @@ function main(canvas: HTMLCanvasElement) {
     let j;
     for (i = 0; i < NUM_GRIDSX; i++) for (j = 0; j < NUM_GRIDSY; j++) grids[i][j].clear();
     for (i = 0; i < numParticles; i++) {
-      let p = particles[i];
+      const p = particles[i];
       p.min_d = SPH.RANGE;
       p.min_dc = 1;
       p.fx = p.fy = p.density = 0;
@@ -219,10 +219,10 @@ function main(canvas: HTMLCanvasElement) {
 
   function findNeighbors() {
     numNeighbors = 0;
-    let sX = Math.ceil(SPH.RANGE / (w / NUM_GRIDSX));
-    let sY = Math.ceil(SPH.RANGE / (h / NUM_GRIDSY));
+    const sX = Math.ceil(SPH.RANGE / (w / NUM_GRIDSX));
+    const sY = Math.ceil(SPH.RANGE / (h / NUM_GRIDSY));
     for (let i = 0; i < numParticles; i++) {
-      let p = particles[i];
+      const p = particles[i];
       for (let dx = -sX; dx <= sX; dx += 1) {
         if (dx + p.gx >= 0 && dx + p.gx < NUM_GRIDSX) {
           for (let dy = -sY; dy <= sY; dy += 1) {
@@ -237,9 +237,9 @@ function main(canvas: HTMLCanvasElement) {
 
   function findNeighborsInGrid(pi: Particle, g: Grid) {
     for (let j = 0; j < g.numParticles; j++) {
-      let pj = g.particles[j];
+      const pj = g.particles[j];
       if (pi == pj) continue;
-      let distance = (pi.x - pj.x) * (pi.x - pj.x) + (pi.y - pj.y) * (pi.y - pj.y);
+      const distance = (pi.x - pj.x) * (pi.x - pj.x) + (pi.y - pj.y) * (pi.y - pj.y);
       if (distance < RANGE2) {
         if (neighbors.length == numNeighbors) neighbors[numNeighbors] = new Neighbor();
         neighbors[numNeighbors++].setParticle(pi, pj);
@@ -249,7 +249,7 @@ function main(canvas: HTMLCanvasElement) {
 
   function calcPressure() {
     for (let i = 0; i < numParticles; i++) {
-      let p = particles[i];
+      const p = particles[i];
       if (p.density < DENSITY) p.density = DENSITY;
       p.pressure = p.density - DENSITY;
     }
@@ -257,7 +257,7 @@ function main(canvas: HTMLCanvasElement) {
 
   function calcForce() {
     for (let i = 0; i < numNeighbors; i++) {
-      let n = neighbors[i];
+      const n = neighbors[i];
       n.calcForce();
     }
     for (let i = 0; i < numParticles; i++) {
@@ -309,8 +309,9 @@ function main(canvas: HTMLCanvasElement) {
       this.y += this.vy;
       this.color = 0; //(Math.sin(Math.hypot(this.rx,this.ry)*5)*0.5+1.5)%1;
     }
+
     calcForce() {
-      let B = SPH.RANGE;
+      const B = SPH.RANGE;
 
       if (this.x < B) this.fx += (B - this.x) * 0.125 - this.vx * 0.5;
       if (this.y < B) this.fy += (B - this.y) * 0.125 - this.vy * 0.5;
@@ -346,20 +347,21 @@ function main(canvas: HTMLCanvasElement) {
       this.nx *= temp;
       this.ny *= temp;
     }
+
     calcForce() {
       if (!this.p1 || !this.p2) {
         return;
       }
-      let { p1, p2 } = this;
-      let pressureWeight = ((this.weight * (p1.pressure + p2.pressure)) / (p1.density + p2.density)) * SPH.PRESSURE;
-      let viscosityWeight = (this.weight / (p1.density + p2.density)) * SPH.VISCOSITY;
+      const { p1, p2 } = this;
+      const pressureWeight = ((this.weight * (p1.pressure + p2.pressure)) / (p1.density + p2.density)) * SPH.PRESSURE;
+      const viscosityWeight = (this.weight / (p1.density + p2.density)) * SPH.VISCOSITY;
 
       p1.fx += this.nx * pressureWeight;
       p1.fy += this.ny * pressureWeight;
       p2.fx -= this.nx * pressureWeight;
       p2.fy -= this.ny * pressureWeight;
-      let rvx = p2.vx - p1.vx;
-      let rvy = p2.vy - p1.vy;
+      const rvx = p2.vx - p1.vx;
+      const rvy = p2.vy - p1.vy;
       p1.fx += rvx * viscosityWeight;
       p1.fy += rvy * viscosityWeight;
       p2.fx -= rvx * viscosityWeight;

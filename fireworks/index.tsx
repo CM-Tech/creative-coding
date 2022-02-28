@@ -3,7 +3,7 @@ import { createAnimationFrame } from "../utils";
 
 const dpr = () => window.devicePixelRatio ?? 1;
 
-type FireworkParticle = {
+interface FireworkParticle {
   life: number;
   startLife: number;
   x: number;
@@ -17,7 +17,7 @@ type FireworkParticle = {
   split: number[];
   typ: number[];
   ix: number;
-};
+}
 
 export const Fireworks = () => {
   let nodesRef: FireworkParticle[] = [];
@@ -31,7 +31,7 @@ export const Fireworks = () => {
 
     canvasNode.width = width * dp;
     canvasNode.height = height * dp;
-    let context: CanvasRenderingContext2D = canvasNode.getContext("2d") as CanvasRenderingContext2D;
+    const context: CanvasRenderingContext2D = canvasNode.getContext("2d")!;
 
     const tick = () => {
       context.resetTransform();
@@ -42,7 +42,7 @@ export const Fireworks = () => {
       const scaleUnit = height / 10;
 
       if (Math.random() > 0.75) {
-        let ty = Math.random() > 0.05 ? 0 : 2;
+        const ty = Math.random() > 0.05 ? 0 : 2;
         nodesRef.push({
           x: Math.random() * width,
           y: height,
@@ -60,7 +60,7 @@ export const Fireworks = () => {
       }
       const newNodes: FireworkParticle[] = [];
       let ig = 0;
-      for (let n of nodesRef) {
+      for (const n of nodesRef) {
         ig += 1;
         n.life -= 1000 / 60;
         const lastX = n.x;
@@ -79,13 +79,13 @@ export const Fireworks = () => {
             context.fillStyle = `rgba(${Math.floor(n.color.r * 255 * m)},${Math.floor(
               n.color.g * 255 * m
             )},${Math.floor(n.color.b * 255 * m)},1)`;
-            let rr = Math.min(n.r, 2);
+            const rr = Math.min(n.r, 2);
             context.fillRect(n.x - rr / 2, n.y - rr / 2, rr, rr);
           } else {
             context.strokeStyle = `rgba(${Math.floor(n.color.r * 255 * m)},${Math.floor(
               n.color.g * 255 * m
             )},${Math.floor(n.color.b * 255 * m)},1)`;
-            let rr = Math.min(n.r, 2);
+            const rr = Math.min(n.r, 2);
             context.lineWidth = rr;
             context.beginPath();
             context.moveTo(lastX, lastY);
@@ -122,14 +122,14 @@ export const Fireworks = () => {
             if (n.type === 2 && tyy !== 2) {
               nnr /= 4;
             }
-            let q = Math.random();
-            let sp = n.split[n.ix + 1];
+            const q = Math.random();
+            const sp = n.split[n.ix + 1];
             for (let i = 0; i < (n.type === 2 ? sp : 100); i++) {
-              let oa = (n.type === 2 ? i / sp + q : Math.random()) * Math.PI * 2;
-              let or = (n.type === 2 ? 0.4 : Math.random()) + 0.1;
-              let ox = Math.cos(oa) * or;
-              let oy = Math.sin(oa) * or;
-              let rg = Math.random() + 1;
+              const oa = (n.type === 2 ? i / sp + q : Math.random()) * Math.PI * 2;
+              const or = (n.type === 2 ? 0.4 : Math.random()) + 0.1;
+              const ox = Math.cos(oa) * or;
+              const oy = Math.sin(oa) * or;
+              const rg = Math.random() + 1;
               newNodes.push({
                 x: n.x,
                 y: n.y,

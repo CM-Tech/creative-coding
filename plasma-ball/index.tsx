@@ -2,13 +2,13 @@ import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
 function main(canvas: HTMLCanvasElement) {
-  let ctx = canvas.getContext("2d")!;
+  const ctx = canvas.getContext("2d")!;
 
-  let lines: number[] = [];
-  let linePitches: number[] = [];
-  let lineOffsets: number[] = [];
-  let lineDirections: { x: number; y: number }[] = [];
-  let lineTimers = [];
+  const lines: number[] = [];
+  const linePitches: number[] = [];
+  const lineOffsets: number[] = [];
+  const lineDirections: { x: number; y: number }[] = [];
+  const lineTimers = [];
 
   canvas.style.position = "absolute";
   canvas.style.left = document.body.clientWidth / 2 - 250 + "px";
@@ -26,10 +26,10 @@ function main(canvas: HTMLCanvasElement) {
   }
 
   function tick() {
-    let afterLinesCanvas = document.createElement("canvas");
+    const afterLinesCanvas = document.createElement("canvas");
     afterLinesCanvas.width = canvas.width;
     afterLinesCanvas.height = canvas.height;
-    let afterLinesCanvasCtx = afterLinesCanvas.getContext("2d")!;
+    const afterLinesCanvasCtx = afterLinesCanvas.getContext("2d")!;
     ctx.clearRect(0, 0, 500, 500);
 
     ctx.beginPath();
@@ -40,18 +40,18 @@ function main(canvas: HTMLCanvasElement) {
 
     ctx.lineCap = "round";
     for (let i = 0; i < lines.length; i++) {
-      let sinOffset = Math.sin(2 * Math.PI * lineOffsets[i]) / 2;
-      let pitchM = Math.sin(2 * Math.PI * linePitches[i]);
+      const sinOffset = Math.sin(2 * Math.PI * lineOffsets[i]) / 2;
+      const pitchM = Math.sin(2 * Math.PI * linePitches[i]);
       let renderOn = ctx;
       if (linePitches[i] < 0.5) {
         renderOn = afterLinesCanvasCtx;
       }
       renderOn.lineCap = "round";
-      let grd = renderOn.createRadialGradient(250, 250, Math.abs(130 * pitchM), 250, 250, Math.abs(300 * pitchM));
+      const grd = renderOn.createRadialGradient(250, 250, Math.abs(130 * pitchM), 250, 250, Math.abs(300 * pitchM));
       grd.addColorStop(0, "#02f");
       grd.addColorStop(1, "white");
       renderOn.strokeStyle = grd;
-      let end = {
+      const end = {
         x: 250 + Math.cos(2 * Math.PI * lines[i]) * 245 * pitchM,
         y: 250 + Math.sin(2 * Math.PI * lines[i]) * 245 * pitchM,
       };
@@ -78,12 +78,7 @@ function main(canvas: HTMLCanvasElement) {
       linePitches[i] = linePitches[i] % 1;
       lineOffsets[i] += (Math.random() - 0.5) * 0.1;
       lineOffsets[i] = lineOffsets[i] % 1;
-      for (let j = 0; j < lines.length; j++) {
-        if (j != i) {
-          if (Math.abs(lines[i] - lines[j]) > 0.7 || Math.abs(lines[i] - lines[j]) < 0.3) {
-          }
-        }
-      }
+
       lines[i] = lines[i] % 1;
       lineDirections[i].x += Math.random() / 10 - 0.05;
       lineDirections[i].y += Math.random() / 10 - 0.05;
@@ -104,7 +99,7 @@ function main(canvas: HTMLCanvasElement) {
   ) {
     canva.beginPath();
     canva.lineWidth = 10;
-    let grd = ctx.createRadialGradient(x, y, gradient1, x, y, gradient2);
+    const grd = ctx.createRadialGradient(x, y, gradient1, x, y, gradient2);
     grd.addColorStop(0, "rgb(213, 49, 119)");
     grd.addColorStop(1, ecolor);
     canva.arc(x, y, size, 0, 2 * Math.PI);

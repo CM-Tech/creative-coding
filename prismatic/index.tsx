@@ -3,17 +3,17 @@ import { createAnimationFrame } from "../utils";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
 function main(canvas: HTMLCanvasElement) {
-  let mouse = {
+  const mouse = {
     x: 0.5,
     y: 0.5,
   };
   let down = 0.0;
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  let gl = canvas.getContext("webgl")!;
+  const gl = canvas.getContext("webgl")!;
 
-  let vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
-  let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
+  const vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
+  const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
 
   gl.shaderSource(vertexShader, vertsource);
   gl.shaderSource(fragmentShader, fragsource);
@@ -21,12 +21,12 @@ function main(canvas: HTMLCanvasElement) {
   gl.compileShader(vertexShader);
   gl.compileShader(fragmentShader);
 
-  let program = gl.createProgram()!;
+  const program = gl.createProgram()!;
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
 
-  let triangleVertices = new Float32Array([
+  const triangleVertices = new Float32Array([
     -1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
 
     1.0, -1.0, 1.0, 1.0, -1.0, 1.0,
@@ -35,12 +35,12 @@ function main(canvas: HTMLCanvasElement) {
   let t1 = createTarget(window.innerWidth, window.innerHeight);
   let t2 = createTarget(window.innerWidth, window.innerHeight);
 
-  let ptime = gl.getUniformLocation(program, "time");
-  let presolution = gl.getUniformLocation(program, "resolution");
-  let pmouse = gl.getUniformLocation(program, "mouse");
-  let pbackbuffer = gl.getUniformLocation(program, "backbuffer");
-  let pdown = gl.getUniformLocation(program, "down");
-  let pposition = gl.getAttribLocation(program, "vertPosition");
+  const ptime = gl.getUniformLocation(program, "time");
+  const presolution = gl.getUniformLocation(program, "resolution");
+  const pmouse = gl.getUniformLocation(program, "mouse");
+  const pbackbuffer = gl.getUniformLocation(program, "backbuffer");
+  const pdown = gl.getUniformLocation(program, "down");
+  const pposition = gl.getAttribLocation(program, "vertPosition");
   let time = 0;
 
   function render() {
@@ -50,9 +50,9 @@ function main(canvas: HTMLCanvasElement) {
     gl.bufferData(gl.ARRAY_BUFFER, triangleVertices, gl.STATIC_DRAW);
 
     gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, true ? t1.texture : t2.texture);
+    gl.bindTexture(gl.TEXTURE_2D, t2.texture);
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, true ? t2.framebuffer : t1.framebuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, t1.framebuffer);
 
     gl.uniform1f(pdown, down);
     gl.uniform1f(ptime, time / 1000);
@@ -71,14 +71,14 @@ function main(canvas: HTMLCanvasElement) {
     gl.bufferData(gl.ARRAY_BUFFER, triangleVertices, gl.STATIC_DRAW);
 
     gl.activeTexture(gl.TEXTURE1);
-    gl.bindTexture(gl.TEXTURE_2D, true ? t2.texture : t1.texture);
+    gl.bindTexture(gl.TEXTURE_2D, t1.texture);
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.uniform1i(pbackbuffer, 0);
 
     gl.drawArrays(gl.TRIANGLES, 0, 6);
 
-    let tmp = t1;
+    const tmp = t1;
     t1 = t2;
     t2 = tmp;
 
@@ -105,7 +105,7 @@ function main(canvas: HTMLCanvasElement) {
   };
 
   function createTarget(width: number, height: number) {
-    let target = {
+    const target = {
       framebuffer: gl.createFramebuffer(),
       renderbuffer: gl.createRenderbuffer(),
       texture: gl.createTexture(),

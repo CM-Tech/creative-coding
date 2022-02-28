@@ -1,3 +1,7 @@
+@font-face {
+  font-family: "Noto Sans Mono";
+  src: url("/NotoSansMono-Regular.ttf");
+}
 html,
 body,
 #app {
@@ -150,4 +154,5 @@ body,
   line-height: 100vh;
   font-size: 3vh;
   align-self: center;
+  font-family: "Noto Sans Mono";
 }

@@ -2,14 +2,14 @@ import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
 function Check(e: KeyboardEvent) {
-  let keyCode = e.keyCode ? e.keyCode : e.which;
+  const keyCode = e.keyCode ? e.keyCode : e.which;
   if (keyCode == 13) {
     e.preventDefault();
   }
 }
 
 function main(c: HTMLCanvasElement, color: HTMLInputElement, yname: HTMLInputElement) {
-  let ctx = c.getContext("2d")!;
+  const ctx = c.getContext("2d")!;
 
   //making the canvas full screen
   c.height = window.innerHeight;
@@ -19,11 +19,11 @@ function main(c: HTMLCanvasElement, color: HTMLInputElement, yname: HTMLInputEle
 
   let imagedata = ctx.getImageData(0, 0, c.width, c.height);
 
-  let font_size = 10;
-  let columns = c.width / font_size; //number of columns for the rain
+  const font_size = 10;
+  const columns = c.width / font_size; //number of columns for the rain
 
   //an array of drops - one per column
-  let drops: { x: number; name: string; loop: number }[] = [];
+  const drops: { x: number; name: string; loop: number }[] = [];
 
   //x below is the x coordinate
   //1 = y co-ordinate of the drop(same for every drop initially)
@@ -53,8 +53,7 @@ function main(c: HTMLCanvasElement, color: HTMLInputElement, yname: HTMLInputEle
     for (let i = 0; i < drops.length; i++) {
       let text;
       if (drops[i].name[drops[i].loop] == " ") {
-        if (drops[i].loop >= drops[i].name.length - 1) {
-        } else {
+        if (drops[i].loop < drops[i].name.length - 1) {
           drops[i].loop++;
           drops[i].x++;
         }
@@ -73,8 +72,8 @@ function main(c: HTMLCanvasElement, color: HTMLInputElement, yname: HTMLInputEle
       drops[i].loop++;
 
       if (drops[i].loop >= drops[i].name.length) {
-        let ynames = yname.value;
-        let splitt = ynames.split(", ");
+        const ynames = yname.value;
+        const splitt = ynames.split(", ");
         drops[i].loop = 0;
         drops[i].name = splitt[Math.floor(Math.random() * splitt.length)] + "_ ";
       }

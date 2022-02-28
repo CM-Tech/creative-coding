@@ -1,14 +1,14 @@
 import * as dat from "dat.gui";
 import * as d3 from "d3";
-import { QuadtreeInternalNode, QuadtreeLeaf } from "d3";
+import type { QuadtreeInternalNode, QuadtreeLeaf } from "d3";
 import { createSignal, onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
 const [filter, setFilter] = createSignal("");
 function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
-  let ctx = c.getContext("2d")!,
-    w = window.innerWidth,
-    h = window.innerHeight;
+  const ctx = c.getContext("2d")!;
+  let w = window.innerWidth;
+  let h = window.innerHeight;
 
   class BoidBeat {
     speed = 1;
@@ -19,7 +19,7 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
     tThreshold = 0.3;
   }
 
-  let freqCount = 256;
+  const freqCount = 256;
   function getRMS(spectrum: Uint8Array) {
     let rms = 0;
     for (let i = 0; i < spectrum.length; i++) {
@@ -38,9 +38,9 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
     audio.classList.add("paused");
   }
 
-  let controls = new BoidBeat();
+  const controls = new BoidBeat();
   function gui() {
-    let gui = new dat.GUI();
+    const gui = new dat.GUI();
     gui
       .add(controls, "song", {
         "Glorious Morning": "/#Glorious_morning",
@@ -64,21 +64,21 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
     gui.add(controls, "directions", 2, 12);
     gui.add(controls, "turning");
   }
-  let baseRad = Math.max(Math.min(w, h) / 200, 4);
+  const baseRad = Math.max(Math.min(w, h) / 200, 4);
 
-  let effectiveF = 16;
-  let trailSteps = 20;
-  let fastestTurnFreq = 10;
+  const effectiveF = 16;
+  const trailSteps = 20;
+  const fastestTurnFreq = 10;
   let q = 0;
-  let ncount = (w * h) / baseRad / 500;
-  let scales = Math.log2(freqCount);
+  const ncount = (w * h) / baseRad / 500;
+  const scales = Math.log2(freqCount);
   function logNt(v: number) {
     return Math.log(v + 1) / Math.log(2) / (Math.log(freqCount + 1) / Math.log(2));
   }
-  let nodes = d3.range(ncount).map(() => {
-    let f = Math.floor((q / ncount) * effectiveF);
+  const nodes = d3.range(ncount).map(() => {
+    const f = Math.floor((q / ncount) * effectiveF);
 
-    let m = {
+    const m = {
       radius: baseRad,
       vx: Math.random() * 12 - 6,
       vy: Math.random() * 12 - 6,
@@ -117,26 +117,26 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
 
   if (window.location.hash) hashchange();
   window.addEventListener("hashchange", hashchange);
-  let audioCtx = new window.AudioContext();
-  let analyser = audioCtx.createAnalyser();
+  const audioCtx = new window.AudioContext();
+  const analyser = audioCtx.createAnalyser();
   analyser.connect(audioCtx.destination);
 
   analyser.fftSize = freqCount * 2;
   analyser.smoothingTimeConstant = 0.2;
 
-  let bpm = 240;
+  const bpm = 240;
 
-  let hM = 100;
-  let historyLength = Math.floor((60 * 1000) / bpm / (1000 / 60)) * hM;
-  let musica: number[] = [];
-  let musicmxl: number[] = [];
+  const hM = 100;
+  const historyLength = Math.floor((60 * 1000) / bpm / (1000 / 60)) * hM;
+  const musica: number[] = [];
+  const musicmxl: number[] = [];
   for (let i = 0; i < freqCount; i++) {
     musica.push(0);
     musicmxl.push(0);
   }
-  let musics: Uint8Array[] = [];
+  const musics: Uint8Array[] = [];
   for (let i = 0; i < historyLength; i++) {
-    let music2 = new Uint8Array(freqCount);
+    const music2 = new Uint8Array(freqCount);
     musics.push(music2);
   }
   let ll = 0;
@@ -149,7 +149,7 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
 
     for (let i = 0; i < 0; i++) {
       music = music.map((x, i) => {
-        let l = [x];
+        const l = [x];
         if (i < freqCount - 1) {
           l.push(music[i + 1]);
         }
@@ -161,7 +161,7 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
     }
     musics.unshift(music.slice());
     musics.pop();
-    let musicave = [];
+    const musicave = [];
     for (let i = 0; i < freqCount; i++) {
       musica[i] = 0;
       musicmxl[i] = 0;
@@ -180,9 +180,9 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
       w = window.innerWidth;
       h = window.innerHeight;
     }
-    let q = d3.quadtree(nodes),
-      i = 0,
-      n = nodes.length;
+    const q = d3.quadtree(nodes);
+    let i = 0;
+    const n = nodes.length;
     for (i = 0; i < n; i++) {
       nodes[i].fx = 0;
       nodes[i].fy = 0;
@@ -191,8 +191,8 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
       nodes[i].aveVX = 0;
       nodes[i].aveVY = 0;
       nodes[i].totalNebs = 0;
-      let inter = 1 - Math.pow(Math.random(), 1);
-      let randF = Math.floor(Math.random() * freqCount * (1 - inter) + nodes[i].freq * inter);
+      const inter = 1 - Math.pow(Math.random(), 1);
+      const randF = Math.floor(Math.random() * freqCount * (1 - inter) + nodes[i].freq * inter);
       if (musicmxl[randF] / 256 > (musicmxl[nodes[i].freq] / 256) * 10.0) {
         nodes[i].freq = Math.max(Math.min(randF + Math.floor(Math.random() * 0), freqCount - 1), 0);
         nodes[i].nt = logNt(Math.floor(nodes[i].freq));
@@ -216,18 +216,18 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
       let fL = Math.sqrt(nodes[i].fx * nodes[i].fx + nodes[i].fy * nodes[i].fy);
       if (fL === 0) {
         fL = 1;
-        let randDir = Math.random() * Math.PI * 2;
+        const randDir = Math.random() * Math.PI * 2;
 
         nodes[i].fx = Math.cos(randDir) * 1;
         nodes[i].fy = Math.sin(randDir) * 1;
       }
-      let min = nodes[i].radius / 5;
-      let max = nodes[i].radius * 1;
+      const min = nodes[i].radius / 5;
+      const max = nodes[i].radius * 1;
       nodes[i].vx = (nodes[i].fx / fL) * Math.min(Math.max(min, fL), max);
       nodes[i].vy = (nodes[i].fy / fL) * Math.min(Math.max(min, fL), max);
-      let volume = Math.pow(music[nodes[i].freq] / 256, 10.0);
+      const volume = Math.pow(music[nodes[i].freq] / 256, 10.0);
 
-      let spdm = Math.pow(music[nodes[i].freq] / 256, 4) + 0.25; //(volume*0.5+(music[nodes[i].freq]*2.0+16)/(musicave[nodes[i].freq]+128));//1.0;//volume/10+0.9;
+      const spdm = Math.pow(music[nodes[i].freq] / 256, 4) + 0.25; //(volume*0.5+(music[nodes[i].freq]*2.0+16)/(musicave[nodes[i].freq]+128));//1.0;//volume/10+0.9;
       let ddir = controls.directions;
       let spd = (Math.sqrt(nodes[i].vx * nodes[i].vx + nodes[i].vy * nodes[i].vy) / 3) * spdm * controls.speed * 2.0;
       let hdir = (Math.round((Math.atan2(nodes[i].vy, nodes[i].vx) / Math.PI / 2) * ddir) / ddir) * Math.PI * 2;
@@ -243,14 +243,14 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
       nodes[i].y += vyh;
       bound(nodes[i]);
 
-      let thrrr = controls.tThreshold;
+      const thrrr = controls.tThreshold;
       if (
         volume > thrrr &&
         musics[5][nodes[i].freq] == musica[nodes[i].freq] &&
         nodes[i].lastTurn > fastestTurnFreq &&
         controls.turning
       ) {
-        let hdird = Math.atan2(nodes[i].vy, nodes[i].vx) + ((Math.PI * 2) / ddir) * ((ll % 2) * 2 - 1);
+        const hdird = Math.atan2(nodes[i].vy, nodes[i].vx) + ((Math.PI * 2) / ddir) * ((ll % 2) * 2 - 1);
 
         nodes[i].vx = Math.cos(hdird) * spd;
         nodes[i].vy = Math.sin(hdird) * spd;
@@ -280,9 +280,9 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
     ctx.fill();
     if ("/#XX-Intro" == controls.song) {
       setFilter("sepia(0.8) hue-rotate(180deg) saturate(2)");
-      let v = getRMS(music);
-      let sso = Math.min(w, h) / 8;
-      let ss = ((v / 256) * sso) / 2 + sso / 2;
+      const v = getRMS(music);
+      const sso = Math.min(w, h) / 8;
+      const ss = ((v / 256) * sso) / 2 + sso / 2;
       ctx.globalCompositeOperation = "lighter";
       ctx.lineWidth = (ss - sso / 2) * Math.sqrt(2);
       ctx.strokeStyle = `hsl(0,0%,${(v / 256) * 100}%)`;
@@ -312,17 +312,17 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
     }
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = "gray";
-    for (let i of nodes) {
-      let volume = Math.pow(music[i.freq] / 256, 5.0);
-      let volume3 = Math.pow(musicave[i.freq] / 256, 5.0);
+    for (const i of nodes) {
+      const volume = Math.pow(music[i.freq] / 256, 5.0);
+      const volume3 = Math.pow(musicave[i.freq] / 256, 5.0);
 
-      let vFall = 0.95;
+      const vFall = 0.95;
       i.vol = Math.max(volume, (i.vol || 0) * vFall);
       i.volav = Math.max(volume3 / 2 + volume / 3, (i.volav || 0) * vFall);
     }
 
     //weird optimized v rendering
-    for (let i of nodes) {
+    for (const i of nodes) {
       i.axl.unshift(i.ax + 0);
       i.ayl.unshift(i.ay + 0);
 
@@ -353,11 +353,11 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
     ctx.lineWidth = controls.lineWidth;
 
     for (let ko = 0; ko < nodes[1].posHist.length; ko++) {
-      let k = nodes[1].posHist.length - ko - 1;
+      const k = nodes[1].posHist.length - ko - 1;
       // let firstN=true;
       let lastN = -1;
-      for (let i of nodes) {
-        let bri = i.vol * Math.pow(Math.max(Math.min(i.vol - k / (i.posHist.length - 1), 1), 0), 0.25);
+      for (const i of nodes) {
+        const bri = i.vol * Math.pow(Math.max(Math.min(i.vol - k / (i.posHist.length - 1), 1), 0), 0.25);
         let lastp = { x: i.ax, y: i.ay };
         if (k > 0) {
           lastp = i.posHist[k - 1];
@@ -383,7 +383,7 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
   });
 
   function bound(node: typeof nodes[number]) {
-    let r = node.radius;
+    const r = node.radius;
     let nx = Math.max(node.x, r);
     let ny = Math.max(node.y, r);
     nx = Math.min(nx, w - r);
@@ -397,22 +397,22 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
 
   type Node = typeof nodes[number];
   function collide(node: Node) {
-    let r = node.radius * 18,
-      nx1 = node.x - r,
-      nx2 = node.x + r,
-      ny1 = node.y - r,
-      ny2 = node.y + r;
+    const r = node.radius * 18;
+    const nx1 = node.x - r;
+    const nx2 = node.x + r;
+    const ny1 = node.y - r;
+    const ny2 = node.y + r;
     return (n2: QuadtreeInternalNode<Node> | QuadtreeLeaf<Node>, x1: number, y1: number, x2: number, y2: number) => {
       if (!n2.length) {
         do {
           if (n2.data !== node) {
-            let x = node.x - n2.data.x,
-              y = node.y - n2.data.y,
-              l = Math.sqrt(x * x + y * y),
-              r = node.radius + n2.data.radius;
+            let x = node.x - n2.data.x;
+            let y = node.y - n2.data.y;
+            let l = Math.sqrt(x * x + y * y);
+            let r = node.radius + n2.data.radius;
             if (l < r * 3) {
-              let thr = 0.8;
-              let attractiveness =
+              const thr = 0.8;
+              const attractiveness =
                 Math.max(Math.pow(1 - (Math.abs(node.freq - n2.data.freq) / freqCount) * scales, 2) - thr, 0) /
                 (1 - thr);
               node.totalNebs += attractiveness;

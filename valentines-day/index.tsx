@@ -2,11 +2,11 @@ import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
 function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
-  let ctx = c.getContext("2d")!;
+  const ctx = c.getContext("2d")!;
   let hsize = 5;
-  let n = 1000;
+  const n = 1000;
   let speed = 1;
-  let size = {
+  const size = {
     x: document.body.clientWidth,
     y: window.innerHeight,
   };
@@ -23,8 +23,8 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
     speed: number;
     y: number;
     constructor(i: number) {
-      let g = (i / 4) % size.x;
-      let t = Math.floor(i / 4 / size.x);
+      const g = (i / 4) % size.x;
+      const t = Math.floor(i / 4 / size.x);
       this.x = random(1) * speed;
       this.y = random(1) * speed;
       this.j = g;
@@ -37,10 +37,10 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
       this.c = hsize + random(1) * hsize;
     }
     heart() {
-      let he = this.f;
-      let wi = this.f;
-      let x = this.x;
-      let y = this.y;
+      const he = this.f;
+      const wi = this.f;
+      const x = this.x;
+      const y = this.y;
       ctx.fillStyle = this.g;
       ctx.beginPath();
       ctx.moveTo(x + 0.5 * wi, y + 0.3 * he);
@@ -51,11 +51,11 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
     }
 
     h() {
-      let x = this.x;
-      let y = this.y;
-      let b = this.c;
-      let l = this.j;
-      let hsize = this.speed;
+      const x = this.x;
+      const y = this.y;
+      const b = this.c;
+      const l = this.j;
+      const hsize = this.speed;
       x < l - this.c && ((this.x = l - b), (this.a *= -1));
       x > l + this.c && ((this.x = l + b), (this.a *= -1));
       y < hsize - b && ((this.y = hsize - b), (this.b *= -1));
@@ -76,7 +76,7 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
   }
 
   function random(neg?: number) {
-    let rand = Math.random();
+    const rand = Math.random();
     return neg ? 2 * rand - 1 : rand;
   }
 
@@ -94,7 +94,7 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
     background();
 
     ctx.fillStyle = "black";
-    let fontt = "'Hachi Maru Pop'";
+    const fontt = "'Hachi Maru Pop'";
     ctx.font = 100 + "px " + fontt;
     let measure = ctx.measureText(t);
     let bbox = {
@@ -103,7 +103,7 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
       w: measure.actualBoundingBoxRight - measure.actualBoundingBoxLeft,
       h: measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent,
     };
-    let heightOfFont = Math.floor(Math.min((c.width - 200) / (bbox.w / 100), (c.height - 200) / (bbox.h / 100)));
+    const heightOfFont = Math.floor(Math.min((c.width - 200) / (bbox.w / 100), (c.height - 200) / (bbox.h / 100)));
 
     hsize = Math.min(Math.floor(heightOfFont / 20) + 1, Math.floor(Math.min(size.x, size.y) / 20) + 1);
 
@@ -122,12 +122,12 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
       size.y / 2 - bbox.y - bbox.h / 2
     );
 
-    let ctext = ctx.getImageData(0, 0, size.x, size.y);
-    let pixtext = ctext.data;
+    const ctext = ctx.getImageData(0, 0, size.x, size.y);
+    const pixtext = ctext.data;
 
     for (let i = 0; i < pixtext.length; i += 4) {
       if (0 === pixtext[i] && (s++, 0 === s % hsize)) {
-        let p = new f(i);
+        const p = new f(i);
         p.heart();
         pa.push(p);
       }
@@ -136,8 +136,8 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
 
   createAnimationFrame(() => {
     background();
-    for (let i in pa) {
-      let p = pa[i];
+    for (const i in pa) {
+      const p = pa[i];
       p.i();
       p.heart();
     }
@@ -157,7 +157,12 @@ export const ValentinesDay = () => {
     <>
       <canvas ref={c!} width={window.innerWidth} height={window.innerHeight} />
       <div class="well">
-        <textarea ref={field!} onkeyup={(e) => fn(e.currentTarget.value)} />
+        <textarea
+          ref={field!}
+          onkeyup={(e) => {
+            fn(e.currentTarget.value);
+          }}
+        />
       </div>
     </>
   );

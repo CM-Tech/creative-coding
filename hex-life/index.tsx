@@ -3,7 +3,7 @@ import { createAnimationFrame } from "../utils";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
 
-let mouse = {
+const mouse = {
   x: 0.5,
   y: 0.5,
 };
@@ -16,28 +16,28 @@ function twhite() {
 const draw = (canvas: HTMLCanvasElement, slider: HTMLInputElement) => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  let gl = canvas.getContext("webgl", { preserveDrawingBuffer: true })!;
-  let vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
-  let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
+  const gl = canvas.getContext("webgl", { preserveDrawingBuffer: true })!;
+  const vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
+  const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
   gl.shaderSource(fragmentShader, fragsource);
   gl.shaderSource(vertexShader, vertsource);
   gl.compileShader(vertexShader);
   gl.compileShader(fragmentShader);
-  let program = gl.createProgram()!;
+  const program = gl.createProgram()!;
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
-  let triangleVertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, 1]);
+  const triangleVertices = new Float32Array([-1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, 1]);
   let t1 = createTarget(window.innerWidth, window.innerHeight);
   let t2 = createTarget(window.innerWidth, window.innerHeight);
-  let resolution = gl.getUniformLocation(program, "resolution");
-  let ptime = gl.getUniformLocation(program, "time");
-  let pmouse = gl.getUniformLocation(program, "mouse");
-  let msize = gl.getUniformLocation(program, "msize");
-  let pwhite = gl.getUniformLocation(program, "white");
-  let phexR = gl.getUniformLocation(program, "hexR");
-  let backbuffer = gl.getUniformLocation(program, "backbuffer");
-  let position = gl.getAttribLocation(program, "vertPosition");
+  const resolution = gl.getUniformLocation(program, "resolution");
+  const ptime = gl.getUniformLocation(program, "time");
+  const pmouse = gl.getUniformLocation(program, "mouse");
+  const msize = gl.getUniformLocation(program, "msize");
+  const pwhite = gl.getUniformLocation(program, "white");
+  const phexR = gl.getUniformLocation(program, "hexR");
+  const backbuffer = gl.getUniformLocation(program, "backbuffer");
+  const position = gl.getAttribLocation(program, "vertPosition");
   function render(time: number) {
     gl.useProgram(program);
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
@@ -87,7 +87,7 @@ const draw = (canvas: HTMLCanvasElement, slider: HTMLInputElement) => {
     if ((hexR < 20 && delta < 0) || (hexR > 1 && delta > 0)) hexR -= delta;
   };
   function createTarget(width: number, height: number) {
-    let target = {
+    const target = {
       framebuffer: gl.createFramebuffer(),
       renderbuffer: gl.createRenderbuffer(),
       texture: gl.createTexture(),

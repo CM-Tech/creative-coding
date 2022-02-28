@@ -1,13 +1,13 @@
 import * as d3 from "d3";
-import { QuadtreeInternalNode, QuadtreeLeaf } from "d3";
+import type { QuadtreeInternalNode, QuadtreeLeaf } from "d3";
 import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
 const draw = (svge: SVGSVGElement) => {
   let w = window.innerWidth;
   let h = window.innerHeight;
-  let baseRad = Math.max(Math.min(w, h) / 200, 4);
-  let nodes = d3.range((w * h) / baseRad / 500).map(() => {
+  const baseRad = Math.max(Math.min(w, h) / 200, 4);
+  const nodes = d3.range((w * h) / baseRad / 500).map(() => {
     return {
       radius: baseRad,
       vx: Math.random() * 12 - 6,
@@ -33,11 +33,11 @@ const draw = (svge: SVGSVGElement) => {
     nodes[i].ay = nodes[i].y;
   }
 
-  let root = nodes[0];
+  const root = nodes[0];
   root.radius = 0;
   root.fixed = true;
 
-  let svg = d3.select(svge).attr("width", w).attr("height", h);
+  const svg = d3.select(svge).attr("width", w).attr("height", h);
 
   svg
     .selectAll("circle")
@@ -50,9 +50,9 @@ const draw = (svge: SVGSVGElement) => {
     .style("fill", "transparent");
 
   function draw() {
-    let q = d3.quadtree(nodes),
-      i = 0,
-      n = nodes.length;
+    const q = d3.quadtree(nodes);
+    let i = 0;
+    const n = nodes.length;
     for (i = 1; i < n; i++) {
       nodes[i].fx = 0;
       nodes[i].fy = 0;
@@ -78,13 +78,13 @@ const draw = (svge: SVGSVGElement) => {
       let fL = Math.sqrt(nodes[i].fx * nodes[i].fx + nodes[i].fy * nodes[i].fy);
       if (fL === 0) {
         fL = 1;
-        let randDir = Math.random() * Math.PI * 2;
+        const randDir = Math.random() * Math.PI * 2;
 
         nodes[i].fx = Math.cos(randDir) * 1;
         nodes[i].fy = Math.sin(randDir) * 1;
       }
-      let min = nodes[i].radius / 5;
-      let max = nodes[i].radius * 1;
+      const min = nodes[i].radius / 5;
+      const max = nodes[i].radius * 1;
       nodes[i].vx = (nodes[i].fx / fL) * Math.min(Math.max(min, fL), max);
       nodes[i].vy = (nodes[i].fy / fL) * Math.min(Math.max(min, fL), max);
       nodes[i].x += nodes[i].vx;
@@ -107,13 +107,13 @@ const draw = (svge: SVGSVGElement) => {
   createAnimationFrame(draw);
 
   svg.on("mousemove", (e) => {
-    let p1 = d3.pointer(e);
+    const p1 = d3.pointer(e);
     root.px = p1[0];
     root.py = p1[1];
   });
 
   function bound(node: Node) {
-    let r = node.radius;
+    const r = node.radius;
     let nx = Math.max(node.x, r);
     let ny = Math.max(node.y, r);
     nx = Math.min(nx, w - r);
@@ -127,19 +127,19 @@ const draw = (svge: SVGSVGElement) => {
 
   type Node = typeof nodes[number];
   function collide(node: Node) {
-    let r = node.radius * 3,
-      nx1 = node.x - r,
-      nx2 = node.x + r,
-      ny1 = node.y - r,
-      ny2 = node.y + r;
+    const r = node.radius * 3;
+    const nx1 = node.x - r;
+    const nx2 = node.x + r;
+    const ny1 = node.y - r;
+    const ny2 = node.y + r;
     return (n2: QuadtreeInternalNode<Node> | QuadtreeLeaf<Node>, x1: number, y1: number, x2: number, y2: number) => {
       if (!n2.length) {
         do {
           if (n2.data !== node) {
-            let x = node.x - n2.data.x,
-              y = node.y - n2.data.y,
-              l = Math.sqrt(x * x + y * y),
-              r = node.radius + n2.data.radius;
+            let x = node.x - n2.data.x;
+            let y = node.y - n2.data.y;
+            let l = Math.sqrt(x * x + y * y);
+            let r = node.radius + n2.data.radius;
             if (l < r * 3) {
               node.totalNebs++;
               n2.data.totalNebs++;

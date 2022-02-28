@@ -11,21 +11,21 @@ export const TrafficDots = () => {
 
   onMount(() => {
     let nodes: d3.SimulationNodeDatum[] = [];
-    let chargeRef: d3.ForceManyBody<d3.SimulationNodeDatum & { r: number }>;
+    const chargeRef: d3.ForceManyBody<d3.SimulationNodeDatum & { r: number }> = d3.forceManyBody().strength(0);
 
-    let dp = dpr();
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    const dp = dpr();
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-    let canvas = d3
+    const canvas = d3
       .select(canvasNode)
       .attr("width", width * dp)
       .attr("height", height * dp);
-    let context = canvasNode.getContext("2d")!;
+    const context = canvasNode.getContext("2d")!;
 
-    let blur = false;
+    const blur = false;
     console.log("Q", width, height);
-    let siz = Math.sqrt((width * height) / 16000000) * 5;
+    const siz = Math.sqrt((width * height) / 16000000) * 5;
     const grd = siz * 20;
     nodes = d3.range(100).map(() => ({
       r: (8 + Math.random() * 2.5) * siz,
@@ -33,7 +33,6 @@ export const TrafficDots = () => {
       y: Math.random() * height,
     }));
     (nodes[0] as d3.SimulationNodeDatum & { r: number }).r = 20 * siz;
-    chargeRef = d3.forceManyBody().strength(0);
     d3.forceSimulation(nodes)
       .alphaDecay(0)
       .velocityDecay(0.05)
@@ -49,30 +48,29 @@ export const TrafficDots = () => {
         brownian();
         context.resetTransform();
         context.scale(dp, dp);
-        context.fillStyle =
-          blur === true
-            ? white() === false
-              ? "rgba(0,0,0,.1)"
-              : "rgba(255,255,255,.1)"
-            : white() === false
-            ? "#4d4d4d"
-            : "#fafafa";
+        context.fillStyle = blur
+          ? !white()
+            ? "rgba(0,0,0,.1)"
+            : "rgba(255,255,255,.1)"
+          : !white()
+          ? "#4d4d4d"
+          : "#fafafa";
         context.fillRect(0, 0, width, height);
         const lc = 1;
         context.lineWidth = lc;
-        let brightness = white() ? 255 - 27 - 27 : 77 * 2 - 104;
-        let dbrightness = white() ? 255 : 104;
+        const brightness = white() ? 255 - 27 - 27 : 77 * 2 - 104;
+        const dbrightness = white() ? 255 : 104;
         context.strokeStyle = "rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
 
         for (let jg = grd / 2; jg < width + grd / 2; jg += grd) {
-          let j = Math.floor(jg * dp) / dp;
+          const j = Math.floor(jg * dp) / dp;
           context.beginPath();
           context.moveTo(j + 0.5, grd / 2);
           context.lineTo(j + 0.5, Math.round(height / grd) * grd - grd / 2);
           context.stroke();
         }
         for (let jg = grd / 2; jg < height + grd / 2; jg += grd) {
-          let j = Math.floor(jg * dp) / dp;
+          const j = Math.floor(jg * dp) / dp;
           context.beginPath();
           context.moveTo(grd / 2, j + 0.5);
           context.lineTo(width - grd / 2, j + 0.5);
@@ -80,14 +78,14 @@ export const TrafficDots = () => {
         }
         context.strokeStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
         for (let jg = grd / 2; jg < width + grd / 2; jg += grd) {
-          let j = Math.floor(jg * dp) / dp;
+          const j = Math.floor(jg * dp) / dp;
           context.beginPath();
           context.moveTo(j + 0.5 - 1, grd / 2);
           context.lineTo(j + 0.5 - 1, Math.round(height / grd) * grd - grd / 2);
           context.stroke();
         }
         for (let jg = grd / 2; jg < height + grd / 2; jg += grd) {
-          let j = Math.floor(jg * dp) / dp;
+          const j = Math.floor(jg * dp) / dp;
           context.beginPath();
           context.moveTo(grd / 2, j + 0.5 - 1);
           context.lineTo(width - grd / 2, j + 0.5 - 1);
@@ -96,7 +94,7 @@ export const TrafficDots = () => {
         nodes.slice(0).forEach((dg, i) => {
           const d = dg as d3.SimulationNodeDatum & { r: number };
           if (d.x !== undefined && d.y !== undefined && d.r !== undefined) {
-            let fC = i === 0 ? (white() === true ? "#4d4d4d" : "#fafafa") : d3.schemeCategory10[i % 6];
+            const fC = i === 0 ? (white() ? "#4d4d4d" : "#fafafa") : d3.schemeCategory10[i % 6];
             context.fillStyle = fC;
             context.beginPath();
             context.moveTo(d.x + d.r, d.y);
@@ -151,7 +149,7 @@ export const TrafficDots = () => {
       }
     }
     canvas.on("mousemove", (event) => {
-      let p1 = d3.pointer(event, canvas.node());
+      const p1 = d3.pointer(event, canvas.node());
       nodes[0].fx = p1[0];
       nodes[0].fy = p1[1];
     });
@@ -168,7 +166,7 @@ export const TrafficDots = () => {
     <>
       <div
         style={{
-          "background-color": white() === false ? "#4d4d4d" : "#fafafa",
+          "background-color": !white() ? "#4d4d4d" : "#fafafa",
           color: "black",
         }}
         class="well"

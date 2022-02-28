@@ -6,7 +6,7 @@ export const CharacterRain = () => {
   let textbox: HTMLInputElement;
   let col: HTMLInputElement;
   function Check(e: KeyboardEvent) {
-    let keyCode = e.keyCode ? e.keyCode : e.which;
+    const keyCode = e.keyCode ? e.keyCode : e.which;
     if (keyCode == 13) {
       e.preventDefault();
     }
@@ -17,10 +17,10 @@ export const CharacterRain = () => {
     c.height = window.innerHeight;
     c.width = window.innerWidth;
 
-    let ctx = c.getContext("2d")!;
+    const ctx = c.getContext("2d")!;
 
     let timer = 0;
-    let speed = 3;
+    const speed = 3;
 
     textbox.value = "❆✵⛄";
     //characters characters - taken from the unicode charset
@@ -28,9 +28,9 @@ export const CharacterRain = () => {
     //converting the string into an array of single characters
 
     col.value = "#0f0";
-    let columns = (c.width * 100) / c.width; //number of columns for the rain
+    const columns = (c.width * 100) / c.width; //number of columns for the rain
     //an array of drops - one per column
-    let drops: { x: number; size: number; y: number }[] = [];
+    const drops: { x: number; size: number; y: number }[] = [];
 
     //x below is the x coordinate
     //1 = y co-ordinate of the drop(same for every drop initially)
@@ -60,7 +60,7 @@ export const CharacterRain = () => {
       for (let i = 0; i < drops.length; i++) {
         ctx.font = drops[i].size + "px Times";
 
-        let text = characters[Math.floor(Math.random() * characters.length)];
+        const text = characters[Math.floor(Math.random() * characters.length)];
         //x = i*font_size, y = value of drops[i]*font_size
         ctx.fillText(text, drops[i].x, drops[i].y * drops[i].size);
 

@@ -5,5 +5,7 @@ export function createAnimationFrame(callback: (() => void) | ((t: number) => vo
     callback(t);
     y = requestAnimationFrame(x);
   });
-  onCleanup(() => cancelAnimationFrame(y));
+  onCleanup(() => {
+    cancelAnimationFrame(y);
+  });
 }

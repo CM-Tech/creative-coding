@@ -1,16 +1,16 @@
 import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 function main(c: HTMLCanvasElement) {
-  let ctx = c.getContext("2d")!;
-  let arr = [];
+  const ctx = c.getContext("2d")!;
+  const arr = [];
 
   let w = document.body.clientWidth - 4;
   let h = document.body.clientHeight - 4;
-  let fps = 60,
-    step = 1 / fps,
-    dt = 0,
-    now,
-    last = timestamp();
+  const fps = 60;
+  const step = 1 / fps;
+  let dt = 0;
+  let now;
+  let last = timestamp();
   let mouse = {
     x: 0,
     y: 0,
@@ -19,7 +19,7 @@ function main(c: HTMLCanvasElement) {
 
   c.width = w;
   c.height = h;
-  let options = {
+  const options = {
     size: 3,
     strength: 2,
     expand: 1,
@@ -37,7 +37,7 @@ function main(c: HTMLCanvasElement) {
       arr[r][c] = [];
     }
   }
-  let nodes: node[] = [];
+  const nodes: node[] = [];
 
   class node {
     x: number;
@@ -67,9 +67,9 @@ function main(c: HTMLCanvasElement) {
     }
 
     for (let i = 0; i < nodes.length; i++) {
-      let nod = nodes[i];
-      let r = nod.y;
-      let c = nod.x;
+      const nod = nodes[i];
+      const r = nod.y;
+      const c = nod.x;
       if (Math.floor(Math.random() * 200) == 5) {
         if (nodes[i].color == "hsla(20,100%,50%,0.5)") {
           nodes[i].color = "hsla(0,100%,50%,0.2)";
@@ -86,7 +86,7 @@ function main(c: HTMLCanvasElement) {
           nodes[i].color = "hsla(20,100%,50%,0.5)";
         }
       }
-      let choice = Math.floor(Math.random() * 5);
+      const choice = Math.floor(Math.random() * 5);
       if (Math.floor(Math.random() * 40) != 10) {
         if (choice === 0 && r > 0) {
           nod.y -= options.speed;
@@ -163,7 +163,7 @@ export const PenFlame = () => {
   });
   return (
     <>
-      <canvas ref={c!} />
+      <canvas ref={c} />
       <div class="instruct">
         <h1>Draw With Fire</h1>
       </div>

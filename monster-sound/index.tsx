@@ -5,26 +5,26 @@ import vertsource from "./vert.glsl?raw";
 
 function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   let anim: number;
-  let MIN_RADIUS = 32;
+  const MIN_RADIUS = 32;
   let JITTER_RANGE =
     window.innerHeight <= window.innerWidth ? window.innerHeight / 2 - MIN_RADIUS : window.innerWidth / 2 - MIN_RADIUS;
   JITTER_RANGE = JITTER_RANGE * 1.2;
-  let NUM_NODES = 256; // only 1/2 of these are actually drawn
+  const NUM_NODES = 256; // only 1/2 of these are actually drawn
 
   // derived
   let points: { x: number; y: number }[] = [];
   let wdraw: number[] = [];
-  let mouse = {
+  const mouse = {
     x: 0.5,
     y: 0.5,
   };
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  let gl = canvas.getContext("webgl")!;
+  const gl = canvas.getContext("webgl")!;
 
-  let vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
-  let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
+  const vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
+  const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
 
   gl.shaderSource(vertexShader, vertsource);
   gl.shaderSource(fragmentShader, fragsource);
@@ -32,19 +32,19 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   gl.compileShader(vertexShader);
   gl.compileShader(fragmentShader);
 
-  let program = gl.createProgram()!;
+  const program = gl.createProgram()!;
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
 
-  let ptime = gl.getUniformLocation(program, "time");
-  let presolution = gl.getUniformLocation(program, "resolution");
-  let pmouse = gl.getUniformLocation(program, "mouse");
-  let pposition = gl.getAttribLocation(program, "vertPosition");
+  const ptime = gl.getUniformLocation(program, "time");
+  const presolution = gl.getUniformLocation(program, "resolution");
+  const pmouse = gl.getUniformLocation(program, "mouse");
+  const pposition = gl.getAttribLocation(program, "vertPosition");
 
   function xyFromPolar(r: number, theta: number) {
-    let x = Math.round(r / 1) * 1 * Math.cos(theta);
-    let y = Math.round(r / 1) * 1 * Math.sin(theta);
+    const x = Math.round(r / 1) * 1 * Math.cos(theta);
+    const y = Math.round(r / 1) * 1 * Math.sin(theta);
     points.push({
       x: (x * 2) / window.innerWidth,
       y: (y * 2) / window.innerHeight,
@@ -52,19 +52,19 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   }
 
   function stamp(db: number, i: number) {
-    let r = MIN_RADIUS + (db * JITTER_RANGE) / 255;
-    let theta = ((i - 2) / (NUM_NODES - 2.0)) * Math.PI + Math.PI / 4.0;
+    const r = MIN_RADIUS + (db * JITTER_RANGE) / 255;
+    const theta = ((i - 2) / (NUM_NODES - 2.0)) * Math.PI + Math.PI / 4.0;
     xyFromPolar(r, theta);
   }
 
   function stamp2(db: number, i: number) {
-    let r = MIN_RADIUS + (db * JITTER_RANGE) / 255;
-    let theta = Math.PI - (i / NUM_NODES) * Math.PI - Math.PI / 4.0;
+    const r = MIN_RADIUS + (db * JITTER_RANGE) / 255;
+    const theta = Math.PI - (i / NUM_NODES) * Math.PI - Math.PI / 4.0;
     xyFromPolar(r, theta);
   }
 
   function update(analyser: AnalyserNode) {
-    let freqArray = new Uint8Array(analyser.frequencyBinCount);
+    const freqArray = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(freqArray);
     points = [];
     wdraw = [];
@@ -90,12 +90,12 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   }
 
   fetch("/sounds/monsters.mp3")
-    .then((x) => x.arrayBuffer())
+    .then(async (x) => x.arrayBuffer())
     .then((res) => {
-      let audioContext = new AudioContext();
+      const audioContext = new AudioContext();
       audioContext.decodeAudioData(res, (buffer) => {
-        let analyser = audioContext.createAnalyser();
-        let sourceNode = audioContext.createBufferSource();
+        const analyser = audioContext.createAnalyser();
+        const sourceNode = audioContext.createBufferSource();
         analyser.smoothingTimeConstant = 0.6;
         analyser.fftSize = NUM_NODES * 2;
         analyser.minDecibels = -90;

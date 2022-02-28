@@ -2,16 +2,16 @@ import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
 const main = (chars: HTMLDivElement, audio: HTMLAudioElement) => {
-  let dt = ["̄", "̅͡"];
-  let db = ["̱", "̲"];
+  const dt = ["̄", "̅"];
+  const db = ["̱", "̲"];
 
-  let amount = 32;
+  const amount = 32;
 
-  let audioContext = new AudioContext();
+  const audioContext = new AudioContext();
   let anim: number;
 
-  let analyser = audioContext.createAnalyser();
-  let source = audioContext.createMediaElementSource(audio);
+  const analyser = audioContext.createAnalyser();
+  const source = audioContext.createMediaElementSource(audio);
 
   source.connect(analyser);
   analyser.connect(audioContext.destination);
@@ -31,14 +31,14 @@ const main = (chars: HTMLDivElement, audio: HTMLAudioElement) => {
   });
 
   function update() {
-    let freqArray = new Uint8Array(analyser.frequencyBinCount);
+    const freqArray = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(freqArray);
     let ac = "";
     let red = false;
 
     for (let i = amount / 8; i < (amount * 7) / 8; i++) {
       ac += audio.currentTime / audio.duration < i / ((amount * 3) / 4) ? "▓" : "░";
-      for (let d = 0; d < freqArray[i]; d++) {
+      for (let d = 0; d < freqArray[i] / 2; d++) {
         ac += dt[Math.floor(Math.random() * 2)];
         ac += db[Math.floor(Math.random() * 2)];
       }

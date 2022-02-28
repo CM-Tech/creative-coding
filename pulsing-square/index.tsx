@@ -2,20 +2,20 @@ import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
 function main(dom: HTMLCanvasElement) {
-  let ctx = dom.getContext("2d")!,
-    spaceMode = false,
-    nodeRadius = 10,
-    mousedown = { x: 0, y: 0 },
-    colors = ["#7eb0ea", "#fdcf51", "#ff9157"];
-  let blackColor = "#2f3436";
-  let whiteColor = "#ededeb";
-  let bgColor = "#dddddb";
+  const ctx = dom.getContext("2d")!;
+  let spaceMode = false;
+  const nodeRadius = 10;
+  const mousedown = { x: 0, y: 0 };
+  const colors = ["#7eb0ea", "#fdcf51", "#ff9157"];
+  const blackColor = "#2f3436";
+  const whiteColor = "#ededeb";
+  const bgColor = "#dddddb";
 
-  let bgColorSpace = "#111111";
-  let borderThickness = 5;
-  let rectWidth = 25;
-  let turnRadius = 25;
-  let c = {
+  const bgColorSpace = "#111111";
+  const borderThickness = 5;
+  const rectWidth = 25;
+  const turnRadius = 25;
+  const c = {
     x: 0,
     y: 0,
   };
@@ -23,9 +23,9 @@ function main(dom: HTMLCanvasElement) {
 
   function brownian() {
     lasttime = Date.now();
-    let l = nodes.length;
+    const l = nodes.length;
     for (let i = 0; i < l; i++) {
-      let s = nodes[i];
+      const s = nodes[i];
 
       s.truex += s.dx;
       s.truey += s.dy;
@@ -41,10 +41,10 @@ function main(dom: HTMLCanvasElement) {
     context: CanvasRenderingContext2D,
     settings: (x: string) => string | undefined
   ) {
-    let color = edge.color,
-      edgeColor = settings("edgeColor"),
-      defaultNodeColor = settings("defaultNodeColor")!,
-      defaultEdgeColor = settings("defaultEdgeColor")!;
+    let color = edge.color;
+    const edgeColor = settings("edgeColor");
+    const defaultNodeColor = settings("defaultNodeColor")!;
+    const defaultEdgeColor = settings("defaultEdgeColor")!;
     if (!color)
       switch (edgeColor) {
         case "source":
@@ -61,9 +61,9 @@ function main(dom: HTMLCanvasElement) {
     context.lineWidth = 10;
     context.globalCompositeOperation = "multiply";
     context.beginPath();
-    let targetXGreater = target.x > source.x;
-    let targetYGreater = target.y > source.y;
-    let Rad = Math.min(turnRadius, Math.min(Math.abs(target.x - source.x), Math.abs(target.y - source.y)));
+    const targetXGreater = target.x > source.x;
+    const targetYGreater = target.y > source.y;
+    const Rad = Math.min(turnRadius, Math.min(Math.abs(target.x - source.x), Math.abs(target.y - source.y)));
     context.moveTo(source.x, source.y);
     context.lineTo(source.x, target.y - (targetYGreater ? 1 : -1) * Rad);
     context.lineTo(source.x + (targetXGreater ? 1 : -1) * Rad, target.y);
@@ -74,7 +74,7 @@ function main(dom: HTMLCanvasElement) {
   }
 
   function draw_node(node: typeof nodes[number], ctx: CanvasRenderingContext2D) {
-    let sz = rectWidth;
+    const sz = rectWidth;
     ctx.fillStyle = blackColor; //node.color;
     ctx.beginPath();
     ctx.rect(node.x - sz / 2, node.y - sz / 2, sz, sz);
@@ -149,10 +149,10 @@ function main(dom: HTMLCanvasElement) {
     lastAdd.x = 0;
     lastAdd.y = 0;
     if (Math.hypot(mousedown.x - e.clientX, mousedown.y - e.clientY) < 7) {
-      let x = e.clientX - dom.width / 2 - c.x;
-      let y = e.clientY - dom.height / 2 - c.y;
+      const x = e.clientX - dom.width / 2 - c.x;
+      const y = e.clientY - dom.height / 2 - c.y;
 
-      let neighbors = nodes.filter((n) => Math.hypot(n.x - x, n.y - y, 2) < n.size);
+      const neighbors = nodes.filter((n) => Math.hypot(n.x - x, n.y - y, 2) < n.size);
       if (!spaceMode) {
         nodes.push({
           size: nodeRadius,
@@ -182,7 +182,7 @@ function main(dom: HTMLCanvasElement) {
     mousedown.y = e.clientY;
     dragging = true;
   });
-  let lastAdd = {
+  const lastAdd = {
     x: 0,
     y: 0,
   };
@@ -200,7 +200,7 @@ function main(dom: HTMLCanvasElement) {
     lastAdd.y = my;
   });
   document.addEventListener("keydown", (e) => {
-    spaceMode = e.which == 32 ? (spaceMode === true ? false : true) : spaceMode;
+    spaceMode = e.which == 32 ? (spaceMode ? false : true) : spaceMode;
   });
 
   function quad(k: number) {
@@ -208,7 +208,7 @@ function main(dom: HTMLCanvasElement) {
     return -0.5 * (--k * (k - 2) - 1);
   }
   function animate() {
-    let p = (Date.now() - lasttime) / 1000;
+    const p = (Date.now() - lasttime) / 1000;
     for (let i = 0; i < nodes.length; i++) {
       nodes[i].x = nodes[i].truex + nodes[i].dx * quad(p);
       nodes[i].y = nodes[i].truey + nodes[i].dy * quad(p);

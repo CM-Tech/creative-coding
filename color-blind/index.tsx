@@ -3,18 +3,18 @@ import { createAnimationFrame } from "../utils";
 import "./style.css";
 
 const main = (c: HTMLCanvasElement) => {
-  let ctx = c.getContext("2d")!;
+  const ctx = c.getContext("2d")!;
   c.height = window.innerHeight;
   c.width = window.innerWidth;
 
-  let bubbles: bubble[] = [];
-  let colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
+  const bubbles: bubble[] = [];
+  const colors = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
   let color = colors[Math.floor(Math.random() * colors.length)];
   let fake = colors[Math.floor(Math.random() * colors.length)];
   let score = 0;
   let lives = 3;
   let clicked = false;
-  let settime = 150;
+  const settime = 150;
   let time = settime;
   let incorrect = 0;
 
@@ -27,7 +27,7 @@ const main = (c: HTMLCanvasElement) => {
     speedX: number;
     speedY: number;
     constructor(color: string) {
-      let w = Math.floor(Math.random() * 4 + 1);
+      const w = Math.floor(Math.random() * 4 + 1);
       this.x =
         w == 1 || w == 3
           ? Math.floor(Math.random() * (window.innerWidth - 50) + 25)
@@ -111,12 +111,12 @@ const main = (c: HTMLCanvasElement) => {
         break;
     }
 
-    let width = ctx.measureText(tcolor).width;
+    const width = ctx.measureText(tcolor).width;
     ctx.fillText(tcolor, (window.innerWidth - width) / 2, (window.innerHeight - 30) / 2);
 
     ctx.font = "30px 'Comfortaa'";
     ctx.fillStyle = "black";
-    if (clicked === false) {
+    if (!clicked) {
       ctx.fillText(
         "Tap the bubble with the text you read, not the color you see",
         (window.innerWidth - ctx.measureText("Tap the bubble with the text you read, not the color you see").width) / 2,
@@ -162,7 +162,7 @@ const main = (c: HTMLCanvasElement) => {
     ctx.fill();
     ctx.stroke();
   }
-  let dend = false;
+  const dend = false;
 
   function drawend() {
     ctx.fillStyle = "rgba(255,255,255,0.2)";
@@ -200,7 +200,7 @@ const main = (c: HTMLCanvasElement) => {
   function LightenDarkenColor(col: string, amt: number) {
     col = col.slice(1);
 
-    let num = parseInt(col, 16);
+    const num = parseInt(col, 16);
 
     let r = (num >> 16) + amt;
 
@@ -231,15 +231,15 @@ const main = (c: HTMLCanvasElement) => {
     );
   }
   document.body.onclick = (event) => {
-    let mouseX = event.clientX;
-    let mouseY = event.clientY;
+    const mouseX = event.clientX;
+    const mouseY = event.clientY;
     let correct = false;
     let ondot = false;
     if (lives >= 0) {
       for (let i = 0; i < bubbles.length; i++) {
-        let xd = Math.pow(Math.abs(mouseX - bubbles[i].x), 2);
-        let yd = Math.pow(Math.abs(mouseY - bubbles[i].y), 2);
-        let dis = Math.sqrt(xd + yd);
+        const xd = Math.pow(Math.abs(mouseX - bubbles[i].x), 2);
+        const yd = Math.pow(Math.abs(mouseY - bubbles[i].y), 2);
+        const dis = Math.sqrt(xd + yd);
         if (dis < 100) {
           ondot = true;
           if (bubbles[i].color == color) {
@@ -249,8 +249,8 @@ const main = (c: HTMLCanvasElement) => {
         }
       }
     }
-    if (ondot === true) {
-      if (correct === true) {
+    if (ondot) {
+      if (correct) {
         score++;
         incorrect -= 25;
         animate(c, "bounce");
@@ -299,7 +299,7 @@ const main = (c: HTMLCanvasElement) => {
         animate(c, "headShake");
       }
     } else {
-      if (dend === false) {
+      if (!dend) {
         animate(c, "rubberBand");
       }
       drawend();

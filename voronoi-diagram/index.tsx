@@ -5,12 +5,12 @@ import { createAnimationFrame } from "../utils";
 const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => {
   let hsize = 5;
   let speed = 1;
-  let size = {
+  const size = {
     x: window.innerWidth,
     y: window.innerHeight,
   };
 
-  function textChanged(event: KeyboardEvent | Event) {
+  function textChanged(event: Event | KeyboardEvent) {
     if ((event as KeyboardEvent).keyCode == 13) {
       event.preventDefault();
     } else {
@@ -32,8 +32,8 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
     speed: number;
     y: number;
     constructor(i: number) {
-      let g = (i / 4) % size.x;
-      let t = Math.floor(i / 4 / size.x);
+      const g = (i / 4) % size.x;
+      const t = Math.floor(i / 4 / size.x);
       this.x = random(1) * speed;
       this.y = random(1) * speed;
       this.j = g;
@@ -46,10 +46,10 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
       this.c = hsize + random(1) * hsize;
     }
     heart() {
-      let he = this.f;
-      let wi = this.f;
-      let x = this.x;
-      let y = this.y;
+      const he = this.f;
+      const wi = this.f;
+      const x = this.x;
+      const y = this.y;
       ctx.fillStyle = this.g;
       ctx.beginPath();
       ctx.moveTo(x + 0.5 * wi, y + 0.3 * he);
@@ -59,10 +59,10 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
       ctx.fill();
     }
     h() {
-      let x = this.x;
-      let y = this.y;
-      let b = this.c;
-      let l = this.j;
+      const x = this.x;
+      const y = this.y;
+      const b = this.c;
+      const l = this.j;
       hsize = this.speed;
       x < l - this.c && ((this.x = l - b), (this.a *= -1));
       x > l + this.c && ((this.x = l + b), (this.a *= -1));
@@ -83,8 +83,8 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
     ctx.fillRect(0, 0, size.x, size.y);
   }
 
-  function random(neg?: any) {
-    let rand = Math.random();
+  function random(neg?: number) {
+    const rand = Math.random();
     return neg ? 2 * rand - 1 : rand;
   }
 
@@ -109,13 +109,13 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
     background();
 
     ctx.fillStyle = "black";
-    let fontt = "'Jost'";
+    const fontt = "'Jost'";
     ctx.font = 100 + "px " + fontt;
-    let lines = t.split("\n");
-    let fontMeasures = [];
-    let fontSizes = [];
+    const lines = t.split("\n");
+    const fontMeasures = [];
+    const fontSizes = [];
     let runningY = 0;
-    let runningYS = [];
+    const runningYS = [];
     for (let i = 0; i < lines.length; i++) {
       ctx.font = 100 + "px " + fontt;
       let measure = ctx.measureText(lines[i]);
@@ -125,7 +125,7 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
         w: measure.actualBoundingBoxRight - measure.actualBoundingBoxLeft,
         h: measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent,
       };
-      let fS = Math.floor((1000 / bbox.w) * 100);
+      const fS = Math.floor((1000 / bbox.w) * 100);
       // console.log(fS);
       ctx.font = fS + "px " + fontt;
       measure = ctx.measureText(lines[i]);
@@ -150,12 +150,12 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
       h: measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent,
     };
 
-    let bbbox = {
+    const bbbox = {
       h: fontMeasures[fontMeasures.length - 1].y + fontMeasures[fontMeasures.length - 1].h - fontMeasures[0].y,
       w: 0,
     };
-    let sScale = Math.min((size.x - 200) / 1000, (size.y - 200) / bbbox.h);
-    let heightOfFont = Math.floor(sScale * Math.min(...fontSizes));
+    const sScale = Math.min((size.x - 200) / 1000, (size.y - 200) / bbbox.h);
+    const heightOfFont = Math.floor(sScale * Math.min(...fontSizes));
 
     hsize = Math.min(Math.floor(heightOfFont / 20) + 1, Math.floor(Math.min(size.x, size.y) / 20) + 1);
     for (let i = 0; i < lines.length; i++) {
@@ -176,12 +176,12 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
       );
     }
 
-    let ctext = ctx.getImageData(0, 0, size.x, size.y);
-    let pixtext = ctext.data;
+    const ctext = ctx.getImageData(0, 0, size.x, size.y);
+    const pixtext = ctext.data;
 
     for (let i = 0; i < pixtext.length; i += 4) {
       if (0 === pixtext[i] && (s++, 0 === s % hsize)) {
-        let p = new Particle(i);
+        const p = new Particle(i);
         p.heart();
         pa.push(p);
       }
@@ -191,8 +191,8 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
     background();
     const points = [];
 
-    for (let i in pa) {
-      let p = pa[i];
+    for (const i in pa) {
+      const p = pa[i];
       p.tick();
       // p.heart();
       points.push([p.x, p.y]);

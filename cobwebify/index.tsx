@@ -6,8 +6,8 @@ import { createAnimationFrame } from "../utils";
 const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
   const regl = reglLib();
   const ctx = c.getContext("2d")!;
-  let mousePos = { x: 100, y: 100 };
-  let boidBeingDragged: null | Boid = null;
+  const mousePos = { x: 100, y: 100 };
+  let boidBeingDragged: Boid | null = null;
   const colors: [number, number, number][] = [
     [0, 255, 255],
     [255, 255, 0],
@@ -23,7 +23,7 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
   c.height = s;
   const K = 120;
   const boidSpeed = 10;
-  let boids: Boid[] = [];
+  const boids: Boid[] = [];
 
   function q(max: number) {
     return Math.random() * max;
@@ -61,29 +61,29 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
       this.fy += 100 * this.r * this.r;
 
       if (this.y < this.r) {
-        let dist2 = this.y;
-        let rsum = this.r;
-        let forceImpart = -(dist2 - rsum) * K * (this.r * this.r);
+        const dist2 = this.y;
+        const rsum = this.r;
+        const forceImpart = -(dist2 - rsum) * K * (this.r * this.r);
         this.fy += (-forceImpart * (0 - this.y)) / dist2;
       }
 
       if (size.h - this.y < this.r) {
-        let dist2 = size.h - this.y;
-        let rsum = this.r;
-        let forceImpart = -(dist2 - rsum) * K * (this.r * this.r);
+        const dist2 = size.h - this.y;
+        const rsum = this.r;
+        const forceImpart = -(dist2 - rsum) * K * (this.r * this.r);
         this.fy += (-forceImpart * (size.h - this.y)) / dist2;
       }
 
       if (this.x < this.r) {
-        let dist2 = this.x;
-        let rsum = this.r;
-        let forceImpart = -(dist2 - rsum) * K * (this.r * this.r);
+        const dist2 = this.x;
+        const rsum = this.r;
+        const forceImpart = -(dist2 - rsum) * K * (this.r * this.r);
         this.fx += (-forceImpart * (0 - this.x)) / dist2;
       }
       if (size.w - this.x < this.r) {
-        let dist2 = size.w - this.x;
-        let rsum = this.r;
-        let forceImpart = -(dist2 - rsum) * K * (this.r * this.r);
+        const dist2 = size.w - this.x;
+        const rsum = this.r;
+        const forceImpart = -(dist2 - rsum) * K * (this.r * this.r);
         this.fx += (-forceImpart * (size.w - this.x)) / dist2;
       }
 
@@ -97,22 +97,22 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
     bounce(tm: number) {
       let collidingNow = false;
       let n = true;
-      for (let b of boids) {
+      for (const b of boids) {
         if (b === this) {
           n = false;
           continue;
         }
-        let dist = Math.hypot(b.x - this.x, b.y - this.y);
+        const dist = Math.hypot(b.x - this.x, b.y - this.y);
 
-        let rsum = b.r + this.r;
+        const rsum = b.r + this.r;
         if (dist < rsum) {
-          let vm =
+          const vm =
             ((b.x - this.x) * (-this.vx * this.r * this.r + b.vx * b.r * b.r) +
               (b.y - this.y) * (-this.vy * this.r * this.r + b.vy * b.r * b.r)) /
             dist;
-          let forceImpart =
+          const forceImpart =
             (-(dist - rsum) * K * (this.r * this.r * b.r * b.r)) / (this.r * this.r + b.r * b.r) - 3 * vm;
-          let K2 = 0;
+          const K2 = 0;
           this.fx += (-forceImpart * (b.x - b.vx * 0 - this.x + this.vx * K2)) / dist;
           this.fy += (-forceImpart * (b.y - b.vy * 0 - this.y + this.vy * K2)) / dist;
 
@@ -123,7 +123,7 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
         }
       }
       this.colliding = collidingNow;
-      let l = Math.pow(0.1, tm);
+      const l = Math.pow(0.1, tm);
       for (let x = 0; x < 3; x++) {
         this.fillColor[x] = this.fillColor[x] * l + (1 - l) * this.color[x];
       }
@@ -138,7 +138,7 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
   for (let i = 0; i < ((s * s) / 512 / 512) * 40; i++) {
     boids.push(new Boid(q(s), q(s), q(2) - 1, q(2) - 1));
   }
-  let size = {
+  const size = {
     w: window.innerWidth,
     h: window.innerHeight,
   };
@@ -157,7 +157,7 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
 
   function physics(tm: number) {
     if (boidBeingDragged !== null) {
-      let firstBoid = boidBeingDragged;
+      const firstBoid = boidBeingDragged;
       firstBoid.vx += (mousePos.x - firstBoid.x) * 10 - firstBoid.vx / 2;
       firstBoid.vy += (mousePos.y - firstBoid.y) * 10 - firstBoid.vy / 2;
     }
@@ -171,13 +171,13 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
   let t = Date.now();
   ctx.fillStyle = "black";
   ctx.fillRect(0, 0, s, s);
-  let tex_canvas = regl.texture(c);
+  const tex_canvas = regl.texture(c);
   function draw() {
-    let delta = Math.min(Date.now() - t, 100);
+    const delta = Math.min(Date.now() - t, 100);
     t = Date.now();
     for (let i = 0; i < 3; i++) physics(delta / 1500);
 
-    ctx.fillStyle = `#00000040`;
+    ctx.fillStyle = "#00000040";
 
     ctx.fillRect(0, 0, size.w, size.h);
 
@@ -186,7 +186,7 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
     for (const b of boids) {
       b.draw();
     }
-    let txt = input.value;
+    const txt = input.value;
     ctx.beginPath();
     ctx.font = "100px Arial";
     ctx.lineWidth = 1;
@@ -203,13 +203,13 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
   }
   createAnimationFrame(draw);
   function offset(el: HTMLElement) {
-    let rect = el.getBoundingClientRect(),
-      scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-      scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const rect = el.getBoundingClientRect();
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
   }
   window.addEventListener("mousemove", (event) => {
-    let offsetC = offset(c);
+    const offsetC = offset(c);
     mousePos.x = event.clientX - offsetC.left;
     mousePos.y = event.clientY - offsetC.top;
   });
@@ -217,7 +217,7 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
     return ((a.x - b.x) ** 2 + (a.y - b.y) ** 2) ** 0.5;
   }
   window.addEventListener("mousedown", (event) => {
-    let offsetC = offset(c);
+    const offsetC = offset(c);
     mousePos.x = event.clientX - offsetC.left;
     mousePos.y = event.clientY - offsetC.top;
     let closestBoid = null;
@@ -234,9 +234,9 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
     boidBeingDragged = null;
   });
 
-  type ReglProp = {
+  interface ReglProp {
     color: [number, number, number];
-  };
+  }
   const drawTriangle = regl({
     frag: webShader,
 

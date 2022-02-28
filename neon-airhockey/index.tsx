@@ -11,17 +11,17 @@ void main() {
 }
 `;
 
-  let mouse = {
+  const mouse = {
     x: 0.5,
     y: 0.5,
   };
   let down = 0.0;
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  let gl = canvas.getContext("webgl")!;
+  const gl = canvas.getContext("webgl")!;
 
-  let vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
-  let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
+  const vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
+  const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
 
   gl.shaderSource(vertexShader, vertex);
   gl.shaderSource(fragmentShader, frag);
@@ -29,12 +29,12 @@ void main() {
   gl.compileShader(vertexShader);
   gl.compileShader(fragmentShader);
 
-  let program = gl.createProgram()!;
+  const program = gl.createProgram()!;
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
 
-  let triangleVertices = new Float32Array([
+  const triangleVertices = new Float32Array([
     -1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
 
     1.0, -1.0, 1.0, 1.0, -1.0, 1.0,
@@ -43,12 +43,12 @@ void main() {
   let t1 = createTarget(window.innerWidth, window.innerHeight);
   let t2 = createTarget(window.innerWidth, window.innerHeight);
 
-  let ptime = gl.getUniformLocation(program, "time");
-  let presolution = gl.getUniformLocation(program, "resolution");
-  let pmouse = gl.getUniformLocation(program, "mouse");
-  let pbackbuffer = gl.getUniformLocation(program, "backbuffer");
-  let pdown = gl.getUniformLocation(program, "down");
-  let pposition = gl.getAttribLocation(program, "vertPosition");
+  const ptime = gl.getUniformLocation(program, "time");
+  const presolution = gl.getUniformLocation(program, "resolution");
+  const pmouse = gl.getUniformLocation(program, "mouse");
+  const pbackbuffer = gl.getUniformLocation(program, "backbuffer");
+  const pdown = gl.getUniformLocation(program, "down");
+  const pposition = gl.getAttribLocation(program, "vertPosition");
 
   function render(time: number) {
     gl.useProgram(program);
@@ -108,7 +108,7 @@ void main() {
   };
 
   function createTarget(width: number, height: number) {
-    let target = {
+    const target = {
       framebuffer: gl.createFramebuffer(),
       renderbuffer: gl.createRenderbuffer(),
       texture: gl.createTexture(),

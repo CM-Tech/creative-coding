@@ -6,8 +6,8 @@ export const Warpy = () => {
   let c: HTMLCanvasElement;
   let min = Math.min(window.innerWidth, window.innerHeight);
   onMount(() => {
-    let ctx = c.getContext("2d")!;
-    let you = {
+    const ctx = c.getContext("2d")!;
+    const you = {
       x: c.width / 2,
       y: c.height / 2,
       vx: 0,
@@ -23,7 +23,7 @@ export const Warpy = () => {
       vx: number;
       vy: number;
       constructor() {
-        let wall = Math.random() < 0.5;
+        const wall = Math.random() < 0.5;
         this.x = wall
           ? c.width * Math.round(Math.random())
           : Math.random() > (time > 1050 ? 0.9 : 0.25)
@@ -36,7 +36,7 @@ export const Warpy = () => {
           : you.y;
         this.vx = wall ? Math.sign(c.width / 2 - this.x) : 0;
         this.vy = !wall ? Math.sign(c.height / 2 - this.y) : 0;
-        let len = Math.sqrt(this.vy ** 2 + this.vx ** 2) || 1;
+        const len = Math.sqrt(this.vy ** 2 + this.vx ** 2) || 1;
         this.vx /= len;
         this.vy /= len;
       }
@@ -82,8 +82,8 @@ export const Warpy = () => {
 
       if (time > 1000 && time < 1050) {
         ctx.fillStyle = "salmon";
-        let w = ((time - 1000) / 50) * c.width,
-          h = ((time - 1000) / 50) * c.height;
+        const w = ((time - 1000) / 50) * c.width;
+        const h = ((time - 1000) / 50) * c.height;
         ctx.fillRect(c.width / 2 - w / 2, c.height / 2 - h / 2, w, h);
       }
       ctx.font = "90px serif";
@@ -93,7 +93,7 @@ export const Warpy = () => {
       ctx.fillText(`${time}`, 10, 10);
       if (time % (time > 1050 ? 20 : 40) == 0 && running) bullets.push(new Bullet());
       bullets = bullets.filter((b) => !b.die());
-      for (let b of bullets) {
+      for (const b of bullets) {
         if (running && (time < 1000 || time > 1050)) b.move();
         b.draw();
         if (
@@ -109,7 +109,7 @@ export const Warpy = () => {
       }
 
       animations = animations.filter((a) => !a.die());
-      for (let a of animations) {
+      for (const a of animations) {
         a.draw();
       }
       for (let i = -1; i < 2; i++) {
@@ -188,7 +188,7 @@ export const Warpy = () => {
     document.body.ontouchmove = (e) => {
       e.preventDefault();
     };
-    let hammer = new Hammer(c);
+    const hammer = new Hammer(c);
     hammer.on("swipe", (e) => {
       if (running) {
         if (e.direction == 2) {

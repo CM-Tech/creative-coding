@@ -1,16 +1,16 @@
 import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
-let w = window.innerWidth;
-let h = window.innerHeight;
+const w = window.innerWidth;
+const h = window.innerHeight;
 let ctx: CanvasRenderingContext2D;
 let mouseX = 0;
 let mouseY = 0;
-let particles: Particle[] = [];
+const particles: Particle[] = [];
 let n = 0;
-let mass = 5;
-let friction = 0.05;
-let speed = 0.04;
+const mass = 5;
+const friction = 0.05;
+const speed = 0.04;
 
 function getCoords(event: MouseEvent) {
   mouseX = event.clientX;
@@ -34,18 +34,18 @@ class Particle {
     this.lx = this.x;
     this.ly = this.y;
     for (let j = 0; j < n; j++) {
-      let part = particles[j];
-      let _x1 = part.x - this.x;
-      let _y1 = part.y - this.y;
-      let _d = mass / Math.max(_x1 * _x1 + _y1 * _y1, 25);
+      const part = particles[j];
+      const _x1 = part.x - this.x;
+      const _y1 = part.y - this.y;
+      const _d = mass / Math.max(_x1 * _x1 + _y1 * _y1, 25);
       this.dx += _x1 * _d * delta;
       this.dy += _y1 * _d * delta;
       this.x += this.dx * speed * delta;
       this.y += this.dy * speed * delta;
     }
-    let _x1 = mouseX - this.x;
-    let _y1 = mouseY - this.y;
-    let _d = 100 / Math.max(_x1 * _x1 + _y1 * _y1, 25);
+    const _x1 = mouseX - this.x;
+    const _y1 = mouseY - this.y;
+    const _d = 100 / Math.max(_x1 * _x1 + _y1 * _y1, 25);
     this.dx += _x1 * _d * delta;
     this.dy += _y1 * _d * delta;
 
@@ -70,11 +70,12 @@ class Particle {
 
 let lastTime = Date.now();
 function tick() {
-  let delta = Date.now() - lastTime;
+  const delta = Date.now() - lastTime;
   lastTime = Date.now();
+
   for (let i = 0; i < n; i++) {
-    let part = particles[i];
-    part.updateLastPos(delta / 1000);
+    const part = particles[i];
+    part.updateLastPos(delta / 8);
   }
 
   ctx.clearRect(0, 0, w, h);
@@ -89,14 +90,14 @@ function tick() {
     }
 
     for (let i = 0; i < n; i++) {
-      let part = particles[i];
+      const part = particles[i];
 
       ctx.strokeStyle = "hsl(" + part.color + ",100%,50%)";
       ctx.lineWidth = 4;
       ctx.lineWidth = 20;
       ctx.lineCap = "round";
       ctx.beginPath();
-      let deg = Math.atan2(part.lx - part.x, -part.ly + part.y);
+      const deg = Math.atan2(part.lx - part.x, -part.ly + part.y);
       ctx.moveTo(part.x - Math.cos(deg + Math.PI) * 8, part.y - Math.sin(deg + Math.PI) * 8);
 
       ctx.moveTo(part.lx, part.ly);
@@ -107,7 +108,7 @@ function tick() {
   ctx.globalCompositeOperation = "normal";
   ctx.strokeStyle = "white";
   for (let i = 0; i < n; i++) {
-    let part = particles[i];
+    const part = particles[i];
 
     ctx.strokeStyle = "hsl(" + part.color + ",100%,50%)";
     ctx.lineWidth = 14;
@@ -122,7 +123,7 @@ function tick() {
 
   ctx.strokeStyle = "white";
   for (let i = 0; i < n; i++) {
-    let part = particles[i];
+    const part = particles[i];
 
     ctx.strokeStyle = "hsl(" + part.color + ",100%,50%)";
     ctx.lineWidth = 14;
@@ -144,14 +145,14 @@ function tick() {
     }
 
     for (let i = 0; i < n; i++) {
-      let part = particles[i];
+      const part = particles[i];
 
       ctx.strokeStyle = "hsl(" + part.color + ",100%,50%)";
       ctx.lineWidth = 4;
       ctx.lineWidth = 20;
       ctx.lineCap = "round";
       ctx.beginPath();
-      let deg = Math.atan2(part.lx - part.x, -part.ly + part.y);
+      const deg = Math.atan2(part.lx - part.x, -part.ly + part.y);
       ctx.moveTo(part.x - Math.cos(deg + Math.PI) * 8, part.y - Math.sin(deg + Math.PI) * 8);
 
       ctx.moveTo(part.lx, part.ly);
@@ -164,7 +165,7 @@ function tick() {
   ctx.globalCompositeOperation = "destination-out";
   ctx.strokeStyle = "white";
   for (let i = 0; i < n; i++) {
-    let part = particles[i];
+    const part = particles[i];
 
     ctx.lineWidth = 14;
     ctx.lineCap = "round";

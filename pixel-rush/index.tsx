@@ -6,18 +6,18 @@ import vertsource from "./vert.glsl?raw";
 function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   let anim: number;
   let playing = false;
-  let musicD: number[] = [];
+  const musicD: number[] = [];
   for (let i = 0; i < 256; i++) {
     musicD[i] = 0.1;
   }
   let songP = window.location.search.substr(1);
   if (songP === "" || songP === null || songP === undefined) songP = "PR";
 
-  let mouse = {
+  const mouse = {
     x: 0.5,
     y: 0.5,
   };
-  let triangleVertices = [
+  const triangleVertices = [
     -1.0, -1.0, 1.0, -1.0, -1.0, 1.0,
 
     1.0, -1.0, 1.0, 1.0, -1.0, 1.0,
@@ -25,10 +25,10 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
 
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  let gl = canvas.getContext("webgl")!;
+  const gl = canvas.getContext("webgl")!;
 
-  let vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
-  let fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
+  const vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
+  const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
 
   gl.shaderSource(vertexShader, vertsource);
   gl.shaderSource(fragmentShader, fragsource);
@@ -36,19 +36,19 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   gl.compileShader(vertexShader);
   gl.compileShader(fragmentShader);
 
-  let program = gl.createProgram()!;
+  const program = gl.createProgram()!;
   gl.attachShader(program, vertexShader);
   gl.attachShader(program, fragmentShader);
   gl.linkProgram(program);
 
-  let ptime = gl.getUniformLocation(program, "time");
-  let presolution = gl.getUniformLocation(program, "resolution");
-  let pmus = gl.getUniformLocation(program, "mus");
-  let pmouse = gl.getUniformLocation(program, "mouse");
-  let pposition = gl.getAttribLocation(program, "vertPosition");
+  const ptime = gl.getUniformLocation(program, "time");
+  const presolution = gl.getUniformLocation(program, "resolution");
+  const pmus = gl.getUniformLocation(program, "mus");
+  const pmouse = gl.getUniformLocation(program, "mouse");
+  const pposition = gl.getAttribLocation(program, "vertPosition");
 
   function update(analyser: AnalyserNode) {
-    let freqArray = new Uint8Array(analyser.frequencyBinCount);
+    const freqArray = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(freqArray);
 
     for (let i = 0; i < 256; i++) {
@@ -59,12 +59,12 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   }
 
   fetch("/sounds/" + songP + ".mp3")
-    .then((x) => x.arrayBuffer())
+    .then(async (x) => x.arrayBuffer())
     .then((res) => {
-      let audioContext = new window.AudioContext();
+      const audioContext = new window.AudioContext();
       audioContext.decodeAudioData(res, (buffer) => {
-        let analyser = audioContext.createAnalyser();
-        let sourceNode = audioContext.createBufferSource();
+        const analyser = audioContext.createAnalyser();
+        const sourceNode = audioContext.createBufferSource();
         analyser.smoothingTimeConstant = 0.6;
         analyser.fftSize = 512;
         analyser.minDecibels = -90;

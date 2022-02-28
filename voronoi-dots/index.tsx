@@ -2,13 +2,13 @@ import * as d3 from "d3";
 import { onMount } from "solid-js";
 
 export const VoronoiDots = () => {
-  let width = window.innerWidth,
-    height = window.innerHeight;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
 
   let canvas: HTMLCanvasElement;
   let slider: HTMLInputElement;
 
-  let nodes = d3.range((width * height) / 900).map(() => ({
+  const nodes = d3.range((width * height) / 900).map(() => ({
     x: Math.random() * width,
     y: Math.random() * height,
     vx: 0,
@@ -16,11 +16,11 @@ export const VoronoiDots = () => {
     fx: undefined as number | undefined,
     fy: undefined as number | undefined,
   }));
-  let charge = d3.forceManyBody().theta(0.8).strength(0);
+  const charge = d3.forceManyBody().theta(0.8).strength(0);
   let white = 0;
 
   onMount(() => {
-    let context = canvas.getContext("2d")!;
+    const context = canvas.getContext("2d")!;
 
     d3.forceSimulation(nodes)
       .alphaDecay(0)
@@ -35,11 +35,16 @@ export const VoronoiDots = () => {
       )
       .on("tick", () => {
         brownian();
-        let diagram = d3.Delaunay.from(nodes.slice(1).map((d) => [d.x, d.y])).voronoi([-1, -1, width + 1, height + 1]);
-        let polygons = diagram.cellPolygons();
+        const diagram = d3.Delaunay.from(nodes.slice(1).map((d) => [d.x, d.y])).voronoi([
+          -1,
+          -1,
+          width + 1,
+          height + 1,
+        ]);
+        const polygons = diagram.cellPolygons();
         context.clearRect(0, 0, width, height);
         context.lineWidth = 1;
-        let brightness = 128 + (white ? 100 : -60);
+        const brightness = 128 + (white ? 100 : -60);
         context.strokeStyle = "rgb(" + brightness + "," + brightness + "," + brightness + ")";
         for (let j = 10; j < width + 10; j += 20) {
           context.beginPath();
@@ -54,7 +59,7 @@ export const VoronoiDots = () => {
           context.stroke();
         }
 
-        for (let cell of polygons) {
+        for (const cell of polygons) {
           context.fillStyle = d3.schemeCategory10[(cell.index + white) % 6];
           context.lineWidth = 10;
           context.beginPath();
@@ -96,7 +101,7 @@ export const VoronoiDots = () => {
         width={window.innerWidth}
         height={window.innerHeight}
         onmousemove={(e) => {
-          let p1 = d3.pointer(e);
+          const p1 = d3.pointer(e);
           nodes[0].fx = p1[0];
           nodes[0].fy = p1[1];
         }}
@@ -109,7 +114,7 @@ export const VoronoiDots = () => {
           charge.strength(0);
         }}
         onwheel={(e) => {
-          let delta = -e.deltaY;
+          const delta = -e.deltaY;
           slider.value = `${+slider.value - Math.max(-1, Math.min(1, delta)) * 10}`;
 
           if (charged) charge.strength((_, i) => (i == 0 ? +slider.value : 0));

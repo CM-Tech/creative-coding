@@ -1,29 +1,30 @@
 import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 import { epicWin, loses, wins, pauses } from "./ascii";
-let chinese = "田由甲申甴电甶男甸甹町画甼甽甾甿畀畁畂畃畄畅畆畇畈畉畊畋界畍畎畏畐畑".split("");
+const chinese = "田由甲申甴电甶男甸甹町画甼甽甾甿畀畁畂畃畄畅畆畇畈畉畊畋界畍畎畏畐畑".split("");
 
 function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
-  let ctx = c.getContext("2d")!;
+  const ctx = c.getContext("2d")!;
   let lose = false;
-  let blue = false;
+  const blue = false;
   let blurry = false;
   let timer = 0;
-  let speed = 3;
+  const speed = 3;
   let gametime = 0;
   let running = true;
   let you = 50;
   let progress = you;
-  let keypram = 0.5;
+  const keypram = 0.5;
   let imagedata = ctx.getImageData(0, 0, c.width, c.height);
   let timer2 = 0;
-  let timeo2: number, timeo3: number;
+  let timeo2: number;
+  let timeo3: number;
 
-  let font_size = 10;
-  let columns = c.width / font_size;
+  const font_size = 10;
+  const columns = c.width / font_size;
 
   //an array of drops - one per column
-  let drops: number[] = [];
+  const drops: number[] = [];
 
   //x below is the x coordinate
   //1 = y co-ordinate of the drop(same for every drop initially)
@@ -45,7 +46,7 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
     //looping over drops
     for (let i = 0; i < drops.length; i++) {
       //a random chinese character to print
-      let text = chinese[Math.floor(Math.random() * chinese.length)];
+      const text = chinese[Math.floor(Math.random() * chinese.length)];
       //x = i*font_size, y = value of drops[i]*font_size
       ctx.fillText(text, i * font_size, drops[i] * font_size);
 
@@ -57,20 +58,19 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
       drops[i]++;
     }
     imagedata = ctx.getImageData(0, 0, c.width, c.height);
-    if (running === true) {
+    if (running) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "color";
       ctx.fillStyle = "red";
       ctx.fillRect(c.width * (progress / 100), 0, c.width * (1 - progress / 100), c.height);
       ctx.beginPath();
       ctx.globalCompositeOperation = "source-over";
-    } else {
     }
   }
   window.onblur = () => {
     blurry = true;
     running = false;
-    if (blue === true) {
+    if (blue) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "color";
       ctx.fillStyle = "blue";
@@ -78,12 +78,12 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "source-over";
     }
-    let fontsize = 10;
-    let text = pauses;
+    const fontsize = 10;
+    const text = pauses;
     ctx.fillStyle = "#ff0";
     ctx.font = "800 " + fontsize + "px 'Andale Mono'";
     for (let i = 0; i < text.length; i++) {
-      let measured = ctx.measureText(text[i]);
+      const measured = ctx.measureText(text[i]);
       ctx.fillText(text[i], (c.width - measured.width) / 2, (c.height - fontsize * text.length) / 2 + fontsize * i);
     }
     ctx.font = "300 " + fontsize * 2 + "px 'Andale Mono'";
@@ -94,8 +94,8 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
     );
   };
   window.onkeyup = (e) => {
-    let keyCode = e.keyCode ? e.keyCode : e.which;
-    if (running === true) {
+    const keyCode = e.keyCode ? e.keyCode : e.which;
+    if (running) {
       if (keyCode == 32) {
         you += keypram;
       }
@@ -112,7 +112,7 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
         progressbar.style.visibility = "visible";
       }
     }
-    if (blurry === true) {
+    if (blurry) {
       if (keyCode == 32) {
         blurry = false;
         running = true;
@@ -125,8 +125,8 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
     c.width = document.body.clientWidth;
     ctx.putImageData(imagedata, 0, 0);
     progressbar.style.visibility = "hidden";
-    let hup = 200;
-    if (blue === true) {
+    const hup = 200;
+    if (blue) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "color";
       ctx.fillStyle = "blue";
@@ -134,13 +134,13 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "source-over";
     }
-    let fontsize = 10;
+    const fontsize = 10;
     let text = wins;
     text = epicWin.concat(text);
     ctx.fillStyle = "#ff0";
     ctx.font = "800 " + fontsize + "px 'Andale Mono'";
     for (let i = 0; i < text.length; i++) {
-      let measured = ctx.measureText(text[i]);
+      const measured = ctx.measureText(text[i]);
       ctx.fillText(
         text[i],
         (c.width - measured.width) / 2,
@@ -158,14 +158,14 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
       (c.width - ctx.measureText("Your score: " + gametime).width) / 2,
       (c.height + fontsize * text.length - (hup - 30) + fontsize * 2) / 2
     );
-    timeo2 = setTimeout(clear, 1000);
+    timeo2 = window.setTimeout(clear, 1000);
   }
   function drawlose() {
     c.height = window.innerHeight;
     c.width = document.body.clientWidth;
     ctx.putImageData(imagedata, 0, 0);
     progressbar.style.visibility = "hidden";
-    let hup = 200;
+    const hup = 200;
     ctx.beginPath();
     ctx.globalCompositeOperation = "color";
     ctx.fillStyle = "red";
@@ -173,7 +173,7 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
     ctx.beginPath();
     ctx.globalCompositeOperation = "source-over";
 
-    if (blue === true) {
+    if (blue) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "color";
       ctx.fillStyle = "blue";
@@ -181,14 +181,14 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "source-over";
     }
-    let fontsize = 10;
+    const fontsize = 10;
 
     let text = loses;
     text = epicWin.concat(text);
     ctx.fillStyle = "#ff0";
     ctx.font = "800 " + fontsize + "px 'Andale Mono'";
     for (let i = 0; i < text.length; i++) {
-      let measured = ctx.measureText(text[i]);
+      const measured = ctx.measureText(text[i]);
       ctx.fillText(
         text[i],
         (c.width - measured.width) / 2,
@@ -201,14 +201,14 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
       (c.width - ctx.measureText("Press r to play again").width) / 2,
       (c.height + fontsize * text.length - (hup - 10)) / 2
     );
-    timeo2 = setTimeout(clear, 1000);
+    timeo2 = window.setTimeout(clear, 1000);
   }
   function clear() {
     c.height = window.innerHeight;
     c.width = document.body.clientWidth;
     ctx.putImageData(imagedata, 0, 0);
 
-    if (lose === true) {
+    if (lose) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "color";
       ctx.fillStyle = "red";
@@ -216,7 +216,7 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "source-over";
     }
-    if (blue === true) {
+    if (blue) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "color";
       ctx.fillStyle = "blue";
@@ -224,21 +224,21 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
       ctx.beginPath();
       ctx.globalCompositeOperation = "source-over";
     }
-    if (lose === false) {
-      timeo3 = setTimeout(drawwin, 1000);
+    if (!lose) {
+      timeo3 = window.setTimeout(drawwin, 1000);
     } else {
-      timeo3 = setTimeout(drawlose, 1000);
+      timeo3 = window.setTimeout(drawlose, 1000);
     }
   }
 
   function animloop() {
     timer++;
     timer2++;
-    let random = Math.floor(Math.random() * (30 + 20) + 20);
+    const random = Math.floor(Math.random() * (30 + 20) + 20);
     if (timer == speed) {
       timer = 0;
       progress = you;
-      if (running === true) {
+      if (running) {
         draw();
         gametime++;
       }
@@ -246,19 +246,19 @@ function main(c: HTMLCanvasElement, progressbar: HTMLProgressElement) {
     }
 
     if (you >= 100) {
-      if (running === true) {
+      if (running) {
         running = false;
         drawwin();
       }
     }
     if (you <= 0) {
-      if (running === true) {
+      if (running) {
         running = false;
         lose = true;
         drawlose();
       }
     }
-    if (running === true) {
+    if (running) {
       if (timer2 >= random) {
         you -= keypram;
         timer2 = 0;
