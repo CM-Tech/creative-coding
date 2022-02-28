@@ -25,14 +25,21 @@ export const Fireworks = () => {
   let canvasNode: HTMLCanvasElement;
 
   onMount(() => {
-    const dp = dpr();
-    const width = window.innerHeight;
-    const height = window.innerWidth;
+    let dp = dpr();
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
     canvasNode.width = width * dp;
     canvasNode.height = height * dp;
     const context: CanvasRenderingContext2D = canvasNode.getContext("2d")!;
+    window.addEventListener("resize", () => {
+      dp = dpr();
+      width = window.innerWidth;
+      height = window.innerHeight;
 
+      canvasNode.width = width * dp;
+      canvasNode.height = height * dp;
+    });
     const tick = () => {
       context.resetTransform();
       context.scale(dp, dp);
@@ -154,5 +161,5 @@ export const Fireworks = () => {
     createAnimationFrame(tick);
   });
 
-  return <canvas ref={canvasNode!} />;
+  return <canvas ref={canvasNode!} style={{ width: "100vw", height: "100vh" }} />;
 };
