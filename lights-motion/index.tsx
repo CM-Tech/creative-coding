@@ -1,9 +1,10 @@
 import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
+const dpr = () => window.devicePixelRatio ?? 1;
 const main = (canvas: HTMLCanvasElement) => {
   const ctx = canvas.getContext("2d")!;
-  const s = 4;
+  const s = dpr();
   const P = 0.25; //0.33333;
   const mouse = { x: 0, y: 0, down: false };
   const stringLength = 16;
@@ -186,5 +187,5 @@ export const LightsMotion = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!} style={{ cursor: "none" }} />;
+  return <canvas ref={c!} style={{ cursor: "none", width: "100%", height: "100%" }} />;
 };

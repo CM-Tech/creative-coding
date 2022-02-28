@@ -1,6 +1,8 @@
 import { createSignal, onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
+const dpr = () => window.devicePixelRatio ?? 1;
+
 const [radius, setRadius] = createSignal(50);
 const [scale, setScale] = createSignal(1);
 const [mouseX, setMouseX] = createSignal(0);
@@ -161,8 +163,8 @@ function main(canvas: HTMLCanvasElement) {
     computePhysics();
 
     if (nodes.length) {
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
+      const w = canvas.width;
+      const h = canvas.height;
 
       let xMin = Infinity;
       let xMax = -Infinity;
@@ -243,8 +245,8 @@ function main(canvas: HTMLCanvasElement) {
     }
   });
   canvas.addEventListener("mousemove", (e) => {
-    setMouseX(e.clientX);
-    setMouseY(e.clientY);
+    setMouseX(e.clientX*dpr());
+    setMouseY(e.clientY*dpr());
   });
 
   canvas.addEventListener("wheel", (e) => {
@@ -262,7 +264,7 @@ export const RainbowGoo = () => {
   });
   return (
     <>
-      <canvas ref={c!} width={window.innerWidth} height={window.innerHeight} />
+      <canvas ref={c!} style={{width:"100%",height:"100%"}} width={window.innerWidth*dpr()} height={window.innerHeight*dpr()} />
     </>
   );
 };
