@@ -3,6 +3,8 @@ import { createAnimationFrame } from "../utils";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
 
+const dpr = () => window.devicePixelRatio ?? 1;
+
 function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
   let anim: number;
   let playing = false;
@@ -23,8 +25,8 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
     1.0, -1.0, 1.0, 1.0, -1.0, 1.0,
   ];
 
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth * dpr();
+  canvas.height = window.innerHeight * dpr();
   const gl = canvas.getContext("webgl")!;
 
   const vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
@@ -101,7 +103,7 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
     gl.useProgram(program);
 
     gl.uniform1f(ptime, time / 50);
-    gl.uniform2f(presolution, window.innerWidth, window.innerHeight);
+    gl.uniform2f(presolution, canvas.width, canvas.height);
     gl.uniform2f(pmouse, mouse.x, 1 - mouse.y);
     gl.uniform1fv(pmus, musicD);
     gl.enableVertexAttribArray(pposition);
@@ -116,9 +118,9 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
     mouse.y = e.clientY / window.innerHeight;
   };
   window.onresize = () => {
-    gl.viewport(0, 0, window.innerWidth, window.innerHeight);
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    gl.viewport(0, 0, window.innerWidth * dpr(), window.innerHeight * dpr());
+    canvas.width = window.innerWidth * dpr();
+    canvas.height = window.innerHeight * dpr();
   };
 }
 export const PixelRush = () => {
@@ -129,7 +131,7 @@ export const PixelRush = () => {
   });
   return (
     <>
-      <canvas ref={c!} />
+      <canvas ref={c!} style={{ width: "100%", height: "100%" }} />
       <div class="pick-song">
         Song:
         <br />

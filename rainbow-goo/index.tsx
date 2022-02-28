@@ -245,8 +245,8 @@ function main(canvas: HTMLCanvasElement) {
     }
   });
   canvas.addEventListener("mousemove", (e) => {
-    setMouseX(e.clientX*dpr());
-    setMouseY(e.clientY*dpr());
+    setMouseX(e.clientX * dpr());
+    setMouseY(e.clientY * dpr());
   });
 
   canvas.addEventListener("wheel", (e) => {
@@ -264,7 +264,12 @@ export const RainbowGoo = () => {
   });
   return (
     <>
-      <canvas ref={c!} style={{width:"100%",height:"100%"}} width={window.innerWidth*dpr()} height={window.innerHeight*dpr()} />
+      <canvas
+        ref={c!}
+        style={{ width: "100%", height: "100%" }}
+        width={window.innerWidth * dpr()}
+        height={window.innerHeight * dpr()}
+      />
     </>
   );
 };
