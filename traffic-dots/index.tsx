@@ -1,7 +1,7 @@
 import chroma from "chroma-js";
 import * as d3 from "d3";
 import { createSignal, onCleanup, onMount } from "solid-js";
-import { BASE_DARK, BASE_LIGHT } from "../shared/constants";
+import { BASE_DARK, BASE_LIGHT, CYAN_MUL, MAGENTA_MUL, YELLOW_MUL } from "../shared/constants";
 
 const dpr = () => window.devicePixelRatio ?? 1;
 
@@ -71,7 +71,7 @@ export const TrafficDots = () => {
         "collide",
         d3
           .forceCollide()
-          .radius((d) => (d as d3.SimulationNodeDatum & { r: number }).r*Math.sqrt(2))
+          .radius((d,i) => (d as d3.SimulationNodeDatum & { r: number }).r*(i===0?1:Math.sqrt(2)))
           .iterations(20)
       )
       .on("tick", () => {
@@ -83,8 +83,8 @@ export const TrafficDots = () => {
             ? "rgba(0,0,0,.1)"
             : "rgba(255,255,255,.1)"
           : !lightMode()
-            ? BASE_DARK
-            : BASE_LIGHT;
+            ? chroma(BASE_DARK).darken(-0.5).hex()
+            : chroma(BASE_LIGHT).darken(-0.5).hex();
         context.fillRect(0, 0, width, height);
         const lc = 1;
         context.lineWidth = lc;
@@ -92,12 +92,12 @@ export const TrafficDots = () => {
         const dbrightness = lightMode() ? 255 : 104;
         context.strokeStyle = chroma.mix(BASE_DARK, BASE_LIGHT, lightMode() ?0.5 : 0.125).hex();//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
 
-        context.fillStyle = !lightMode() ? chroma(BASE_DARK).darken(0.5).hex():chroma(BASE_LIGHT).darken(0.5).hex();
+        context.fillStyle = !lightMode() ? chroma(BASE_DARK).darken(0.0).hex():chroma(BASE_LIGHT).darken(0.0).hex();
         roundedRect(context, grd / 2 - roadWidth / 2, grd / 2 - roadWidth / 2, grd*(Math.floor(width/grd)-1)+roadWidth, grd*(Math.floor(height/grd)-1)+roadWidth, roadWidth / 2*2);
          
           context.fill();
           // context.stroke();
-          context.fillStyle = lightMode() ? BASE_LIGHT:BASE_DARK;//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
+          context.fillStyle = lightMode() ? chroma(BASE_LIGHT).darken(-0.5).hex():chroma(BASE_DARK).darken(-0.5).hex();//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
 
         for (let jg = grd / 2; jg < width - grd / 2*3; jg += grd) {
           const j = Math.floor(jg * dp) / dp;
@@ -111,11 +111,11 @@ export const TrafficDots = () => {
           }
         }
         
-        
+        context.globalCompositeOperation=lightMode() ? "multiply":"screen";
         nodes.slice(0).forEach((dg, i) => {
           const d = dg as d3.SimulationNodeDatum & { r: number };
           if (d.x !== undefined && d.y !== undefined && d.r !== undefined) {
-            const fC = i === 0 ? (lightMode() ? "#4d4d4d" : "#fafafa") : d3.schemeCategory10[i % 6];
+            const fC = i === 0 ? (lightMode() ? "#4d4d4d" : "#fafafa") : ([CYAN_MUL,chroma.blend(CYAN_MUL,MAGENTA_MUL,"multiply").hex(),MAGENTA_MUL,chroma.blend(MAGENTA_MUL,YELLOW_MUL,"multiply").hex(),YELLOW_MUL,chroma.blend(YELLOW_MUL,CYAN_MUL,"multiply").hex()][i%6]);///d3.schemeCategory10[i % 6];
             context.fillStyle = fC;
             // context.beginPath();
             // context.moveTo(d.x + d.r, d.y);
@@ -164,6 +164,8 @@ export const TrafficDots = () => {
             // context.stroke();
           }
         });
+
+        context.globalCompositeOperation="source-over";
       });
     function brownian() {
       for (let i = 0; i < nodes.length; i++) {
