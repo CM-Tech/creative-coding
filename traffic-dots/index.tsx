@@ -5,32 +5,32 @@ import { BASE_DARK, BASE_LIGHT, CYAN_MUL, MAGENTA_MUL, YELLOW_MUL } from "../sha
 
 const dpr = () => window.devicePixelRatio ?? 1;
 
-function roundedRect(ctx:CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   if (w < 2 * r) r = w / 2;
   if (h < 2 * r) r = h / 2;
   ctx.beginPath();
-  ctx.moveTo(x+r, y);
-  ctx.arcTo(x+w, y,   x+w, y+h, r);
-  ctx.arcTo(x+w, y+h, x,   y+h, r);
-  ctx.arcTo(x,   y+h, x,   y,   r);
-  ctx.arcTo(x,   y,   x+w, y,   r);
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
 }
-const closestPointOnRoundedRectFromOutside=({x:px,y:py}:{x:number,y:number},x: number, y: number, w: number, h: number, r: number):{x:number,y:number}=> {
+const closestPointOnRoundedRectFromOutside = ({ x: px, y: py }: { x: number, y: number }, x: number, y: number, w: number, h: number, r: number): { x: number, y: number } => {
   if (w < 2 * r) r = w / 2;
   if (h < 2 * r) r = h / 2;
   const x0 = x + r;
   const y0 = y + r;
   const x1 = x + w - r;
   const y1 = y + h - r;
-  const restrictedInner={x:Math.min(Math.max(px,x0),x1),y:Math.min(Math.max(py,y0),y1)};
+  const restrictedInner = { x: Math.min(Math.max(px, x0), x1), y: Math.min(Math.max(py, y0), y1) };
   const dx = restrictedInner.x - px;
   const dy = restrictedInner.y - py;
   const d = Math.sqrt(dx * dx + dy * dy);
   const rx = r * dx / d;
   const ry = r * dy / d;
-  return {x:restrictedInner.x - rx,y:restrictedInner.y - ry};
-  
+  return { x: restrictedInner.x - rx, y: restrictedInner.y - ry };
+
 }
 export const TrafficDots = () => {
   const [lightMode, setLightMode] = createSignal(true);
@@ -56,9 +56,9 @@ export const TrafficDots = () => {
     console.log("Q", width, height);
     const siz = Math.sqrt((width * height) / 16000000) * 5;
     const grd = siz * 50;
-    const roadWidth=siz*12;
+    const roadWidth = siz * 12;
     nodes = d3.range(200).map(() => ({
-      r: (12) * siz/2,
+      r: (12) * siz / 2,
       x: Math.random() * width,
       y: Math.random() * height,
     }));
@@ -71,7 +71,7 @@ export const TrafficDots = () => {
         "collide",
         d3
           .forceCollide()
-          .radius((d,i) => (d as d3.SimulationNodeDatum & { r: number }).r*(i===0?1:Math.sqrt(2)))
+          .radius((d, i) => (d as d3.SimulationNodeDatum & { r: number }).r * (i === 0 ? 1 : Math.sqrt(2)))
           .iterations(20)
       )
       .on("tick", () => {
@@ -82,57 +82,72 @@ export const TrafficDots = () => {
           ? !lightMode()
             ? "rgba(0,0,0,.1)"
             : "rgba(255,255,255,.1)"
-          : !lightMode()
-            ? chroma(BASE_DARK).darken(-0.5).hex()
-            : chroma(BASE_LIGHT).darken(-0.5).hex();
+          : chroma(!lightMode()
+            ? chroma(BASE_DARK).darken(0).hex()
+            : chroma(BASE_LIGHT).darken(0).hex()).brighten(!lightMode() ? -1 : 1).hex();
         context.fillRect(0, 0, width, height);
         const lc = 1;
         context.lineWidth = lc;
         const brightness = lightMode() ? 255 - 27 - 27 : 77 * 2 - 104;
         const dbrightness = lightMode() ? 255 : 104;
-        context.strokeStyle = chroma.mix(BASE_DARK, BASE_LIGHT, lightMode() ?0.5 : 0.125).hex();//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
+        const lw = 4;
+        context.lineWidth = lw;
+        context.strokeStyle = chroma.mix(BASE_DARK, BASE_LIGHT, lightMode() ? 1 : 0).hex();//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
+        const rBK = !lightMode() ? chroma(BASE_DARK).darken(0.0).hex() : chroma(BASE_LIGHT).darken(0.0).hex();
+        context.fillStyle = chroma(!lightMode()
+          ? chroma(BASE_DARK).darken(0).hex()
+          : chroma(BASE_LIGHT).darken(0).hex()).brighten(!lightMode() ? -1 : 1).hex();
+        roundedRect(context, grd / 2 - roadWidth / 2 - lw / 2, grd / 2 - roadWidth / 2 - lw / 2, grd * (Math.floor(width / grd) - 1) + roadWidth + lw, grd * (Math.floor(height / grd) - 1) + roadWidth + lw, roadWidth / 2 * 2 + lw / 2);
 
-        context.fillStyle = !lightMode() ? chroma(BASE_DARK).darken(0.0).hex():chroma(BASE_LIGHT).darken(0.0).hex();
-        roundedRect(context, grd / 2 - roadWidth / 2, grd / 2 - roadWidth / 2, grd*(Math.floor(width/grd)-1)+roadWidth, grd*(Math.floor(height/grd)-1)+roadWidth, roadWidth / 2*2);
-         
-          context.fill();
-          // context.stroke();
-          context.fillStyle = lightMode() ? chroma(BASE_LIGHT).darken(-0.5).hex():chroma(BASE_DARK).darken(-0.5).hex();//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
+        context.fill();
+        context.stroke();
+        context.fillStyle = lightMode() ? chroma(BASE_LIGHT).darken(-0.5).hex() : chroma(BASE_DARK).darken(-0.5).hex();//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
 
-        for (let jg = grd / 2; jg < width - grd / 2*3; jg += grd) {
+        for (let jg = grd / 2; jg < width - grd / 2 * 3; jg += grd) {
           const j = Math.floor(jg * dp) / dp;
-          for (let jkg = grd / 2; jkg < height - grd / 2*3; jkg += grd) {
+          for (let jkg = grd / 2; jkg < height - grd / 2 * 3; jkg += grd) {
             const jk = Math.floor(jkg * dp) / dp;
-          
-          roundedRect(context, j + roadWidth / 2, jk + roadWidth / 2, grd-roadWidth, grd-roadWidth, roadWidth / 2);
-         
-          context.fill();
-          //  context.stroke();
+            const fC = chroma(!lightMode() ? BASE_DARK : BASE_LIGHT).darken(0).hex();///d3.schemeCategory10[i % 6];
+            context.fillStyle = chroma(fC).brighten(!lightMode() ? -1 : 1).hex();
+
+            context.lineWidth = lw;
+            context.strokeStyle = chroma(fC).brighten(!lightMode() ? 0 : 0).hex();
+            roundedRect(context, j + roadWidth / 2 + lw / 2, jk + roadWidth / 2 + lw / 2, grd - roadWidth - lw, grd - roadWidth - lw, roadWidth / 2 - lw / 2);
+
+            context.fill();
+            context.stroke();
           }
         }
-        
-        context.globalCompositeOperation=lightMode() ? "multiply":"screen";
+        context.globalCompositeOperation = "source-over";
+
         nodes.slice(0).forEach((dg, i) => {
           const d = dg as d3.SimulationNodeDatum & { r: number };
           if (d.x !== undefined && d.y !== undefined && d.r !== undefined) {
-            const fC = i === 0 ? (lightMode() ? "#4d4d4d" : "#fafafa") : ([CYAN_MUL,chroma.blend(CYAN_MUL,MAGENTA_MUL,"multiply").hex(),MAGENTA_MUL,chroma.blend(MAGENTA_MUL,YELLOW_MUL,"multiply").hex(),YELLOW_MUL,chroma.blend(YELLOW_MUL,CYAN_MUL,"multiply").hex()][i%6]);///d3.schemeCategory10[i % 6];
-            context.fillStyle = fC;
+            const fC = i === 0 ? (lightMode() ? BASE_DARK : BASE_LIGHT) : ([CYAN_MUL, chroma.blend(CYAN_MUL, MAGENTA_MUL, "multiply").hex(), MAGENTA_MUL, chroma.blend(MAGENTA_MUL, YELLOW_MUL, "multiply").hex(), YELLOW_MUL, chroma.blend(YELLOW_MUL, CYAN_MUL, "multiply").hex()][i % 6]);///d3.schemeCategory10[i % 6];
+            context.fillStyle = chroma
+              .blend(chroma(fC).brighten(!lightMode() ? -1 : 1), rBK, !lightMode() ? "screen" : "multiply")
+              .hex();
+            context.lineWidth = lw;
+            context.strokeStyle = chroma
+              .blend(chroma(fC).brighten(!lightMode() ? 0 : 0), rBK, !lightMode() ? "screen" : "multiply")
+              .hex();
             // context.beginPath();
             // context.moveTo(d.x + d.r, d.y);
             // context.arc(d.x, d.y, d.r, 0, 2 * Math.PI);
             context.save();
-            let vg={x:d.x%grd-grd/2,y:d.y%grd-grd/2};//{x:d.vx,y:d.vy};//{x:d.x%grd-grd/2,y:d.y%grd-grd/2};
-            
-            context.translate(d.x,d.y);
-            if(i===0){
-              roundedRect(context, - d.r,  - d.r, d.r * 2, d.r * 2, d.r);
-            }else{
-            context.rotate(-Math.atan2(vg.y,vg.x));
-            roundedRect(context, - d.r,  - d.r, d.r * 2, d.r * 2, d.r/2);
+            let vg = { x: d.x % grd - grd / 2, y: d.y % grd - grd / 2 };//{x:d.vx,y:d.vy};//{x:d.x%grd-grd/2,y:d.y%grd-grd/2};
+
+            context.translate(d.x, d.y);
+            if (i === 0) {
+              roundedRect(context, - d.r + lw / 2, - d.r + lw / 2, d.r * 2 - lw, d.r * 2 - lw, d.r - lw / 2);
+            } else {
+              context.rotate(-Math.atan2(vg.y, vg.x));
+              roundedRect(context, - d.r + lw / 2, - d.r + lw / 2, d.r * 2 - lw, d.r * 2 - lw, d.r / 2 - lw / 2);
             }
-            
-          
+
+
             context.fill();
+            context.stroke();
             context.restore();
 
             // context.fillStyle = "rgba(255,255,255,0.45)";
@@ -165,49 +180,49 @@ export const TrafficDots = () => {
           }
         });
 
-        context.globalCompositeOperation="source-over";
+        context.globalCompositeOperation = "source-over";
       });
     function brownian() {
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         if (node.x !== undefined && node.y !== undefined) {
-          nodes[i].x = Math.max(Math.min(node.x, grd*(Math.floor(width/grd)-0.5)), grd / 2);
-          nodes[i].y = Math.max(Math.min(node.y, grd*(Math.floor(height/grd)-0.5)), grd / 2);
-          const close0=closestPointOnRoundedRectFromOutside({x:nodes[i].x,y:nodes[i].y},grd/2,grd/2,grd*(Math.floor(width/grd)-1),grd*(Math.floor(height/grd)-1),roadWidth);
-          
-          if(i===0){
+          nodes[i].x = Math.max(Math.min(node.x, grd * (Math.floor(width / grd) - 0.5)), grd / 2);
+          nodes[i].y = Math.max(Math.min(node.y, grd * (Math.floor(height / grd) - 0.5)), grd / 2);
+          const close0 = closestPointOnRoundedRectFromOutside({ x: nodes[i].x, y: nodes[i].y }, grd / 2, grd / 2, grd * (Math.floor(width / grd) - 1), grd * (Math.floor(height / grd) - 1), roadWidth);
+
+          if (i === 0) {
             continue;
           }
-          if((nodes[i].x<grd/2+roadWidth || nodes[i].x>grd*(Math.floor(width/grd)-0.5)-roadWidth) && (nodes[i].y<grd/2+roadWidth || nodes[i].y>grd*(Math.floor(height/grd)-0.5)-roadWidth)){
-            let di={x:close0.x-nodes[i].x,y:close0.y-nodes[i].y};
-            let N={x:di.x/Math.hypot(di.x,di.y),y:di.y/Math.hypot(di.x,di.y)};
+          if ((nodes[i].x < grd / 2 + roadWidth || nodes[i].x > grd * (Math.floor(width / grd) - 0.5) - roadWidth) && (nodes[i].y < grd / 2 + roadWidth || nodes[i].y > grd * (Math.floor(height / grd) - 0.5) - roadWidth)) {
+            let di = { x: close0.x - nodes[i].x, y: close0.y - nodes[i].y };
+            let N = { x: di.x / Math.hypot(di.x, di.y), y: di.y / Math.hypot(di.x, di.y) };
             // nodes[i].vy*=0.5;
-            
-            nodes[i].x=close0.x;
-            nodes[i].y=close0.y;
-            let dott=N.x*nodes[i].vx+N.y*nodes[i].vy;
-            nodes[i].vy+=-N.y*dott;
+
+            nodes[i].x = close0.x;
+            nodes[i].y = close0.y;
+            let dott = N.x * nodes[i].vx + N.y * nodes[i].vy;
+            nodes[i].vy += -N.y * dott;
             // nodes[i].vx*=0.5;
-            nodes[i].vx+=-N.x*dott;
-          
+            nodes[i].vx += -N.x * dott;
+
           }
           const roundRectCenter = {
-            x: Math.floor(node.x / grd+0.5) * grd ,
-            y: Math.floor(node.y / grd+0.5) * grd,
+            x: Math.floor(node.x / grd + 0.5) * grd,
+            y: Math.floor(node.y / grd + 0.5) * grd,
           };
-          const close=closestPointOnRoundedRectFromOutside({x:nodes[i].x,y:nodes[i].y},roundRectCenter.x-grd/2+roadWidth/2,roundRectCenter.y-grd/2+roadWidth/2,grd-roadWidth,grd-roadWidth,roadWidth/2);
-          const close2=closestPointOnRoundedRectFromOutside({x:nodes[i].x,y:nodes[i].y},roundRectCenter.x-grd/2,roundRectCenter.y-grd/2,grd,grd,roadWidth);
-          if(Math.hypot(close.x-nodes[i].x,close.y-nodes[i].y)<nodes[i].r){
-            let di={x:close.x-nodes[i].x,y:close.y-nodes[i].y};
-            let N={x:di.x/Math.hypot(di.x,di.y),y:di.y/Math.hypot(di.x,di.y)};
-            
-            nodes[i].y=close2.y;
+          const close = closestPointOnRoundedRectFromOutside({ x: nodes[i].x, y: nodes[i].y }, roundRectCenter.x - grd / 2 + roadWidth / 2, roundRectCenter.y - grd / 2 + roadWidth / 2, grd - roadWidth, grd - roadWidth, roadWidth / 2);
+          const close2 = closestPointOnRoundedRectFromOutside({ x: nodes[i].x, y: nodes[i].y }, roundRectCenter.x - grd / 2, roundRectCenter.y - grd / 2, grd, grd, roadWidth);
+          if (Math.hypot(close.x - nodes[i].x, close.y - nodes[i].y) < nodes[i].r) {
+            let di = { x: close.x - nodes[i].x, y: close.y - nodes[i].y };
+            let N = { x: di.x / Math.hypot(di.x, di.y), y: di.y / Math.hypot(di.x, di.y) };
+
+            nodes[i].y = close2.y;
             // nodes[i].vx*=0.5;
-            nodes[i].x=close2.x;
-            let dott=N.x*nodes[i].vx+N.y*nodes[i].vy;
-            nodes[i].vy+=-N.y*dott;
+            nodes[i].x = close2.x;
+            let dott = N.x * nodes[i].vx + N.y * nodes[i].vy;
+            nodes[i].vy += -N.y * dott;
             // nodes[i].vx*=0.5;
-            nodes[i].vx+=-N.x*dott;
+            nodes[i].vx += -N.x * dott;
           }
           // if(Math.abs(node.x%grd-grd/2)>roadWidth/2){
           //   nodes[i].vy*=0.5;
@@ -235,7 +250,7 @@ export const TrafficDots = () => {
     });
     const dV = 200;
     canvas.on("mousedown", () => {
-      chargeRef.strength((_, i) => (i == 0 ? sliderRef.valueAsNumber ?? dV : 0) * Math.pow(grd/10 / 20, 2));
+      chargeRef.strength((_, i) => (i == 0 ? sliderRef.valueAsNumber ?? dV : 0) * Math.pow(grd / 10 / 20, 2));
     });
     canvas.on("mouseup", () => {
       chargeRef.strength(0);
@@ -250,8 +265,8 @@ export const TrafficDots = () => {
       <div
         style={{
           // "background-color": !lightMode() ? "#4d4d4d" : "#fafafa",
-          background:"transparent",
-          color: lightMode() ? BASE_DARK:BASE_LIGHT,
+          background: "transparent",
+          color: lightMode() ? BASE_DARK : BASE_LIGHT,
         }}
         class="well"
       >
@@ -259,7 +274,7 @@ export const TrafficDots = () => {
         <input type="range" min={-250} max={250} value={250} ref={sliderRef!} />
         <span>Theme mode</span>
         <button onClick={() => setLightMode((v) => !v)}
-        style={{background:"transparent",border:"none",color: lightMode() ? BASE_DARK:BASE_LIGHT,}}
+          style={{ background: "transparent", border: "none", color: lightMode() ? BASE_DARK : BASE_LIGHT, }}
         >
           {lightMode() ? (
             <svg
