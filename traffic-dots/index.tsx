@@ -16,20 +16,40 @@ function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: num
   ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
 }
-const closestPointOnRoundedRectFromOutside = ({ x: px, y: py }: { x: number, y: number }, x: number, y: number, w: number, h: number, r: number): { x: number, y: number } => {
+const closestPointOnRoundedRectFromOutside = ({ x: px, y: py }: { x: number, y: number }, x: number, y: number, w: number, h: number, r: number): { x: number, y: number,inside:boolean } => {
   if (w < 2 * r) r = w / 2;
   if (h < 2 * r) r = h / 2;
   const x0 = x + r;
   const y0 = y + r;
   const x1 = x + w - r;
   const y1 = y + h - r;
-  const restrictedInner = { x: Math.min(Math.max(px, x0), x1), y: Math.min(Math.max(py, y0), y1) };
+  let restrictedInner = { x: Math.min(Math.max(px, x0), x1), y: Math.min(Math.max(py, y0), y1) };
+  let d1=Math.abs(restrictedInner.x-x0);
+  let d2=Math.abs(restrictedInner.x-x1);
+  let d3=Math.abs(restrictedInner.y-y0);
+  let d4=Math.abs(restrictedInner.y-y1);
+  let minD=Math.min(d1,d2,d3,d4);
+  if(minD===d1){
+    restrictedInner.x=x0;
+  }else if(minD===d2){
+
+    restrictedInner.x=x1;
+  }else if(minD===d3){
+
+    restrictedInner.y=y0;
+  }else{
+
+    restrictedInner.y=y1;
+  }
   const dx = restrictedInner.x - px;
   const dy = restrictedInner.y - py;
-  const d = Math.sqrt(dx * dx + dy * dy);
+  let d = Math.sqrt(dx * dx + dy * dy);
+  if((x0/2+x1/2-px)*dx+(y0/2+y1/2-py)*dy<0){
+d=-d;
+  }
   const rx = r * dx / d;
   const ry = r * dy / d;
-  return { x: restrictedInner.x - rx, y: restrictedInner.y - ry };
+  return { x: restrictedInner.x - rx, y: restrictedInner.y - ry,inside:Math.hypot(restrictedInner.x - rx-(x0/2+x1/2), restrictedInner.y - ry-(y0/2+y1/2))>Math.hypot(px-(x0/2+x1/2), py-(y0/2+y1/2)) };
 
 }
 export const TrafficDots = () => {
@@ -88,8 +108,6 @@ export const TrafficDots = () => {
         context.fillRect(0, 0, width, height);
         const lc = 1;
         context.lineWidth = lc;
-        const brightness = lightMode() ? 255 - 27 - 27 : 77 * 2 - 104;
-        const dbrightness = lightMode() ? 255 : 104;
         const lw = 4;
         context.lineWidth = lw;
         context.strokeStyle = chroma.mix(BASE_DARK, BASE_LIGHT, lightMode() ? 1 : 0).hex();//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
@@ -186,59 +204,61 @@ export const TrafficDots = () => {
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         if (node.x !== undefined && node.y !== undefined) {
-          nodes[i].x = Math.max(Math.min(node.x, grd * (Math.floor(width / grd) - 0.5)), grd / 2);
-          nodes[i].y = Math.max(Math.min(node.y, grd * (Math.floor(height / grd) - 0.5)), grd / 2);
-          const close0 = closestPointOnRoundedRectFromOutside({ x: nodes[i].x, y: nodes[i].y }, grd / 2, grd / 2, grd * (Math.floor(width / grd) - 1), grd * (Math.floor(height / grd) - 1), roadWidth);
+          node.x = Math.max(Math.min(node.x, grd * (Math.floor(width / grd) - 0.5)+ roadWidth / 2-node.r), grd / 2- roadWidth / 2+node.r);
+          node.y = Math.max(Math.min(node.y, grd * (Math.floor(height / grd) - 0.5)+ roadWidth / 2-node.r), grd / 2- roadWidth / 2+node.r);
+          const close0 = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, grd / 2- roadWidth / 2+node.r, grd / 2- roadWidth / 2+node.r, grd * (Math.floor(width / grd) - 1)+ roadWidth-node.r*2, grd * (Math.floor(height / grd) - 1)+ roadWidth-node.r*2, roadWidth-node.r);
 
           if (i === 0) {
             continue;
           }
-          if ((nodes[i].x < grd / 2 + roadWidth || nodes[i].x > grd * (Math.floor(width / grd) - 0.5) - roadWidth) && (nodes[i].y < grd / 2 + roadWidth || nodes[i].y > grd * (Math.floor(height / grd) - 0.5) - roadWidth)) {
-            let di = { x: close0.x - nodes[i].x, y: close0.y - nodes[i].y };
-            let N = { x: di.x / Math.hypot(di.x, di.y), y: di.y / Math.hypot(di.x, di.y) };
-            // nodes[i].vy*=0.5;
+          let dig = { x: close0.x - node.x, y: close0.y - node.y };
+          let lD=Math.hypot(dig.x, dig.y);
+          if (!close0.inside) {
+            
+            let N = { x: dig.x / (lD<=0?1:lD), y: dig.y / (lD<=0?1:lD) };
+            // node.vy*=0.5;
 
-            nodes[i].x = close0.x;
-            nodes[i].y = close0.y;
-            let dott = N.x * nodes[i].vx + N.y * nodes[i].vy;
-            nodes[i].vy += -N.y * dott;
-            // nodes[i].vx*=0.5;
-            nodes[i].vx += -N.x * dott;
+            node.x = close0.x;
+            node.y = close0.y;
+            let dott = (lD<=0?0:N.x * node.vx + N.y * node.vy);
+            node.vy += -N.y * dott;
+            // node.vx*=0.5;
+            node.vx += -N.x * dott;
 
           }
           const roundRectCenter = {
             x: Math.floor(node.x / grd + 0.5) * grd,
             y: Math.floor(node.y / grd + 0.5) * grd,
           };
-          const close = closestPointOnRoundedRectFromOutside({ x: nodes[i].x, y: nodes[i].y }, roundRectCenter.x - grd / 2 + roadWidth / 2, roundRectCenter.y - grd / 2 + roadWidth / 2, grd - roadWidth, grd - roadWidth, roadWidth / 2);
-          const close2 = closestPointOnRoundedRectFromOutside({ x: nodes[i].x, y: nodes[i].y }, roundRectCenter.x - grd / 2, roundRectCenter.y - grd / 2, grd, grd, roadWidth);
-          if (Math.hypot(close.x - nodes[i].x, close.y - nodes[i].y) < nodes[i].r) {
-            let di = { x: close.x - nodes[i].x, y: close.y - nodes[i].y };
+          const close = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, roundRectCenter.x - grd / 2 + roadWidth / 2, roundRectCenter.y - grd / 2 + roadWidth / 2, grd - roadWidth, grd - roadWidth, roadWidth / 2);
+          const close2 = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, roundRectCenter.x - grd / 2+ roadWidth / 2-node.r, roundRectCenter.y - grd / 2+ roadWidth / 2-node.r, grd- roadWidth+node.r*2, grd- roadWidth+node.r*2, roadWidth/2+node.r);
+          if (Math.hypot(close.x - node.x, close.y - node.y) < node.r||close.inside) {
+            let di = { x: close.x - node.x, y: close.y - node.y };
             let N = { x: di.x / Math.hypot(di.x, di.y), y: di.y / Math.hypot(di.x, di.y) };
 
-            nodes[i].y = close2.y;
-            // nodes[i].vx*=0.5;
-            nodes[i].x = close2.x;
-            let dott = N.x * nodes[i].vx + N.y * nodes[i].vy;
-            nodes[i].vy += -N.y * dott;
-            // nodes[i].vx*=0.5;
-            nodes[i].vx += -N.x * dott;
+            node.y = close2.y;
+            // node.vx*=0.5;
+            node.x = close2.x;
+            let dott = (N.x * node.vx + N.y * node.vy);
+            node.vy += -N.y * dott;
+            // node.vx*=0.5;
+            node.vx += -N.x * dott;
           }
           // if(Math.abs(node.x%grd-grd/2)>roadWidth/2){
-          //   nodes[i].vy*=0.5;
-          //   nodes[i].vy+=((Math.round(node.y/grd-0.5)+0.5)*grd-nodes[i].y)/4;
+          //   node.vy*=0.5;
+          //   node.vy+=((Math.round(node.y/grd-0.5)+0.5)*grd-node.y)/4;
           // }
           // if(Math.abs(node.y%grd-grd/2)>roadWidth/2){
-          //   nodes[i].vx*=0.5;
-          //   nodes[i].vx+=((Math.round(node.x/grd-0.5)+0.5)*grd-nodes[i].x)/4;
+          //   node.vx*=0.5;
+          //   node.vx+=((Math.round(node.x/grd-0.5)+0.5)*grd-node.x)/4;
           // }
-          // nodes[i].x = node.x * 0.9 + (Math.round(node.x / grd + 0.5) * grd - grd / 2) * 0.1;
-          // nodes[i].y = node.y * 0.9 + (Math.round(node.y / grd + 0.5) * grd - grd / 2) * 0.1;
+          // node.x = node.x * 0.9 + (Math.round(node.x / grd + 0.5) * grd - grd / 2) * 0.1;
+          // node.y = node.y * 0.9 + (Math.round(node.y / grd + 0.5) * grd - grd / 2) * 0.1;
           if (Math.random() < 0.0015) {
-            nodes[i].vx = Math.random() < 0.5 ? 5 : -5;
+            node.vx = Math.random() < 0.5 ? 5 : -5;
           }
           if (Math.random() < 0.0015) {
-            nodes[i].vy = Math.random() < 0.5 ? 5 : -5;
+            node.vy = Math.random() < 0.5 ? 5 : -5;
           }
         }
       }
