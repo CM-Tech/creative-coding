@@ -57,7 +57,7 @@ export const TrafficDots = () => {
   let sliderRef: HTMLInputElement;
 
   let canvasNode: HTMLCanvasElement;
-
+const [gridSize,setGridSize]=createSignal(20);
   onMount(() => {
     let nodes: d3.SimulationNodeDatum[] = [];
     const chargeRef: d3.ForceManyBody<d3.SimulationNodeDatum & { r: number }> = d3.forceManyBody().strength(0);
@@ -76,13 +76,30 @@ export const TrafficDots = () => {
     console.log("Q", width, height);
     const siz = Math.sqrt((width * height) / 16000000) * 5;
     const grd = siz * 50;
+    setGridSize(grd)
     const roadWidth = siz * 12;
+    const rows=Math.floor(height/grd - 1);
+    const columns=Math.floor(width/grd - 1);
+    const cityGrid=new Array(rows).fill(0).map((_,y)=>new Array(columns).fill(0).map((_,x)=>({x,y,w:1,h:1})));
+    const setCityBlock=(x:number,y:number,w:number,h:number)=>{
+      for(let yy=y;yy<y+h;yy++){
+        for(let xx=x;xx<x+w;xx++){
+          cityGrid[yy][xx].x=x;
+          cityGrid[yy][xx].y=y;
+          cityGrid[yy][xx].w=w;
+          cityGrid[yy][xx].h=h;
+        }
+      }
+    }
+    setCityBlock(0,0,4,1);
+    setCityBlock(0,1,5,1);
+    setCityBlock(1,2,2,1);
     nodes = d3.range(200).map(() => ({
       r: (12) * siz / 2,
       x: Math.random() * width,
       y: Math.random() * height,
     }));
-    (nodes[0] as d3.SimulationNodeDatum & { r: number }).r = 20 * siz;
+    (nodes[0] as d3.SimulationNodeDatum & { r: number }).r = 6 * siz;
     const fSim = d3.forceSimulation(nodes)
       .alphaDecay(0)
       .velocityDecay(0.00)
@@ -130,12 +147,19 @@ export const TrafficDots = () => {
 
             context.lineWidth = lw;
             context.strokeStyle = chroma(fC).brighten(!lightMode() ? 0 : 0).hex();
-            roundedRect(context, j + roadWidth / 2 + lw / 2, jk + roadWidth / 2 + lw / 2, grd - roadWidth - lw, grd - roadWidth - lw, roadWidth / 2 - lw / 2);
+            const gx=Math.floor(jg/grd-0.5);
+            const gy=Math.floor(jkg/grd-0.5);
+            const {w,h,x,y}=cityGrid[Math.min(Math.max(gy,0),rows-1)][Math.min(Math.max(gx,0),columns-1)];
+            if(gx===x && gy===y)
+            roundedRect(context, j + roadWidth / 2 + lw / 2, jk + roadWidth / 2 + lw / 2, grd*w - roadWidth - lw, grd*h - roadWidth - lw, roadWidth / 2 - lw / 2);
 
             context.fill();
             context.stroke();
           }
         }
+        context.fillStyle=lightMode() ? BASE_DARK : BASE_LIGHT;
+        context.font="bold "+grd/2.1+"px 'Noto Sans Mono'";
+        context.fillText("Traffic Dots",grd*0.8,grd*1.17);
         context.globalCompositeOperation = "source-over";
 
         nodes.slice(0).forEach((dg, i) => {
@@ -208,9 +232,9 @@ export const TrafficDots = () => {
           node.y = Math.max(Math.min(node.y, grd * (Math.floor(height / grd) - 0.5)+ roadWidth / 2-node.r), grd / 2- roadWidth / 2+node.r);
           const close0 = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, grd / 2- roadWidth / 2+node.r, grd / 2- roadWidth / 2+node.r, grd * (Math.floor(width / grd) - 1)+ roadWidth-node.r*2, grd * (Math.floor(height / grd) - 1)+ roadWidth-node.r*2, roadWidth-node.r);
 
-          if (i === 0) {
-            continue;
-          }
+          // if (i === 0) {
+          //   continue;
+          // }
           let dig = { x: close0.x - node.x, y: close0.y - node.y };
           let lD=Math.hypot(dig.x, dig.y);
           if (!close0.inside) {
@@ -226,12 +250,12 @@ export const TrafficDots = () => {
             node.vx += -N.x * dott;
 
           }
-          const roundRectCenter = {
-            x: Math.floor(node.x / grd + 0.5) * grd,
-            y: Math.floor(node.y / grd + 0.5) * grd,
-          };
-          const close = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, roundRectCenter.x - grd / 2 + roadWidth / 2, roundRectCenter.y - grd / 2 + roadWidth / 2, grd - roadWidth, grd - roadWidth, roadWidth / 2);
-          const close2 = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, roundRectCenter.x - grd / 2+ roadWidth / 2-node.r, roundRectCenter.y - grd / 2+ roadWidth / 2-node.r, grd- roadWidth+node.r*2, grd- roadWidth+node.r*2, roadWidth/2+node.r);
+          const gx=Math.floor(node.x / grd - 0.5);
+            const gy=Math.floor(node.y / grd - 0.5);
+            const {w,h,x,y}=cityGrid[Math.min(Math.max(gy,0),rows-1)][Math.min(Math.max(gx,0),columns-1)];
+          
+          const close = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, (x+0.5)*grd + roadWidth / 2, (y+0.5)*grd + roadWidth / 2, grd*w - roadWidth, grd*h - roadWidth, roadWidth / 2);
+          const close2 = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, (x+0.5)*grd+ roadWidth / 2-node.r, (y+0.5)*grd+ roadWidth / 2-node.r, grd*w- roadWidth+node.r*2, grd*h- roadWidth+node.r*2, roadWidth/2+node.r);
           if (Math.hypot(close.x - node.x, close.y - node.y) < node.r||close.inside) {
             let di = { x: close.x - node.x, y: close.y - node.y };
             let N = { x: di.x / Math.hypot(di.x, di.y), y: di.y / Math.hypot(di.x, di.y) };
@@ -282,24 +306,32 @@ export const TrafficDots = () => {
 
   return (
     <>
+      
+      <canvas ref={canvasNode!} style={{ width: "100%", height: "100%" }} />
       <div
         style={{
           // "background-color": !lightMode() ? "#4d4d4d" : "#fafafa",
           background: "transparent",
           color: lightMode() ? BASE_DARK : BASE_LIGHT,
+          top:gridSize()*(0.47+1)+"px",
+          left:gridSize()*0.8+"px",
+          "line-height":gridSize()+"px",
+          position: "absolute",
+          "font-size":gridSize()/2.1+"px",
+          "font-family":"'Noto Sans Mono'",
+          "font-weight":"bold",
         }}
-        class="well"
       >
         <span>Strength</span>
         <input type="range" min={-250} max={250} value={250} ref={sliderRef!} />
-        <span>Theme mode</span>
+        <br/>
         <button onClick={() => setLightMode((v) => !v)}
-          style={{ background: "transparent", border: "none", color: lightMode() ? BASE_DARK : BASE_LIGHT, }}
+          style={{ background: "transparent", border: "none", color: lightMode() ? BASE_DARK : BASE_LIGHT,width: gridSize()+"px", height: gridSize()+"px","margin-left":`${-gridSize()*0.29}px`,"margin-top":`${gridSize()*0.045}px` }}
         >
           {lightMode() ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              style={{ width: "1.5rem", height: "1.5rem" }}
+              style={{ width: gridSize()*0.5+"px", height: gridSize()*0.5+"px" }}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -314,7 +346,7 @@ export const TrafficDots = () => {
           ) : (
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              style={{ width: "1.5rem", height: "1.5rem" }}
+              style={{ width: gridSize()*0.5+"px", height: gridSize()*0.5+"px" }}
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -328,8 +360,10 @@ export const TrafficDots = () => {
             </svg>
           )}
         </button>
+        &nbsp;
+        <span>Theme</span>
+        
       </div>
-      <canvas ref={canvasNode!} style={{ width: "100%", height: "100%" }} />
     </>
   );
 };
