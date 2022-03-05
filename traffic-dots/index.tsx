@@ -171,14 +171,22 @@ export const TrafficDots = () => {
         if (node.x !== undefined && node.y !== undefined) {
           nodes[i].x = Math.max(Math.min(node.x, grd*(Math.floor(width/grd)-0.5)), grd / 2);
           nodes[i].y = Math.max(Math.min(node.y, grd*(Math.floor(height/grd)-0.5)), grd / 2);
-          const close0=closestPointOnRoundedRectFromOutside({x:nodes[i].x,y:nodes[i].y},grd/2,grd/2,grd*(Math.floor(width/grd)-1),grd*(Math.floor(height/grd)-1),roadWidth*2);
+          const close0=closestPointOnRoundedRectFromOutside({x:nodes[i].x,y:nodes[i].y},grd/2,grd/2,grd*(Math.floor(width/grd)-1),grd*(Math.floor(height/grd)-1),roadWidth);
           
           if(i===0){
             continue;
           }
           if((nodes[i].x<grd/2+roadWidth || nodes[i].x>grd*(Math.floor(width/grd)-0.5)-roadWidth) && (nodes[i].y<grd/2+roadWidth || nodes[i].y>grd*(Math.floor(height/grd)-0.5)-roadWidth)){
-            nodes[i].x=nodes[i].x*0.5+0.5*close0.x;
-            nodes[i].y=nodes[i].y*0.5+0.5*close0.y;
+            let di={x:close0.x-nodes[i].x,y:close0.y-nodes[i].y};
+            let N={x:di.x/Math.hypot(di.x,di.y),y:di.y/Math.hypot(di.x,di.y)};
+            // nodes[i].vy*=0.5;
+            
+            nodes[i].x=close0.x;
+            nodes[i].y=close0.y;
+            let dott=N.x*nodes[i].vx+N.y*nodes[i].vy;
+            nodes[i].vy+=-N.y*dott;
+            // nodes[i].vx*=0.5;
+            nodes[i].vx+=-N.x*dott;
           
           }
           const roundRectCenter = {
@@ -190,13 +198,14 @@ export const TrafficDots = () => {
           if(Math.hypot(close.x-nodes[i].x,close.y-nodes[i].y)<nodes[i].r){
             let di={x:close.x-nodes[i].x,y:close.y-nodes[i].y};
             let N={x:di.x/Math.hypot(di.x,di.y),y:di.y/Math.hypot(di.x,di.y)};
-            // nodes[i].vy*=0.5;
-            nodes[i].vy+=(-nodes[i].vy*Math.abs(N.y));
-            // nodes[i].vx*=0.5;
-            nodes[i].vx+=(-nodes[i].vx*Math.abs(N.x));
+            
             nodes[i].y=close2.y;
             // nodes[i].vx*=0.5;
             nodes[i].x=close2.x;
+            let dott=N.x*nodes[i].vx+N.y*nodes[i].vy;
+            nodes[i].vy+=-N.y*dott;
+            // nodes[i].vx*=0.5;
+            nodes[i].vx+=-N.x*dott;
           }
           // if(Math.abs(node.x%grd-grd/2)>roadWidth/2){
           //   nodes[i].vy*=0.5;
