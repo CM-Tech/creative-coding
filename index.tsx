@@ -1,4 +1,4 @@
-import "./style.css";
+import "./style.scss";
 import { render } from "solid-js/web";
 import { Link, Route, Router, Routes } from "solid-app-router";
 import { Attraction } from "./attraction";
