@@ -1,6 +1,6 @@
 import chroma from "chroma-js";
 import * as d3 from "d3";
-import { createSignal, onCleanup, onMount } from "solid-js";
+import { createEffect, createMemo, createSignal, onCleanup, onMount } from "solid-js";
 import { BASE_DARK, BASE_LIGHT, CYAN_MUL, MAGENTA_MUL, YELLOW_MUL } from "../shared/constants";
 
 const dpr = () => window.devicePixelRatio ?? 1;
@@ -57,51 +57,73 @@ export const TrafficDots = () => {
   let sliderRef: HTMLInputElement;
 
   let canvasNode: HTMLCanvasElement;
-  const [gridSize, setGridSize] = createSignal(20);
-  const [sroadWidth, setSRoadWidth] = createSignal(20);
+  const [windowWidth, setWindowWidth] = createSignal(window.innerWidth);
+  const [windowHeight, setWindowHeight] = createSignal(window.innerHeight);
+  const [DP, setDP] = createSignal(window.devicePixelRatio ?? 1);
   onMount(() => {
-    let nodes: d3.SimulationNodeDatum[] = [];
-    const chargeRef: d3.ForceManyBody<d3.SimulationNodeDatum & { r: number }> = d3.forceManyBody().strength(0);
+    const handler = () => {
+      setWindowWidth(window.innerWidth);
+      setWindowHeight(window.innerHeight);
+      setDP(window.devicePixelRatio ?? 1);
+    };
+    window.addEventListener("resize", handler);
+    onCleanup(() => {
+      window.removeEventListener("resize", handler);
+    })
+  });
+  const unit = createMemo(() => Math.sqrt((windowWidth() * windowHeight()) / 16000000) * 5);
 
-    const dp = dpr();
-    const width = window.innerWidth;
-    const height = window.innerHeight;
 
-    const canvas = d3
-      .select(canvasNode)
-      .attr("width", width * dp)
-      .attr("height", height * dp);
-    const context = canvasNode.getContext("2d")!;
-
-    const blur = false;
-    console.log("Q", width, height);
-    const siz = Math.sqrt((width * height) / 16000000) * 5;
-    const grd = siz * 50;
-    setGridSize(grd)
-    const roadWidth = siz * 12;
-    setSRoadWidth(roadWidth);
-    const rows = Math.floor(height / grd - 1);
-    const columns = Math.floor(width / grd - 1);
-    const cityGrid = new Array(rows).fill(0).map((_, y) => new Array(columns).fill(0).map((_, x) => ({ x, y, w: 1, h: 1 })));
+  const gridSize = createMemo(() => unit() * 50);
+  const sroadWidth = createMemo(() => unit() * 12);
+  const citySize = createMemo(() => {
+    return { x: Math.floor(windowWidth() / gridSize() - 1), y: Math.floor(windowHeight() / gridSize() - 1) }
+  });//createSignal({ x: 8, y: 8 });
+  const cityGrid = createMemo(() => {
+    const cg = new Array(citySize().y).fill(0).map((_, y) => new Array(citySize().x).fill(0).map((_, x) => ({ x, y, w: 1, h: 1 })));
     const setCityBlock = (x: number, y: number, w: number, h: number) => {
       for (let yy = y; yy < y + h; yy++) {
         for (let xx = x; xx < x + w; xx++) {
-          cityGrid[yy][xx].x = x + 0;
-          cityGrid[yy][xx].y = y + 0;
-          cityGrid[yy][xx].w = w;
-          cityGrid[yy][xx].h = h;
+          cg[yy][xx].x = x + 0;
+          cg[yy][xx].y = y + 0;
+          cg[yy][xx].w = w;
+          cg[yy][xx].h = h;
         }
       }
     }
     setCityBlock(0, 0, 4, 1);
     setCityBlock(0, 1, 2, 1);
     setCityBlock(2, 1, 3, 1);
+    return cg;
+  });
+  onMount(() => {
+    let nodes: d3.SimulationNodeDatum[] = [];
+    const chargeRef: d3.ForceManyBody<d3.SimulationNodeDatum & { r: number }> = d3.forceManyBody().strength(0);
+
+
+    const canvas = d3
+      .select(canvasNode);
+    createEffect(() => {
+
+      canvas.attr("width", windowWidth() * DP())
+        .attr("height", windowHeight() * DP())
+    });
+    const context = canvasNode.getContext("2d")!;
+
+    const blur = false;
+    console.log("Q", windowWidth(), windowHeight());
+
     nodes = d3.range(200).map(() => ({
-      r: (12) * siz / 2,
-      x: Math.random() * width,
-      y: Math.random() * height,
+      r: (12) * unit() / 2,
+      x: Math.random() * windowWidth(),
+      y: Math.random() * windowHeight(),
     }));
-    (nodes[0] as d3.SimulationNodeDatum & { r: number }).r = 6 * siz;
+    (nodes[0] as d3.SimulationNodeDatum & { r: number }).r = 6 * unit();
+    createEffect(() => {
+      nodes.forEach((x) => {
+        x.r = 6 * unit()
+      })
+    });
     const fSim = d3.forceSimulation(nodes)
       .alphaDecay(0)
       .velocityDecay(0.00)
@@ -116,7 +138,7 @@ export const TrafficDots = () => {
       .on("tick", () => {
         brownian();
         context.resetTransform();
-        context.scale(dp, dp);
+        context.scale(DP(), DP());
         context.fillStyle = blur
           ? !lightMode()
             ? "rgba(0,0,0,.1)"
@@ -124,7 +146,7 @@ export const TrafficDots = () => {
           : chroma(!lightMode()
             ? chroma(BASE_DARK).darken(0).hex()
             : chroma(BASE_LIGHT).darken(0).hex()).brighten(!lightMode() ? -1 : 1).hex();
-        context.fillRect(0, 0, width, height);
+        context.fillRect(0, 0, windowWidth(), windowHeight());
         const lc = 1;
         context.lineWidth = lc;
         const lw = 4;
@@ -134,7 +156,7 @@ export const TrafficDots = () => {
         context.fillStyle = chroma(!lightMode()
           ? chroma(BASE_DARK).darken(0).hex()
           : chroma(BASE_LIGHT).darken(0).hex()).brighten(!lightMode() ? -1 : 1).hex();
-        roundedRect(context, grd / 2 - roadWidth / 2 - lw / 2, grd / 2 - roadWidth / 2 - lw / 2, grd * (Math.floor(width / grd) - 1) + roadWidth + lw, grd * (Math.floor(height / grd) - 1) + roadWidth + lw, roadWidth / 2 * 2 + lw / 2);
+        roundedRect(context, gridSize() / 2 - sroadWidth() / 2 - lw / 2, gridSize() / 2 - sroadWidth() / 2 - lw / 2, gridSize() * citySize().x + sroadWidth() + lw, gridSize() * citySize().y + sroadWidth() + lw, sroadWidth() / 2 * 2 + lw / 2);
 
         context.fill();
         context.stroke();
@@ -146,13 +168,13 @@ export const TrafficDots = () => {
         context.lineWidth = lw;
         context.strokeStyle = chroma(fCg).brighten(!lightMode() ? 0 : 0).hex();
 
-        for (let jg = 0; jg < columns; jg++) {
-          for (let jkg = 0; jkg < rows; jkg++) {
+        for (let jg = 0; jg < citySize().x; jg++) {
+          for (let jkg = 0; jkg < citySize().y; jkg++) {
             const gx = jg;
             const gy = jkg;
-            const { w, h, x, y } = cityGrid[Math.min(Math.max(gy, 0), rows - 1)][Math.min(Math.max(gx, 0), columns - 1)];
+            const { w, h, x, y } = cityGrid()[Math.min(Math.max(gy, 0), citySize().y - 1)][Math.min(Math.max(gx, 0), citySize().x - 1)];
             if ((gx === x) && (gy === y)) {
-              roundedRect(context, grd * (x + 1 / 2) + roadWidth / 2 + lw / 2, grd * (y + 1 / 2) + roadWidth / 2 + lw / 2, grd * w - roadWidth - lw, grd * h - roadWidth - lw, roadWidth / 2 - lw / 2);
+              roundedRect(context, gridSize() * (x + 1 / 2) + sroadWidth() / 2 + lw / 2, gridSize() * (y + 1 / 2) + sroadWidth() / 2 + lw / 2, gridSize() * w - sroadWidth() - lw, gridSize() * h - sroadWidth() - lw, sroadWidth() / 2 - lw / 2);
 
               context.fill();
               context.stroke();
@@ -161,8 +183,8 @@ export const TrafficDots = () => {
           }
         }
         context.fillStyle = lightMode() ? BASE_DARK : BASE_LIGHT;
-        context.font = "bold " + grd / 2.1 + "px 'Noto Sans Mono'";
-        context.fillText("Traffic Dots", grd * 0.8, grd * 1.17);
+        context.font = "bold " + gridSize() / 2.1 + "px 'Noto Sans Mono'";
+        context.fillText("Traffic Dots", gridSize() * 0.8, gridSize() * 1.17);
         context.globalCompositeOperation = "source-over";
 
         nodes.slice(0).forEach((dg, i) => {
@@ -180,7 +202,7 @@ export const TrafficDots = () => {
             // context.moveTo(d.x + d.r, d.y);
             // context.arc(d.x, d.y, d.r, 0, 2 * Math.PI);
             context.save();
-            let vg = { x: d.x % grd - grd / 2, y: d.y % grd - grd / 2 };//{x:d.vx,y:d.vy};//{x:d.x%grd-grd/2,y:d.y%grd-grd/2};
+            let vg = { x: d.x % gridSize() - gridSize() / 2, y: d.y % gridSize() - gridSize() / 2 };//{x:d.vx,y:d.vy};//{x:d.x%gridSize()-gridSize()/2,y:d.y%gridSize()-gridSize()/2};
 
             context.translate(d.x, d.y);
             if (i === 0) {
@@ -203,9 +225,9 @@ export const TrafficDots = () => {
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         if (node.x !== undefined && node.y !== undefined) {
-          node.x = Math.max(Math.min(node.x, grd * (Math.floor(width / grd) - 0.5) + roadWidth / 2 - node.r), grd / 2 - roadWidth / 2 + node.r);
-          node.y = Math.max(Math.min(node.y, grd * (Math.floor(height / grd) - 0.5) + roadWidth / 2 - node.r), grd / 2 - roadWidth / 2 + node.r);
-          const close0 = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, grd / 2 - roadWidth / 2 + node.r, grd / 2 - roadWidth / 2 + node.r, grd * (Math.floor(width / grd) - 1) + roadWidth - node.r * 2, grd * (Math.floor(height / grd) - 1) + roadWidth - node.r * 2, roadWidth - node.r);
+          node.x = Math.max(Math.min(node.x, gridSize() * (Math.floor(windowWidth() / gridSize()) - 0.5) + sroadWidth() / 2 - node.r), gridSize() / 2 - sroadWidth() / 2 + node.r);
+          node.y = Math.max(Math.min(node.y, gridSize() * (Math.floor(windowHeight() / gridSize()) - 0.5) + sroadWidth() / 2 - node.r), gridSize() / 2 - sroadWidth() / 2 + node.r);
+          const close0 = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, gridSize() / 2 - sroadWidth() / 2 + node.r, gridSize() / 2 - sroadWidth() / 2 + node.r, gridSize() * citySize().x + sroadWidth() - node.r * 2, gridSize() * (Math.floor(windowHeight() / gridSize()) - 1) + sroadWidth() - node.r * 2, sroadWidth() - node.r);
 
           // if (i === 0) {
           //   continue;
@@ -225,12 +247,12 @@ export const TrafficDots = () => {
             node.vx += -N.x * dott;
 
           }
-          const gx = Math.floor(node.x / grd - 0.5);
-          const gy = Math.floor(node.y / grd - 0.5);
-          const { w, h, x, y } = cityGrid[Math.min(Math.max(gy, 0), rows - 1)][Math.min(Math.max(gx, 0), columns - 1)];
+          const gx = Math.floor(node.x / gridSize() - 0.5);
+          const gy = Math.floor(node.y / gridSize() - 0.5);
+          const { w, h, x, y } = cityGrid()[Math.min(Math.max(gy, 0), citySize().y - 1)][Math.min(Math.max(gx, 0), citySize().x - 1)];
 
-          const close = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, (x + 0.5) * grd + roadWidth / 2, (y + 0.5) * grd + roadWidth / 2, grd * w - roadWidth, grd * h - roadWidth, roadWidth / 2);
-          const close2 = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, (x + 0.5) * grd + roadWidth / 2 - node.r, (y + 0.5) * grd + roadWidth / 2 - node.r, grd * w - roadWidth + node.r * 2, grd * h - roadWidth + node.r * 2, roadWidth / 2 + node.r);
+          const close = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, (x + 0.5) * gridSize() + sroadWidth() / 2, (y + 0.5) * gridSize() + sroadWidth() / 2, gridSize() * w - sroadWidth(), gridSize() * h - sroadWidth(), sroadWidth() / 2);
+          const close2 = closestPointOnRoundedRectFromOutside({ x: node.x, y: node.y }, (x + 0.5) * gridSize() + sroadWidth() / 2 - node.r, (y + 0.5) * gridSize() + sroadWidth() / 2 - node.r, gridSize() * w - sroadWidth() + node.r * 2, gridSize() * h - sroadWidth() + node.r * 2, sroadWidth() / 2 + node.r);
           if (Math.hypot(close.x - node.x, close.y - node.y) < node.r || close.inside) {
             let di = { x: close.x - node.x, y: close.y - node.y };
             let N = { x: di.x / Math.hypot(di.x, di.y), y: di.y / Math.hypot(di.x, di.y) };
@@ -243,16 +265,16 @@ export const TrafficDots = () => {
             // node.vx*=0.5;
             node.vx += -N.x * dott;
           }
-          // if(Math.abs(node.x%grd-grd/2)>roadWidth/2){
+          // if(Math.abs(node.x%gridSize()-gridSize()/2)>roadWidth/2){
           //   node.vy*=0.5;
-          //   node.vy+=((Math.round(node.y/grd-0.5)+0.5)*grd-node.y)/4;
+          //   node.vy+=((Math.round(node.y/gridSize()-0.5)+0.5)*gridSize()-node.y)/4;
           // }
-          // if(Math.abs(node.y%grd-grd/2)>roadWidth/2){
+          // if(Math.abs(node.y%gridSize()-gridSize()/2)>roadWidth/2){
           //   node.vx*=0.5;
-          //   node.vx+=((Math.round(node.x/grd-0.5)+0.5)*grd-node.x)/4;
+          //   node.vx+=((Math.round(node.x/gridSize()-0.5)+0.5)*gridSize()-node.x)/4;
           // }
-          // node.x = node.x * 0.9 + (Math.round(node.x / grd + 0.5) * grd - grd / 2) * 0.1;
-          // node.y = node.y * 0.9 + (Math.round(node.y / grd + 0.5) * grd - grd / 2) * 0.1;
+          // node.x = node.x * 0.9 + (Math.round(node.x / gridSize() + 0.5) * gridSize() - gridSize() / 2) * 0.1;
+          // node.y = node.y * 0.9 + (Math.round(node.y / gridSize() + 0.5) * gridSize() - gridSize() / 2) * 0.1;
           if (Math.random() < 0.0015) {
             node.vx = Math.random() < 0.5 ? 5 : -5;
           }
@@ -269,7 +291,7 @@ export const TrafficDots = () => {
     });
     const dV = 200;
     canvas.on("mousedown", () => {
-      chargeRef.strength((_, i) => (i == 0 ? sliderRef.valueAsNumber ?? dV : 0) * Math.pow(grd / 10 / 20, 2));
+      chargeRef.strength((_, i) => (i == 0 ? sliderRef.valueAsNumber ?? dV : 0) * Math.pow(gridSize() / 10 / 20, 2));
     });
     canvas.on("mouseup", () => {
       chargeRef.strength(0);
