@@ -52,6 +52,8 @@ const closestPointOnRoundedRectFromOutside = ({ x: px, y: py }: { x: number, y: 
   return { x: restrictedInner.x - rx, y: restrictedInner.y - ry, inside: Math.hypot(restrictedInner.x - rx - (x0 / 2 + x1 / 2), restrictedInner.y - ry - (y0 / 2 + y1 / 2)) > Math.hypot(px - (x0 / 2 + x1 / 2), py - (y0 / 2 + y1 / 2)) };
 
 }
+const M_PALETTE = ([CYAN_MUL, chroma.blend(CYAN_MUL, MAGENTA_MUL, "multiply").hex(), MAGENTA_MUL, chroma.blend(MAGENTA_MUL, YELLOW_MUL, "multiply").hex(), YELLOW_MUL, chroma.blend(YELLOW_MUL, CYAN_MUL, "multiply").hex()]);
+
 export const TrafficDots = () => {
   const [lightMode, setLightMode] = createSignal(true);
   let sliderRef: HTMLInputElement;
@@ -72,6 +74,13 @@ export const TrafficDots = () => {
     })
   });
   const unit = createMemo(() => Math.sqrt((windowWidth() * windowHeight()) / 16000000) * 5);
+  const rBK = createMemo(() => lightMode() ? BASE_LIGHT : BASE_DARK);
+  const PALETTE_FILL = createMemo(() => M_PALETTE.map((c) => chroma
+    .blend(chroma(c).brighten(!lightMode() ? -1 : 1), rBK(), !lightMode() ? "screen" : "multiply")
+    .hex()));
+  const PALETTE_STROKE = createMemo(() => M_PALETTE.map((c) => chroma
+    .blend(chroma(c), rBK(), !lightMode() ? "screen" : "multiply")
+    .hex()));
 
 
   const gridSize = createMemo(() => unit() * 50);
@@ -152,7 +161,7 @@ export const TrafficDots = () => {
         const lw = 4;
         context.lineWidth = lw;
         context.strokeStyle = chroma.mix(BASE_DARK, BASE_LIGHT, lightMode() ? 1 : 0).hex();//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
-        const rBK = !lightMode() ? chroma(BASE_DARK).darken(0.0).hex() : chroma(BASE_LIGHT).darken(0.0).hex();
+
         context.fillStyle = chroma(!lightMode()
           ? chroma(BASE_DARK).darken(0).hex()
           : chroma(BASE_LIGHT).darken(0).hex()).brighten(!lightMode() ? -1 : 1).hex();
@@ -186,18 +195,21 @@ export const TrafficDots = () => {
         context.font = "bold " + gridSize() / 2.1 + "px 'Noto Sans Mono'";
         context.fillText("Traffic Dots", gridSize() * 0.8, gridSize() * 1.17);
         context.globalCompositeOperation = "source-over";
-
         nodes.slice(0).forEach((dg, i) => {
           const d = dg as d3.SimulationNodeDatum & { r: number };
           if (d.x !== undefined && d.y !== undefined && d.r !== undefined) {
-            const fC = i === 0 ? (lightMode() ? BASE_DARK : BASE_LIGHT) : ([CYAN_MUL, chroma.blend(CYAN_MUL, MAGENTA_MUL, "multiply").hex(), MAGENTA_MUL, chroma.blend(MAGENTA_MUL, YELLOW_MUL, "multiply").hex(), YELLOW_MUL, chroma.blend(YELLOW_MUL, CYAN_MUL, "multiply").hex()][i % 6]);///d3.schemeCategory10[i % 6];
-            context.fillStyle = chroma
-              .blend(chroma(fC).brighten(!lightMode() ? -1 : 1), rBK, !lightMode() ? "screen" : "multiply")
-              .hex();
+            const fC = i === 0 ? (lightMode() ? BASE_DARK : BASE_LIGHT) : M_PALETTE[i % 6];///d3.schemeCategory10[i % 6];
+            context.fillStyle = i === 0 ?
+
+              chroma
+                .blend(chroma(fC).brighten(!lightMode() ? -1 : 1), rBK(), !lightMode() ? "screen" : "multiply")
+                .hex() : PALETTE_FILL()[i % 6];
             context.lineWidth = lw;
-            context.strokeStyle = chroma
-              .blend(chroma(fC).brighten(!lightMode() ? 0 : 0), rBK, !lightMode() ? "screen" : "multiply")
-              .hex();
+            context.strokeStyle = i === 0 ?
+
+              chroma
+                .blend(chroma(fC).brighten(!lightMode() ? -1 : 1), rBK(), !lightMode() ? "screen" : "multiply")
+                .hex() : PALETTE_STROKE()[i % 6];
             // context.beginPath();
             // context.moveTo(d.x + d.r, d.y);
             // context.arc(d.x, d.y, d.r, 0, 2 * Math.PI);
