@@ -123,7 +123,7 @@ export const TrafficDots = () => {
     console.log("Q", windowWidth(), windowHeight());
 
     nodes = d3.range(200).map(() => ({
-      r: (12) * unit() / 2,
+      r: (6) * unit() ,
       x: Math.random() * windowWidth(),
       y: Math.random() * windowHeight(),
     }));

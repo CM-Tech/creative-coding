@@ -1,4 +1,6 @@
+import chroma from "chroma-js";
 import { onMount } from "solid-js";
+import { MAGENTA_MUL, BASE_DARK } from "../shared/constants/colors";
 import { createAnimationFrame } from "../utils";
 
 function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
@@ -11,17 +13,18 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
     y: window.innerHeight,
   };
 
-  class f {
+  class Particle {
     a: number;
     b: number;
     c: number;
     d: number;
     f: number;
-    g: string;
+    fillColor: string;
     j: number;
     x: number;
     speed: number;
     y: number;
+    strokeColor: string;
     constructor(i: number) {
       const g = (i / 4) % size.x;
       const t = Math.floor(i / 4 / size.x);
@@ -31,9 +34,14 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
       this.speed = t;
       this.a = random() * hsize;
       this.b = random() * hsize;
-      this.f = 2 + random(1) * hsize; //put a 1 inside random for upside down hearts
+      this.f = 2 + random(0) * hsize; //put a 1 inside random for upside down hearts
       this.d = 0.05;
-      this.g = "#f77";
+      this.fillColor = chroma
+        .blend(chroma(MAGENTA_MUL).brighten(true ? -1 : 1), BASE_DARK, true ? "screen" : "multiply")
+        .hex();
+      this.strokeColor = chroma
+        .blend(chroma(MAGENTA_MUL), BASE_DARK, true ? "screen" : "multiply")
+        .hex();
       this.c = hsize + random(1) * hsize;
     }
     heart() {
@@ -41,13 +49,16 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
       const wi = this.f;
       const x = this.x;
       const y = this.y;
-      ctx.fillStyle = this.g;
+      ctx.fillStyle = this.fillColor;
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = this.strokeColor;
       ctx.beginPath();
       ctx.moveTo(x + 0.5 * wi, y + 0.3 * he);
       ctx.bezierCurveTo(x + 0.1 * wi, y, x, y + 0.6 * he, x + 0.5 * wi, y + 0.9 * he);
       ctx.bezierCurveTo(x + 1 * wi, y + 0.6 * he, x + 0.9 * wi, y, x + 0.5 * wi, y + 0.3 * he);
       ctx.closePath();
       ctx.fill();
+      ctx.stroke();
     }
 
     h() {
@@ -71,7 +82,7 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
   }
 
   function background() {
-    ctx.fillStyle = "#333";
+    ctx.fillStyle = BASE_DARK;
     ctx.fillRect(0, 0, size.x, size.y);
   }
 
@@ -81,14 +92,14 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
   }
 
   let s = 0;
-  let pa: f[] = [];
+  let particles: Particle[] = [];
 
   textField.innerHTML = "happy";
   setText("happy");
 
   function setText(t: string) {
     speed = 1;
-    pa = [];
+    particles = [];
     clearInterval(s);
 
     background();
@@ -127,19 +138,18 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
 
     for (let i = 0; i < pixtext.length; i += 4) {
       if (0 === pixtext[i] && (s++, 0 === s % hsize)) {
-        const p = new f(i);
+        const p = new Particle(i);
         p.heart();
-        pa.push(p);
+        particles.push(p);
       }
     }
   }
 
   createAnimationFrame(() => {
     background();
-    for (const i in pa) {
-      const p = pa[i];
-      p.i();
-      p.heart();
+    for (const particle of particles) {
+      particle.i();
+      particle.heart();
     }
   });
 
