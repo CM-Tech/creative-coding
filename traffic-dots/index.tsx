@@ -140,13 +140,14 @@ export const TrafficDots = () => {
         context.stroke();
         context.fillStyle = lightMode() ? chroma(BASE_LIGHT).darken(-0.5).hex() : chroma(BASE_DARK).darken(-0.5).hex();//"rgb(" + dbrightness + "," + dbrightness + "," + dbrightness + ")";
 
+        const fCg = chroma(!lightMode() ? BASE_DARK : BASE_LIGHT).darken(0).hex();///d3.schemeCategory10[i % 6];
+        context.fillStyle = chroma(fCg).brighten(!lightMode() ? -1 : 1).hex();
+
+        context.lineWidth = lw;
+        context.strokeStyle = chroma(fCg).brighten(!lightMode() ? 0 : 0).hex();
+
         for (let jg = 0; jg < columns; jg++) {
           for (let jkg = 0; jkg < rows; jkg++) {
-            const fC = chroma(!lightMode() ? BASE_DARK : BASE_LIGHT).darken(0).hex();///d3.schemeCategory10[i % 6];
-            context.fillStyle = chroma(fC).brighten(!lightMode() ? -1 : 1).hex();
-
-            context.lineWidth = lw;
-            context.strokeStyle = chroma(fC).brighten(!lightMode() ? 0 : 0).hex();
             const gx = jg;
             const gy = jkg;
             const { w, h, x, y } = cityGrid[Math.min(Math.max(gy, 0), rows - 1)][Math.min(Math.max(gx, 0), columns - 1)];
@@ -193,34 +194,6 @@ export const TrafficDots = () => {
             context.fill();
             context.stroke();
             context.restore();
-
-            // context.fillStyle = "rgba(255,255,255,0.45)";
-            // context.beginPath();
-            // context.moveTo(d.x + d.r, d.y);
-            // context.arc(d.x, d.y, d.r, 0, 2 * Math.PI);
-            // context.fill();
-
-            // context.lineWidth = 1;
-            // context.strokeStyle = "rgba(0,0,0,0.8)";
-            // context.beginPath();
-            // context.arc(d.x, d.y, d.r - 0.5, 0, 2 * Math.PI);
-            // context.stroke();
-
-            // context.save();
-            // context.beginPath();
-            // context.arc(d.x, d.y, d.r - 1, 0, 2 * Math.PI);
-            // context.clip();
-            // context.fillStyle = fC;
-            // context.beginPath();
-            // context.arc(d.x, d.y + 1, d.r - 1, 0, 2 * Math.PI);
-            // context.fill();
-            // context.restore();
-
-            // context.lineWidth = 1;
-            // context.strokeStyle = "rgba(255,255,255,0.32)";
-            // context.beginPath();
-            // context.arc(d.x, d.y, d.r - 0.5 - 1, 0, 2 * Math.PI);
-            // context.stroke();
           }
         });
 
