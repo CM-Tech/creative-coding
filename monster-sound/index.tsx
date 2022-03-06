@@ -3,8 +3,7 @@ import { createAnimationFrame } from "../utils";
 import fragsource from "./frag.glsl?raw";
 import vertsource from "./vert.glsl?raw";
 
-function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
-  let anim: number;
+function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement, audio: HTMLAudioElement) {
   const MIN_RADIUS = 32;
   let JITTER_RANGE =
     window.innerHeight <= window.innerWidth ? window.innerHeight / 2 - MIN_RADIUS : window.innerWidth / 2 - MIN_RADIUS;
@@ -89,37 +88,6 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
     render();
   }
 
-  fetch("/sounds/monsters.mp3")
-    .then(async (x) => x.arrayBuffer())
-    .then((res) => {
-      const audioContext = new AudioContext();
-      audioContext.decodeAudioData(res, (buffer) => {
-        const analyser = audioContext.createAnalyser();
-        const sourceNode = audioContext.createBufferSource();
-        analyser.smoothingTimeConstant = 0.6;
-        analyser.fftSize = NUM_NODES * 2;
-        analyser.minDecibels = -90;
-        analyser.maxDecibels = -10;
-        sourceNode.buffer = buffer;
-        analyser.connect(audioContext.destination);
-        sourceNode.connect(analyser);
-        sourceNode.start(0);
-        createAnimationFrame(update.bind(null, analyser));
-
-        render();
-
-        let playing = true;
-
-        btn.textContent = "⏸";
-
-        window.onclick = () => {
-          sourceNode[`${playing ? "dis" : ""}connect`](analyser);
-          btn.textContent = playing ? "▶️" : "⏸";
-          playing ? window.cancelAnimationFrame(anim) : update(analyser);
-          playing = !playing;
-        };
-      });
-    });
   let time = 0;
 
   function render() {
@@ -153,15 +121,38 @@ function main(canvas: HTMLCanvasElement, btn: HTMLParagraphElement) {
         ? window.innerHeight / 2 - MIN_RADIUS
         : window.innerWidth / 2 - MIN_RADIUS;
   };
+
+  audio.oncanplay = () => {
+    const audioContext = new AudioContext();
+    const analyser = audioContext.createAnalyser();
+    const sourceNode = audioContext.createMediaElementSource(audio);
+    analyser.smoothingTimeConstant = 0.6;
+    analyser.fftSize = NUM_NODES * 2;
+    analyser.minDecibels = -90;
+    analyser.maxDecibels = -10;
+    analyser.connect(audioContext.destination);
+    sourceNode.connect(analyser);
+    createAnimationFrame(update.bind(null, analyser));
+
+    btn.textContent = audio.paused ? "▶️" : "⏸";
+    window.onclick = () => {
+      audioContext.resume();
+      audio.paused ? audio.play() : audio.pause();
+      btn.textContent = audio.paused ? "▶️" : "⏸";
+    };
+    render();
+  };
 }
 export const MonsterSound = () => {
   let c: HTMLCanvasElement;
   let btn: HTMLParagraphElement;
+  let audio: HTMLAudioElement;
   onMount(() => {
-    main(c, btn);
+    main(c, btn, audio);
   });
   return (
     <>
+      <audio ref={audio!} src="/sounds/monsters.mp3" crossOrigin="anonymous" loop />
       <canvas style={{ background: "rgb(56, 35, 37)" }} ref={c!} />
       <p class="btn" ref={btn!}>
         Loading...
