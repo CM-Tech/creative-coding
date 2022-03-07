@@ -4,20 +4,21 @@ import { createMemo, createSignal, onMount } from "solid-js";
 import { BASE_DARK, BASE_LIGHT, CYAN_MUL, MAGENTA_MUL, YELLOW_MUL } from "../shared/constants";
 import { createAnimationFrame, createSizeSignal } from "../utils";
 const FONT_FAMILY = "'Noto Sans Mono'";
-const hard_time = 500;
+const hard_time = 750;
 const HBK = chroma.blend(BASE_DARK, chroma.blend(MAGENTA_MUL, YELLOW_MUL, "multiply"), "screen").hex();
 const PL = chroma.blend(BASE_DARK, YELLOW_MUL, "screen").hex();
 const BO = chroma.blend(BASE_DARK, CYAN_MUL, "screen").hex();
 const spawn_range = 4;
 export const Warpy = () => {
   let c: HTMLCanvasElement;
-  let min = Math.min(window.innerWidth, window.innerHeight);
 
   const { width: windowWidth, height: windowHeight, dpr: DP } = createSizeSignal();
   const minDimS = createMemo(() => Math.min(windowWidth(), windowHeight()));
   const [time, setTime] = createSignal(0);
   const zoom = createMemo(() => minDimS() / 4 * (Math.min(1, time() / 25)) * (1 + Math.max(0, Math.min(1, (time()) / hard_time))));
-
+  const [camX, setCamX] = createSignal(0);
+  const [camY, setCamY] = createSignal(0);
+  const [camZZ, setCamZZ] = createSignal(1);
   onMount(() => {
     const ctx = c.getContext("2d")!;
     const you = {
@@ -108,11 +109,16 @@ export const Warpy = () => {
 
       ctx.translate(c.width / 2, c.height / 2);
       ctx.scale(zoom(), zoom());
+      ctx.scale(camZZ(), camZZ());
+      ctx.translate(-camX(), -camY());
+
       if (time() % (time() >= hard_time ? 20 : 40) == 0 && running) bullets.push(new Bullet());
       bullets = bullets.filter((b) => !b.die());
+      let CD = 2;
       for (const b of bullets) {
         if (running && (time() < hard_time - 50 || time() >= hard_time)) b.move();
         b.draw();
+        CD = Math.min(CD, Math.max(Math.abs(b.x - you.x), Math.abs(you.y - b.y)));
         if (
           running &&
           (time() < hard_time - 50 || time() > hard_time) &&
@@ -121,6 +127,9 @@ export const Warpy = () => {
           running = false;
         }
       }
+      setCamX(you.x * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8), 0)), 8));
+      setCamY(you.y * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8), 0)), 8));
+      setCamZZ(1 + Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8), 0)), 8));
 
       animations = animations.filter((a) => !a.die());
       for (const a of animations) {
@@ -192,12 +201,6 @@ export const Warpy = () => {
       if (e.keyCode == 39 && you.vx == 1) you.vx = 0;
       if (e.keyCode == 38 && you.vy == -1) you.vy = 0;
       if (e.keyCode == 40 && you.vy == 1) you.vy = 0;
-    });
-
-    window.addEventListener("resize", () => {
-      c.width = window.innerWidth;
-      c.height = window.innerHeight;
-      min = Math.min(c.width, c.height);
     });
 
     document.body.ontouchmove = (e) => {
