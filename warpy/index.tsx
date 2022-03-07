@@ -135,9 +135,9 @@ export const Warpy = () => {
           running = false;
         }
       }
-      setCamX(you.x * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8), 0)), 8));
-      setCamY(you.y * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8), 0)), 8));
-      setCamZZ(1 + Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8), 0)), 8));
+      setCamX(you.x * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8) * 32, 0)), 1));
+      setCamY(you.y * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8) * 32, 0)), 1));
+      setCamZZ(1 + Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8) * 32, 0)), 1));
 
       animations = animations.filter((a) => !a.die());
       for (const a of animations) {
