@@ -83,8 +83,16 @@ export const Warpy = () => {
       }
       draw() {
         ctx.fillStyle = BASE_LIGHT;
-        ctx.fillRect(this.x - this.time / 2, this.y - this.time / 2, this.time, this.time);
-        this.time -= 1 / 32;
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(Math.PI / 4);
+        ctx.beginPath();
+        ctx.strokeStyle = BASE_LIGHT;
+        ctx.lineWidth = 1 / 64;
+        ctx.rect(- this.time / 2, - this.time / 2, this.time, this.time);
+        ctx.stroke();
+        ctx.restore();
+        this.time -= 1 / 64;
       }
     }
     let bullets: Bullet[] = [];
@@ -138,7 +146,15 @@ export const Warpy = () => {
       for (let i = -1; i < 2; i++) {
         for (let j = -1; j < 2; j++) {
           ctx.fillStyle = BASE_LIGHT;
-          ctx.fillRect(i - 1 / 8 / 2, j - 1 / 8 / 2, 1 / 8, 1 / 8);
+          ctx.save();
+          ctx.translate(i, j);
+          ctx.rotate(Math.PI / 4);
+          // ctx.beginPath();
+          // ctx.strokeStyle=BASE_LIGHT;
+          // ctx.lineWidth=1/64;
+          ctx.fillRect(-1 / 16 / 2, -1 / 16 / 2, 1 / 8 / 2, 1 / 8 / 2);
+          // ctx.stroke();
+          ctx.restore();
         }
       }
 
