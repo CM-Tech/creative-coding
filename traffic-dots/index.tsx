@@ -2,6 +2,7 @@ import chroma from "chroma-js";
 import * as d3 from "d3";
 import { createEffect, createMemo, createSignal, onCleanup, onMount } from "solid-js";
 import { BASE_DARK, BASE_LIGHT, CYAN_MUL, MAGENTA_MUL, YELLOW_MUL } from "../shared/constants";
+import { createSizeSignal } from "../utils";
 
 function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
   let rr = Math.max(r, 0);
@@ -66,20 +67,8 @@ export const TrafficDots = () => {
   let sliderRef: HTMLInputElement;
 
   let canvasNode: HTMLCanvasElement;
-  const [windowWidth, setWindowWidth] = createSignal(window.innerWidth);
-  const [windowHeight, setWindowHeight] = createSignal(window.innerHeight);
-  const [DP, setDP] = createSignal(window.devicePixelRatio ?? 1);
-  onMount(() => {
-    const handler = () => {
-      setWindowWidth(window.innerWidth);
-      setWindowHeight(window.innerHeight);
-      setDP(window.devicePixelRatio ?? 1);
-    };
-    window.addEventListener("resize", handler);
-    onCleanup(() => {
-      window.removeEventListener("resize", handler);
-    })
-  });
+  const { width: windowWidth, height: windowHeight, dpr: DP } = createSizeSignal();
+
   const unit = createMemo(() => Math.sqrt((windowWidth() * windowHeight()) / 16000000) * 5);
   const rBK = createMemo(() => lightMode() ? BASE_LIGHT : BASE_DARK);
   const PALETTE_FILL = createMemo(() => M_PALETTE.map((c) => chroma
