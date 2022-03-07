@@ -1,14 +1,17 @@
+import chroma from "chroma-js";
 import { onMount } from "solid-js";
-import { createAnimationFrame } from "../utils";
+import { BASE_DARK } from "../shared/constants";
+import { createAnimationFrame, createSizeSignal } from "../utils";
 
 const main = (c: HTMLCanvasElement) => {
-  let w = window.innerWidth;
-  let h = window.innerHeight;
+
+  let w = window.innerWidth * (window.devicePixelRatio ?? 1);
+  let h = window.innerHeight * (window.devicePixelRatio ?? 1);
   c.width = w;
   c.height = h;
   window.addEventListener("resize", () => {
-    w = window.innerWidth;
-    h = window.innerHeight;
+    w = window.innerWidth * (window.devicePixelRatio ?? 1);
+    h = window.innerHeight * (window.devicePixelRatio ?? 1);
 
     c.width = w;
     c.height = h;
@@ -20,9 +23,10 @@ const main = (c: HTMLCanvasElement) => {
   let mirrorsSize = 0;
   let startX = null as number | null;
   let startY = null as number | null;
+  let startColor = "white";
   function getCoords(event: MouseEvent) {
-    mouseX = event.clientX;
-    mouseY = event.clientY;
+    mouseX = event.clientX * (window.devicePixelRatio ?? 1);
+    mouseY = event.clientY * (window.devicePixelRatio ?? 1);
   }
 
   class Line {
@@ -31,12 +35,14 @@ const main = (c: HTMLCanvasElement) => {
     ex: number;
     ey: number;
     len: number;
-    constructor(x: number, y: number, ex: number, ey: number) {
+    color: string;
+    constructor(x: number, y: number, ex: number, ey: number, color = "white") {
       this.x = x;
       this.y = y;
       this.ex = ex;
       this.ey = ey;
       this.len = Math.sqrt((this.x - this.ex) * (this.x - this.ex) + (this.y - this.ey) * (this.y - this.ey));
+      this.color = color;
     }
   }
   function dotLines(a: Line, b: Line) {
@@ -83,13 +89,15 @@ const main = (c: HTMLCanvasElement) => {
     boxLines: Line[];
     children: LineProjection[];
     nearMirror: Line | null;
+    color: string;
     constructor(
       origin: SimplePoint,
       horizon: Line,
       hFar: boolean,
       nearClip: Line,
       linesLeft: Line[],
-      allLines: Line[]
+      allLines: Line[],
+      color = "white"
     ) {
       this.origin = origin;
       this.horizon = horizon;
@@ -105,6 +113,7 @@ const main = (c: HTMLCanvasElement) => {
         new Line(this.nearClip.ex, this.nearClip.ey, this.horizon.ex, this.horizon.ey),
       ];
       this.nearMirror = null;
+      this.color = color;
     }
     calc(depth: number) {
       this.children = [];
@@ -112,7 +121,7 @@ const main = (c: HTMLCanvasElement) => {
         const splitter = this.linesLeft[0];
         const restLines = this.linesLeft.slice(1);
         if (!this.lineInCone(splitter)) {
-          const l = new LineProjection(this.origin, this.horizon, this.hFar, this.nearClip, restLines, this.allLines);
+          const l = new LineProjection(this.origin, this.horizon, this.hFar, this.nearClip, restLines, this.allLines, this.color);
           if (this.nearMirror !== null) {
             l.nearMirror = this.nearMirror;
           }
@@ -157,7 +166,7 @@ const main = (c: HTMLCanvasElement) => {
               [
                 x,
                 (((Math.atan2(x.y - this.origin.y, x.x - this.origin.x) - leftAtan) % (Math.PI * 2)) + Math.PI * 2) %
-                  (Math.PI * 2),
+                (Math.PI * 2),
               ] as const
           );
           q.sort((a, b) => a[1] - b[1]);
@@ -192,7 +201,7 @@ const main = (c: HTMLCanvasElement) => {
             if (hitLine) {
               newFC = lineC;
             }
-            const l = new LineProjection(this.origin, newFC, this.hFar && !hitLine, newNC, restLines, this.allLines);
+            const l = new LineProjection(this.origin, newFC, this.hFar && !hitLine, newNC, restLines, this.allLines, this.color);
             if (this.nearMirror !== null) {
               l.nearMirror = this.nearMirror;
             }
@@ -232,7 +241,8 @@ const main = (c: HTMLCanvasElement) => {
           true,
           newNC,
           newAllLines.filter((x) => x !== this.nearMirror),
-          newAllLines
+          newAllLines,
+          chroma.blend(this.color, this.nearMirror?.color ?? "#ffffff", "multiply").hex()
         );
         this.children.push(l);
         if (this.children.length > 0) {
@@ -258,12 +268,11 @@ const main = (c: HTMLCanvasElement) => {
 
         const range = 10000;
         const gradient = ctx.createRadialGradient(this.origin.x, this.origin.y, 0, this.origin.x, this.origin.y, range);
-        const slices = 1000;
+        const slices = 10;
         for (let i = 0; i < slices; i++) {
           const r = (range / slices) * i;
-          const g = (x: number) => Math.min(Math.floor(x * 255), 255);
           const b = 100 / (r + 1);
-          gradient.addColorStop(r / range, `rgba(${g(b)},${g(b)},${g(b)},1)`);
+          gradient.addColorStop(r / range, chroma(this.color).mix(chroma("black"), Math.min(Math.max(1 - b, 0), 1)).hex());
         }
         ctx.globalCompositeOperation = "lighter";
         ctx.fillStyle = gradient;
@@ -309,7 +318,8 @@ const main = (c: HTMLCanvasElement) => {
   document.body.addEventListener("mousemove", getCoords);
   document.body.addEventListener("mousedown", () => {
     if (startX == null) {
-      mirrors[mirrorsSize++] = new Line(mouseX, mouseY, mouseX, mouseY);
+      startColor = ["cyan", "magenta", "yellow", "white"][Math.floor(Math.random() * 4)];
+      mirrors[mirrorsSize++] = new Line(mouseX, mouseY, mouseX, mouseY, startColor);
       startX = mouseX;
       startY = mouseY;
     } else {
@@ -321,24 +331,24 @@ const main = (c: HTMLCanvasElement) => {
   createAnimationFrame(tick);
 
   function drawMirror(line: Line) {
-    ctx.strokeStyle = "green";
+    ctx.strokeStyle = line.color;
+    ctx.lineWidth = 4;
+    ctx.setLineDash([2, 2]);
     ctx.beginPath();
     ctx.moveTo(line.x, line.y);
     ctx.lineTo(line.ex, line.ey);
     ctx.stroke();
   }
   function tick() {
-    ctx.fillStyle = "rgba(1,1,1,1)";
-
     ctx.globalCompositeOperation = "source-over";
 
     ctx.globalAlpha = 1;
-    ctx.fillStyle = "rgba(0,0,0,1)";
+    ctx.fillStyle = BASE_DARK;
 
     ctx.fillRect(0, 0, w, h);
 
     if (startX !== null && startY !== null) {
-      mirrors[mirrors.length - 1] = new Line(startX, startY, mouseX, mouseY);
+      mirrors[mirrors.length - 1] = new Line(startX, startY, mouseX, mouseY, startColor);
     }
 
     const topHorizon = new Line(0, 0, w, 0);
@@ -454,8 +464,9 @@ const main = (c: HTMLCanvasElement) => {
 
 export const LightBeamer = () => {
   let c: HTMLCanvasElement;
+  const { width, height, dpr } = createSizeSignal();
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!} />;
+  return <canvas ref={c!} width={width() * dpr()} height={height() * dpr()} style={{ width: "100%", height: "100%" }} />;
 };
