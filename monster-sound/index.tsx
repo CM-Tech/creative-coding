@@ -152,7 +152,7 @@ export const MonsterSound = () => {
   });
   return (
     <>
-      <audio ref={audio!} src="/sounds/monsters.mp3" crossOrigin="anonymous" loop />
+      <audio ref={audio!} src="/sounds/Monsters.mp3" crossOrigin="anonymous" loop />
       <canvas style={{ background: "rgb(56, 35, 37)" }} ref={c!} />
       <p class="btn" ref={btn!}>
         Loading...
