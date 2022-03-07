@@ -360,7 +360,7 @@ export const TrafficDots = () => {
         <div style={{ display: "flex" }}>
           <div style={{ "padding-left": `${gridSize() * 0.25}px`, "padding-right": `${gridSize() * 0.25}px`, "box-sizing": "border-box", width: `${gridSize() * 2}px` }}>Force</div>
           <div style={{
-            "padding": `${gridSize() * 0.25}px`, "box-sizing": "border-box", width: `${gridSize() * 3}px`, height: `${gridSize() * 1}px`,
+            "padding": `${gridSize() * 0.5 - 1 * DP()}px`, "box-sizing": "border-box", width: `${gridSize() * 3}px`, height: `${gridSize() * 1}px`,
 
             display: "flex"
           }}>
