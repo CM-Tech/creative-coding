@@ -1,4 +1,6 @@
+import chroma from "chroma-js";
 import { onMount } from "solid-js";
+import { BASE_DARK, BASE_LIGHT, CYAN_MUL, MAGENTA_MUL, YELLOW_MUL } from "../shared/constants";
 import { createAnimationFrame } from "../utils";
 
 export const CharacterRain = () => {
@@ -22,7 +24,7 @@ export const CharacterRain = () => {
     let timer = 0;
     const speed = 3;
 
-    textbox.value = "❆✵⛄";
+    textbox.value = "O M G";
     //characters characters - taken from the unicode charset
     let characters = "0123456789-+-+==XX-+-+==XX".split("");
     //converting the string into an array of single characters
@@ -30,7 +32,7 @@ export const CharacterRain = () => {
     col.value = "#0f0";
     const columns = (c.width * 100) / c.width; //number of columns for the rain
     //an array of drops - one per column
-    const drops: { x: number; size: number; y: number }[] = [];
+    const drops: { x: number; size: number; y: number; color: string }[] = [];
 
     //x below is the x coordinate
     //1 = y co-ordinate of the drop(same for every drop initially)
@@ -39,6 +41,7 @@ export const CharacterRain = () => {
         y: 1,
         size: Math.random() * 15 + 5,
         x: Math.random() * c.width,
+        color: [CYAN_MUL, MAGENTA_MUL, YELLOW_MUL][Math.floor(Math.random() * 3)]
       };
 
     //drawing the characters
@@ -46,7 +49,8 @@ export const CharacterRain = () => {
     function draw() {
       //Black BG for the canvas
       //translucent BG to show trail
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.globalCompositeOperation = "multiply"
+      ctx.fillStyle = "#fafafa";
       ctx.fillRect(0, 0, c.width, c.height);
       ctx.fillStyle = /* "'"+*/ col.value; //"'" //green text
 
@@ -58,11 +62,22 @@ export const CharacterRain = () => {
       }
       //looping over drops
       for (let i = 0; i < drops.length; i++) {
-        ctx.font = drops[i].size + "px Times";
+        ctx.font = drops[i].size + `px ${"'Noto Sans Mono'"}`;
 
         const text = characters[Math.floor(Math.random() * characters.length)];
         //x = i*font_size, y = value of drops[i]*font_size
-        ctx.fillText(text, drops[i].x, drops[i].y * drops[i].size);
+
+        ctx.fillStyle = chroma(BASE_LIGHT).alpha(0.25).hex();
+        ctx.globalCompositeOperation = "lighter"
+        ctx.fillRect(drops[i].x, drops[i].y * drops[i].size, drops[i].size, drops[i].size)
+        ctx.fillStyle = drops[i].color;
+
+        ctx.globalCompositeOperation = "multiply"
+        ctx.fillRect(drops[i].x, drops[i].y * drops[i].size, drops[i].size, drops[i].size)
+
+        ctx.fillStyle = drops[i].color;
+        ctx.globalCompositeOperation = "source-over"
+        ctx.fillText(text, drops[i].x + drops[i].size * 0.2, drops[i].y * drops[i].size + drops[i].size * 0.4);
 
         //sending the drop back to the top randomly after it has crossed the screen
         //adding a randomness to the reset to make the drops scattered on the Y axis
