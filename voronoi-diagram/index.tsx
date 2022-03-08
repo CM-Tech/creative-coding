@@ -1,24 +1,132 @@
 import { Delaunay } from "d3";
-import { onMount } from "solid-js";
-import { createAnimationFrame } from "../utils";
+import { createEffect, createSignal, onMount } from "solid-js";
+import { createAnimationFrame, createSizeSignal } from "../utils";
 
-const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => {
-  let hsize = 5;
+// Credit to Liam (Stack Overflow)
+// https://stackoverflow.com/a/41034697/3480193
+class Cursor {
+  static getCurrentCursorPosition(parentElement) {
+    var selection = window.getSelection(),
+      charCount = -1,
+      node;
+
+    if (selection.focusNode) {
+      if (Cursor._isChildOf(selection.focusNode, parentElement)) {
+        node = selection.focusNode;
+        charCount = selection.focusOffset;
+
+        while (node) {
+          if (node === parentElement) {
+            break;
+          }
+
+          if (node.previousSibling) {
+            node = node.previousSibling;
+            charCount += (node.textContent ?? "").length;
+          } else {
+            node = node.parentNode;
+            if (node === null) {
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    return charCount;
+  }
+
+  static setCurrentCursorPosition(chars, element) {
+    if (chars >= 0) {
+      var selection = window.getSelection();
+
+      let range = Cursor._createRange(element, { count: chars });
+
+      if (range) {
+        range.collapse(false);
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
+    }
+  }
+
+  static _createRange(node, chars, range) {
+    if (!range) {
+      range = document.createRange()
+      range.selectNode(node);
+      range.setStart(node, 0);
+    }
+
+    if (chars.count === 0) {
+      range.setEnd(node, chars.count);
+    } else if (node && chars.count > 0) {
+      if (node.nodeType === Node.TEXT_NODE) {
+        if (node.textContent.length < chars.count) {
+          chars.count -= node.textContent.length;
+        } else {
+          range.setEnd(node, chars.count);
+          chars.count = 0;
+        }
+      } else {
+        for (var lp = 0; lp < node.childNodes.length; lp++) {
+          range = Cursor._createRange(node.childNodes[lp], chars, range);
+
+          if (chars.count === 0) {
+            break;
+          }
+        }
+      }
+    }
+
+    return range;
+  }
+
+  static _isChildOf(node, parentElement) {
+    while (node !== null) {
+      if (node === parentElement) {
+        return true;
+      }
+      node = node.parentNode;
+    }
+
+    return false;
+  }
+}
+
+const main = (textField: HTMLDivElement, ctx: CanvasRenderingContext2D, setRText: (v: { x: number, y: number, fontSize: number, text: string }[]) => void) => {
+  let hsize = 1;
   let speed = 1;
+  const { width: windowWidth, height: windowHeight, dpr } = createSizeSignal();
   const size = {
     x: window.innerWidth,
     y: window.innerHeight,
   };
+  const gt = () => {
+    let c = [...textField.childNodes].map(x => x.textContent).join("\n");
+    return c;//.substring(0,c.length-1);
+  };
 
   function textChanged(event: Event | KeyboardEvent) {
+    // if ((event as KeyboardEvent).keyCode == 13) {
+    //   // event.preventDefault();
+    // } else {
+    // const vg=window.getSelection()?.getRangeAt(0);
+    // let m=vg?.startContainer.
+    // let [m,mm]=getCaretPosition(textField);
+    let v = gt();
+    // textField.innerText="";
+    setText(v);
+    // }
+  }
+  function textChanged2(event: Event | KeyboardEvent) {
     if ((event as KeyboardEvent).keyCode == 13) {
-      event.preventDefault();
-    } else {
-      setText(textField.value);
+      // event.preventDefault()
+      // Cursor.setCurrentCursorPosition(Cursor.getCurrentCursorPosition(textField)+1,textField);
     }
   }
-  textField.addEventListener("change", textChanged);
-  textField.addEventListener("keyup", textChanged);
+  // textField.addEventListener("change", textChanged);
+  textField.addEventListener("input", textChanged);
+  textField.addEventListener("keydown", textChanged2);
 
   class Particle {
     a: number;
@@ -109,7 +217,7 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
     background();
 
     ctx.fillStyle = "black";
-    const fontt = "'Jost'";
+    const fontt = "'Noto Sans Mono'";
     ctx.font = 100 + "px " + fontt;
     const lines = t.split("\n");
     const fontMeasures = [];
@@ -130,7 +238,7 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
       ctx.font = fS + "px " + fontt;
       measure = ctx.measureText(lines[i]);
 
-      runningY += measure.actualBoundingBoxAscent;
+      runningY += measure.actualBoundingBoxAscent * 1.4;
       bbox = {
         x: measure.actualBoundingBoxLeft,
         y: -measure.actualBoundingBoxAscent + runningY,
@@ -138,7 +246,7 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
         h: measure.actualBoundingBoxAscent + measure.actualBoundingBoxDescent,
       };
       runningYS.push(runningY + 0);
-      runningY += measure.actualBoundingBoxDescent;
+      runningY += measure.actualBoundingBoxDescent * 1.4;
       fontSizes.push(fS);
       fontMeasures.push(bbox);
     }
@@ -158,6 +266,8 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
     const heightOfFont = Math.floor(sScale * Math.min(...fontSizes));
 
     hsize = Math.min(Math.floor(heightOfFont / 20) + 1, Math.floor(Math.min(size.x, size.y) / 20) + 1);
+
+    let s2 = [];
     for (let i = 0; i < lines.length; i++) {
       ctx.font = fontSizes[i] * sScale + "px " + fontt;
       //   mtext = ctx.measureText(t).width;
@@ -174,6 +284,11 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
         (size.x + bbox.w) / 2 - measure.actualBoundingBoxRight + measure.actualBoundingBoxLeft,
         size.y / 2 - fontMeasures[0].y * sScale - (bbbox.h * sScale) / 2 + runningYS[i] * sScale
       );
+      s2.push({
+        x: (size.x + bbox.w) / 2 - measure.actualBoundingBoxRight + measure.actualBoundingBoxLeft,
+        y: size.y / 2 - fontMeasures[0].y * sScale - (bbbox.h * sScale) / 2 + runningYS[i] * sScale - 1 * fontSizes[i] * sScale,
+        fontSize: fontSizes[i] * sScale, text: lines[i]
+      });
     }
 
     const ctext = ctx.getImageData(0, 0, size.x, size.y);
@@ -186,8 +301,12 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
         pa.push(p);
       }
     }
+
+    setRText(s2);
   }
   createAnimationFrame(() => {
+    ctx.resetTransform();
+    ctx.scale(dpr(), dpr());
     background();
     const points = [];
 
@@ -199,28 +318,46 @@ const main = (textField: HTMLTextAreaElement, ctx: CanvasRenderingContext2D) => 
     }
     const delaunay = Delaunay.from(points);
     const voronoi = delaunay.voronoi([0, 0, size.x, size.y]);
+    ctx.lineWidth = 1 / dpr();
     ctx.beginPath();
     ctx.strokeStyle = "white";
     voronoi.render(ctx);
     ctx.stroke();
+
+    ctx.resetTransform();
   });
   window.onresize = () => {
-    setText(textField.value);
+    setText(gt());
   };
+  window.addEventListener("load", () => {
+    setText(gt());
+  });
 };
 
 export const VoronoiDiagram = () => {
-  let textField: HTMLTextAreaElement;
+  let textField: HTMLDivElement;
   let canvas: HTMLCanvasElement;
+
+  const { width: windowWidth, height: windowHeight, dpr } = createSizeSignal();
+  const [rtext, setRText] = createSignal([{ text: "Hello", x: 0, y: 0, fontSize: 16 }]);
   onMount(() => {
-    main(textField, canvas.getContext("2d")!);
+    main(textField, canvas.getContext("2d")!, setRText);
   });
+  createEffect(() => {
+    let m = Cursor.getCurrentCursorPosition(textField);
+
+    textField.innerHTML = "";
+    rtext().map((x) => {
+      textField.appendChild(<div style={{ "font-size": `${x.fontSize}px`, position: "absolute", top: x.y + "px", left: x.x + "px" }}>{x.text === "" ? <span style={{}}>{""}</span> : x.text}</div>)
+    })
+    // textField.appendChild(<span>.</span>);
+
+    Cursor.setCurrentCursorPosition(m, textField);
+  })
   return (
-    <>
-      <canvas ref={canvas!} width={window.innerWidth} height={window.innerHeight} />
-      <div class="well">
-        <textarea ref={textField!}></textarea>
-      </div>
-    </>
+    <div style={{ width: "100vw", height: "100vh", position: "fixed", top: 0, bottom: 0 }}>
+      <canvas ref={canvas!} width={windowWidth() * dpr()} height={windowHeight() * dpr()} style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, bottom: 0 }} />
+      <div ref={textField!} contentEditable={true} style={{ display: "block", color: "transparent", width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0, "font-family": "'Noto Sans Mono'", "line-height": 1.22 }}></div>
+    </div>
   );
 };
