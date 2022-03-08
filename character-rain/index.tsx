@@ -22,7 +22,7 @@ export const CharacterRain = () => {
     let timer = 0;
     const speed = 3;
 
-    textbox.value = "WELCOME";
+    textbox.value = "|:.";
     //characters characters - taken from the unicode charset
     let characters = "0123456789-+-+==XX-+-+==XX".split("");
     //converting the string into an array of single characters
