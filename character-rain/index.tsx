@@ -1,12 +1,12 @@
 import chroma from "chroma-js";
 import { onMount } from "solid-js";
 import { BASE_DARK, BASE_LIGHT, CYAN_MUL, MAGENTA_MUL, YELLOW_MUL } from "../shared/constants";
-import { createAnimationFrame } from "../utils";
+import { createAnimationFrame, createSizeSignal } from "../utils";
 
 export const CharacterRain = () => {
+  const { width, height, dpr } = createSizeSignal();
   let c: HTMLCanvasElement;
   let textbox: HTMLInputElement;
-  let col: HTMLInputElement;
   function Check(e: KeyboardEvent) {
     const keyCode = e.keyCode ? e.keyCode : e.which;
     if (keyCode == 13) {
@@ -16,21 +16,18 @@ export const CharacterRain = () => {
 
   onMount(() => {
     //making the canvas full screen
-    c.height = window.innerHeight;
-    c.width = window.innerWidth;
 
     const ctx = c.getContext("2d")!;
 
     let timer = 0;
     const speed = 3;
 
-    textbox.value = "O M G";
+    textbox.value = "WELCOME";
     //characters characters - taken from the unicode charset
     let characters = "0123456789-+-+==XX-+-+==XX".split("");
     //converting the string into an array of single characters
 
-    col.value = "#0f0";
-    const columns = (c.width * 100) / c.width; //number of columns for the rain
+    const columns = 100; //number of columns for the rain
     //an array of drops - one per column
     const drops: { x: number; size: number; y: number; color: string }[] = [];
 
@@ -38,8 +35,8 @@ export const CharacterRain = () => {
     //1 = y co-ordinate of the drop(same for every drop initially)
     for (let x = 0; x < columns; x++)
       drops[x] = {
-        y: 1,
-        size: Math.random() * 15 + 5,
+        y: -1,
+        size: (Math.random() + 0.25) * c.width / 100,
         x: Math.random() * c.width,
         color: [CYAN_MUL, MAGENTA_MUL, YELLOW_MUL][Math.floor(Math.random() * 3)]
       };
@@ -52,7 +49,6 @@ export const CharacterRain = () => {
       ctx.globalCompositeOperation = "multiply"
       ctx.fillStyle = "#fafafa";
       ctx.fillRect(0, 0, c.width, c.height);
-      ctx.fillStyle = /* "'"+*/ col.value; //"'" //green text
 
       //a random characters character to print
       if (textbox.value == "") {
@@ -77,17 +73,21 @@ export const CharacterRain = () => {
 
         ctx.fillStyle = drops[i].color;
         ctx.globalCompositeOperation = "source-over"
-        ctx.fillText(text, drops[i].x + drops[i].size * 0.2, drops[i].y * drops[i].size + drops[i].size * 0.4);
+        ctx.fillText(text, drops[i].x + drops[i].size * 0.2, drops[i].y * drops[i].size + drops[i].size * 1);
 
         //sending the drop back to the top randomly after it has crossed the screen
         //adding a randomness to the reset to make the drops scattered on the Y axis
         if (drops[i].y * drops[i].size > c.height && Math.random() > 0.975) {
-          drops[i].y = 0;
+          drops[i].y = -1;
           drops[i].x = Math.random() * c.width;
         }
 
         drops[i].y++;
       }
+      ctx.fillStyle = BASE_LIGHT;
+      ctx.globalCompositeOperation = "source-over"
+      ctx.font = `${64}px ${"'Noto Sans Mono'"}`;
+      ctx.fillText("Character Rain", 8, 64 + 8);
     }
 
     function animloop() {
@@ -105,11 +105,10 @@ export const CharacterRain = () => {
   });
   return (
     <>
-      <div class="well inputs">
+      <div class="well inputs" style={{ bottom: 0, top: "auto", position: "fixed" }}>
         <input ref={textbox!} placeholder="Rain Content" onkeypress={Check} />
-        <input placeholder="color e.g. #00ff00" ref={col!} onkeypress={Check} />
       </div>
-      <canvas ref={c!} />
+      <canvas ref={c!} style={{ width: "100vw", height: "100vh" }} width={width() * dpr()} height={height() * dpr()} />
     </>
   );
 };
