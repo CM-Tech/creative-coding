@@ -198,7 +198,7 @@ const main = (textField: HTMLDivElement, ctx: CanvasRenderingContext2D, setRText
 
   let s = 0;
   let pa: Particle[] = [];
-  let t = "TYPE IN TOP LEFT";
+  let t = "EDIT\nME!";
   if (window.location.hash !== "") {
     t = decodeURIComponent(window.location.hash.substring(1));
   }
@@ -342,6 +342,7 @@ export const VoronoiDiagram = () => {
   const [rtext, setRText] = createSignal([{ text: "Hello", x: 0, y: 0, fontSize: 16 }]);
   onMount(() => {
     main(textField, canvas.getContext("2d")!, setRText);
+    textField.focus();
   });
   createEffect(() => {
     let m = Cursor.getCurrentCursorPosition(textField);
