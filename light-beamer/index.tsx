@@ -271,7 +271,7 @@ const main = (c: HTMLCanvasElement) => {
         const slices = 10;
         for (let i = 0; i < slices; i++) {
           const r = (range / slices) * i;
-          const b = 100 / (r + 1);
+          const b = 1000 / (r + 1) / (r + 1);
           gradient.addColorStop(r / range, chroma(this.color).mix(chroma("black"), Math.min(Math.max(1 - b, 0), 1)).hex());
         }
         ctx.globalCompositeOperation = "lighter";
@@ -316,9 +316,12 @@ const main = (c: HTMLCanvasElement) => {
     }
   }
   document.body.addEventListener("mousemove", getCoords);
+  let ph = 0;
+
   document.body.addEventListener("mousedown", () => {
     if (startX == null) {
-      startColor = ["cyan", "magenta", "yellow", "white"][Math.floor(Math.random() * 4)];
+      startColor = ["cyan", "magenta", "yellow", "white"][ph % 4];
+      ph += 1;
       mirrors[mirrorsSize++] = new Line(mouseX, mouseY, mouseX, mouseY, startColor);
       startX = mouseX;
       startY = mouseY;
@@ -352,8 +355,8 @@ const main = (c: HTMLCanvasElement) => {
     }
 
     const topHorizon = new Line(0, 0, w, 0);
-    const origin = new Point(w / 2.0, h / 2.0);
-    const originClip = new Line(w / 2.0, h / 2.0, w / 2.0, h / 2.0);
+    const origin = new Point(w / 2.0 + (mouseX - w / 2), h / 2.0 + (mouseY - h / 2));
+    const originClip = new Line(origin.x, origin.y, origin.x, origin.y);
     const cl = 20;
     const proj1 = new LineProjection(origin, topHorizon, true, originClip, mirrors.slice(), mirrors.slice());
     proj1.calc(cl);
