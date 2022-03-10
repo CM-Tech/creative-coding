@@ -15,7 +15,7 @@ export const Warpy = () => {
   const { width: windowWidth, height: windowHeight, dpr: DP } = createSizeSignal();
   const minDimS = createMemo(() => Math.min(windowWidth(), windowHeight()));
   const [time, setTime] = createSignal(0);
-  const zoom = createMemo(() => minDimS() / 4 * (Math.min(1, time() / 25)) * (1 + Math.max(0, Math.min(1, (time()) / hard_time))));
+  const zoom = createMemo(() => DP() * 0.5 * minDimS() / 4 * (Math.min(1, time() / 25)) * (1 + Math.max(0, Math.min(1, (time()) / hard_time))));
   const [camX, setCamX] = createSignal(0);
   const [camY, setCamY] = createSignal(0);
   const [camZZ, setCamZZ] = createSignal(1);
