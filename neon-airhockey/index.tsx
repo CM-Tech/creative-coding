@@ -1,15 +1,9 @@
 import { onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
-import frag from "./frag.glsl?raw";
+import vert from "./shaders/vert.glsl?raw";
+import frag from "./shaders/frag.glsl?raw";
 
 function main(canvas: HTMLCanvasElement) {
-  const vertex = `
-precision mediump float;
-attribute vec2 vertPosition;
-void main() {
-    gl_Position = vec4(vertPosition, 0.0, 1.0);
-}
-`;
 
   const mouse = {
     x: 0.5,
@@ -23,7 +17,7 @@ void main() {
   const vertexShader = gl.createShader(gl.VERTEX_SHADER)!;
   const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)!;
 
-  gl.shaderSource(vertexShader, vertex);
+  gl.shaderSource(vertexShader, vert);
   gl.shaderSource(fragmentShader, frag);
 
   gl.compileShader(vertexShader);

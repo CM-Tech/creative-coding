@@ -1,14 +1,19 @@
 import TWEEN from "@tweenjs/tween.js";
 import * as PIXI from "pixi.js";
-import { onMount } from "solid-js";
+import { createEffect, onMount } from "solid-js";
+import { createSizeSignal } from "../utils";
 
 const main = (c: HTMLCanvasElement) => {
+
+  const { width, height, dpr } = createSizeSignal();
   let w = window.innerWidth;
   let h = window.innerHeight;
 
-  const r = [14, 8];
-  if (w / r[0] < h / r[1]) h = (r[1] * w) / r[0];
-  else w = (r[0] * h) / r[1];
+  const r = [1400, 800];
+  w = r[0];
+  h = r[1];
+  // if (w / r[0] < h / r[1]) h = (r[1] * w) / r[0];
+  // else w = (r[0] * h) / r[1];
 
   const palettes = [
     [0x85d600, 0xde4a1f, 0xc4ff66, 0xe98263],
@@ -19,13 +24,16 @@ const main = (c: HTMLCanvasElement) => {
 
   const app = new PIXI.Application({
     view: c,
-    width: w,
-    height: h,
     backgroundColor: 0xebe8e7,
     antialias: true,
   });
 
   app.stage.interactive = true;
+  createEffect(() => {
+    app.renderer.resize(width() * dpr(), height() * dpr());
+    const sc = Math.min(width() * dpr() / r[0], height() * dpr() / r[1]);
+    app.stage.setTransform(width() * dpr() / 2 - sc * r[0] / 2, height() * dpr() / 2 - sc * r[1] / 2, sc, sc)
+  });
 
   const graphics = new PIXI.Graphics();
   app.stage.addChild(graphics);
@@ -345,8 +353,9 @@ const main = (c: HTMLCanvasElement) => {
 };
 export const Foosball = () => {
   let c: HTMLCanvasElement;
+  const { width, height, dpr } = createSizeSignal();
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!} />;
+  return <canvas ref={c!} width={width() * dpr()} height={height() * dpr()} style={{ width: "100vw", height: "100vh" }} />;
 };
