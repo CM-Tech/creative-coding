@@ -34,6 +34,8 @@ import { Component, createMemo, createSignal } from "solid-js";
 import im from "./traffic-dots/README.png?url";
 import im2 from "./boid-beats/README.png?url";
 import { Experiment } from "./shared/types";
+import { BASE_DARK, BASE_LIGHT } from "./shared/constants";
+import chroma from "chroma-js";
 
 const tileWidth = 300;
 const tileIWidth = 250;
@@ -128,6 +130,7 @@ const ExperimentTile = (props) => {
           padding: "0",
         }}
         fillImg={`url(${props?.experiment?.imgUrl ?? im2})`}
+        inset
       ></TTile>
       <TTile
         style={{
@@ -145,7 +148,8 @@ const ExperimentTile = (props) => {
           "border-top-width": "0.0px",
           padding: "8px",
         }}
-        fillColor="#111"
+        fillColor={BASE_DARK}
+        inset
         // fillColor="#f48444"
       >
         <h1
@@ -260,50 +264,63 @@ const Default: Component<{ experiments: Record<string, Experiment> }> = (props) 
     }
   };
   return (
-    <div
-      style={{
-        background: "#e4e4e4",
-        left: 0,
-        position: "relative",
-        top: 0,
-        overflow: "hidden",
-        width: "100vw",
-        height: "100vh",
-        "touch-action": "none",
-      }}
-      onMouseDown={(e) => {
+    <TTile
+        style={{
+          left: 0,
+          position: "relative",
+          top: 0,
+          overflow: "hidden",
+          width: "100vw",
+          height: "100vh",
+          "touch-action": "none",
+          "object-fit": "cover",
+          "object-position": "center",
+          "background-size": "cover",
+          "background-position": "center",
+          // "box-shadow":`0px 1px 2px rgba(0,0,0,0.25), 0px 0px 0px 1px rgba(0,0,0,0.5) inset,0px 1px 1px rgba(255,255,255,0.75) inset,0px -1px 1px rgba(255,255,255,0.5) inset`,
+
+          "box-sizing": "border-box",
+          "border-radius": "0px",
+          "border-top-width": "0.0px",
+          // padding: "8px",
+        }}
+        fillColor={BASE_DARK}
+        // fillColor="#f48444"
+    props={{
+      onMouseDown:(e) => {
         pointer.x = e.clientX;
         pointer.y = e.clientY;
         pointer.down = true;
         start = { x: pointer.x, y: pointer.y, sIndex: selectedIndex() + 0 };
-      }}
-      onMouseMove={(e) => {
+      },
+      onMouseMove:(e) => {
         pointer.x = e.clientX;
         pointer.y = e.clientY;
         triggerMove();
-      }}
-      onMouseUp={(e) => {
+      },
+      onMouseUp:(e) => {
         pointer.x = e.clientX;
         pointer.y = e.clientY;
         pointer.down = false;
-      }}
-      onTouchStart={(e) => {
+      },
+      onTouchStart:(e) => {
         pointer.x = e.changedTouches[0].clientX;
         pointer.y = e.changedTouches[0].clientY;
         pointer.down = true;
         start = { x: pointer.x, y: pointer.y, sIndex: selectedIndex() + 0 };
-      }}
-      onTouchMove={(e) => {
+      },
+      onTouchMove:(e) => {
         pointer.x = e.changedTouches[0].clientX;
         pointer.y = e.changedTouches[0].clientY;
 
         triggerMove();
-      }}
-      onTouchEnd={(e) => {
+      },
+      onTouchEnd:(e) => {
         pointer.x = e.changedTouches[0].clientX;
         pointer.y = e.changedTouches[0].clientY;
         pointer.down = false;
-      }}
+      }
+    }}
     >
       <div
         style={{
@@ -340,212 +357,8 @@ const Default: Component<{ experiments: Record<string, Experiment> }> = (props) 
             />
           );
         })}
-        {/* <ExperimentTile
-          href="/attraction"
-          title={"Attraction"}
-          experiment={AttractionExperiment}
-          index={0}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/boid-beats"
-          title={"Boid Beats"}
-          index={1}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/boids"
-          title={"Boids"}
-          index={2}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/character-rain"
-          title={"Character Rain"}
-          index={3}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/character-type"
-          title={"Character Type"}
-          index={4}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/cobwebify"
-          title={"Cobwebify"}
-          index={5}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/color-blind"
-          title={"Color Blind"}
-          index={6}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/diacritic-sound"
-          title={"Diacritic Sound"}
-          index={7}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/fireworks"
-          title={"Fireworks"}
-          index={8}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/flocking-dots"
-          title={"Flocking Dots"}
-          index={9}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/foosball"
-          title={"Foosball"}
-          index={10}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/hex-life"
-          title={"Hex Life"}
-          index={11}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/light-beamer"
-          title={"Light Beamer"}
-          index={12}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/lights-motion"
-          title={"Lights Motion"}
-          index={13}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/monster-sound"
-          title={"Monster Sound"}
-          index={14}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/name-rain"
-          title={"Name Rain"}
-          index={15}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/neon-airhockey"
-          title={"Neon Airhockey"}
-          index={16}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/pen-flame"
-          title={"Pen Flame"}
-          index={17}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/pixel-rush"
-          title={"Pixel Rush"}
-          index={18}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/plasma-ball"
-          title={"Plasma Ball"}
-          index={19}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/prismatic"
-          title={"Prismatic"}
-          index={20}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/pulsing-square"
-          title={"Pulsing Square"}
-          index={21}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/rainbow-goo"
-          title={"Rainbow Goo"}
-          index={22}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/sph-water"
-          title={"SPH Water"}
-          index={23}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/traffic-dots"
-          title={"Traffic Dots"}
-          index={24}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/valentines-day"
-          title={"Valentines Day"}
-          index={25}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/voronoi-diagram"
-          title={"Voronoi Diagram"}
-          index={26}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/voronoi-dots"
-          title={"Voronoi Dots"}
-          index={27}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
-        <ExperimentTile
-          href="/warpy"
-          title={"Warpy"}
-          index={28}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        /> */}
-      </div>
-    </div>
+        
+      </div></TTile>
   );
 };
 const App = () => {
