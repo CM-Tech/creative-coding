@@ -1,7 +1,7 @@
 import * as dat from "dat.gui";
 import * as d3 from "d3";
 import type { QuadtreeInternalNode, QuadtreeLeaf } from "d3";
-import { createSignal, onMount } from "solid-js";
+import { createSignal, onCleanup, onMount } from "solid-js";
 import { createAnimationFrame } from "../utils";
 
 const [filter, setFilter] = createSignal("");
@@ -63,6 +63,9 @@ function main(c: HTMLCanvasElement, audio: HTMLAudioElement) {
 
     gui.add(controls, "directions", 2, 12);
     gui.add(controls, "turning");
+    onCleanup(() => {
+      gui.destroy();
+    });
   }
   const baseRad = Math.max(Math.min(w, h) / 200, 4);
 
@@ -478,3 +481,8 @@ export const BoidBeats = () => {
     </>
   );
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const BoidBeatsExperiment: Experiment = { title: "Boid Beats", component: BoidBeats, imgUrl, description };

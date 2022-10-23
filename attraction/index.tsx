@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { Experiment } from "../shared/types";
 import { createAnimationFrame } from "../utils";
 
 const w = window.innerWidth;
@@ -207,3 +208,7 @@ export const Attraction = () => {
 
   return <canvas ref={c} />;
 };
+
+import imgUrl from "./README.png?url";
+const description = `Many dots that speed around, orbiting around your mouse pointer`;
+export const AttractionExperiment: Experiment = { title: "Attraction", component: Attraction, imgUrl, description };

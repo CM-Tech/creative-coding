@@ -473,3 +473,8 @@ export const LightBeamer = () => {
   });
   return <canvas ref={c!} width={width() * dpr()} height={height() * dpr()} style={{ width: "100%", height: "100%" }} />;
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const LightBeamerExperiment: Experiment = { title: "Light Beamer", component: LightBeamer, imgUrl, description };

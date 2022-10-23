@@ -109,3 +109,8 @@ export const NameRain = () => {
     </>
   );
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const NameRainExperiment: Experiment = { title: "Name Rain", component: NameRain, imgUrl, description };

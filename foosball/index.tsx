@@ -359,3 +359,8 @@ export const Foosball = () => {
   });
   return <canvas ref={c!} width={width() * dpr()} height={height() * dpr()} style={{ width: "100vw", height: "100vh" }} />;
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const FoosballExperiment: Experiment = { title: "Foosball", component: Foosball, imgUrl, description };

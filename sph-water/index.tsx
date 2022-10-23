@@ -409,3 +409,9 @@ export const SPHWater = () => {
   });
   return <canvas ref={c!} style={{ width: "100%", height: "100%" }} />;
 };
+
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const SPHWaterExperiment: Experiment = { title: "SPH Water", component: SPHWater, imgUrl, description };

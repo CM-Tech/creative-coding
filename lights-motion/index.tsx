@@ -189,3 +189,8 @@ export const LightsMotion = () => {
   });
   return <canvas ref={c!} style={{ cursor: "none", width: "100%", height: "100%" }} />;
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const LightsMotionExperiment: Experiment = { title: "Lights & Motion", component: LightsMotion, imgUrl, description };

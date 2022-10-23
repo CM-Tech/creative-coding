@@ -362,3 +362,8 @@ export const VoronoiDiagram = () => {
     </div>
   );
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const VoronoiDiagramExperiment: Experiment = { title: "Voronoi Diagram", component: VoronoiDiagram, imgUrl, description };

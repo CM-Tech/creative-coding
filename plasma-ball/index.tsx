@@ -115,3 +115,8 @@ export const PlasmaBall = () => {
   });
   return <canvas ref={c!} width="500" height="500" />;
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const PlasmaBallExperiment: Experiment = { title: "Plasma Ball", component: PlasmaBall, imgUrl, description };

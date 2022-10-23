@@ -126,3 +126,8 @@ export const Boids = () => {
     </>
   );
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const BoidsExperiment: Experiment = { title: "Boids", component: Boids, imgUrl, description };

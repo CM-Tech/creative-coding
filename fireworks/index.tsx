@@ -163,3 +163,8 @@ export const Fireworks = () => {
 
   return <canvas ref={canvasNode!} style={{ width: "100vw", height: "100vh" }} />;
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const FireworksExperiment: Experiment = { title: "Fireworks", component: Fireworks, imgUrl, description };

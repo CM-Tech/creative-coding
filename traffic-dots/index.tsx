@@ -360,3 +360,8 @@ export const TrafficDots = () => {
     </>
   );
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const TrafficDotsExperiment: Experiment = { title: "Traffic Dots", component: TrafficDots, imgUrl, description };

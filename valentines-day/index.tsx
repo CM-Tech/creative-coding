@@ -177,3 +177,8 @@ export const ValentinesDay = () => {
     </>
   );
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const ValentinesDayExperiment: Experiment = { title: "Valentines Day", component: ValentinesDay, imgUrl, description };

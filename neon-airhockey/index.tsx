@@ -139,3 +139,8 @@ export const NeonAirhockey = () => {
   });
   return <canvas ref={c!} />;
 };
+
+import imgUrl from "./README.png?url";
+import { Experiment } from "../shared/types";
+const description = `TODO`;
+export const NeonAirhockeyExperiment: Experiment = { title: "Neon Airhockey", component: NeonAirhockey, imgUrl, description };
