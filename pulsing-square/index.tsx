@@ -243,5 +243,5 @@ export const PulsingSquare = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const PulsingSquareExperiment: Experiment = { title: "Pulsing Square", component: PulsingSquare, imgUrl, description };

@@ -192,5 +192,5 @@ export const LightsMotion = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const LightsMotionExperiment: Experiment = { title: "Lights & Motion", component: LightsMotion, imgUrl, description };

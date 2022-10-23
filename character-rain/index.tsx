@@ -131,5 +131,5 @@ export const CharacterRain = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const CharacterRainExperiment: Experiment = { title: "Character Rain", component: CharacterRain, imgUrl, description };

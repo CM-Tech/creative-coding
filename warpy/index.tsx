@@ -267,5 +267,5 @@ export const Warpy = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const WarpyExperiment: Experiment = { title: "Warpy", component: Warpy, imgUrl, description };

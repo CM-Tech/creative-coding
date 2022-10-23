@@ -297,5 +297,5 @@ export const RainbowGoo = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const RainbowGooExperiment: Experiment = { title: "Rainbow Goo", component: RainbowGoo, imgUrl, description };

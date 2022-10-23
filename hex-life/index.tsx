@@ -136,5 +136,5 @@ export const HexLife = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const HexLifeExperiment: Experiment = { title: "Hex Life", component: HexLife, imgUrl, description };

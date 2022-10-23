@@ -75,5 +75,5 @@ export const DiacriticSound = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const DiacriticSoundExperiment: Experiment = { title: "Diacritic Sound", component: DiacriticSound, imgUrl, description };

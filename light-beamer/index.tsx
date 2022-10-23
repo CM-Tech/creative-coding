@@ -476,5 +476,5 @@ export const LightBeamer = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const LightBeamerExperiment: Experiment = { title: "Light Beamer", component: LightBeamer, imgUrl, description };

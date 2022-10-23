@@ -326,5 +326,5 @@ export const ColorBlind = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const ColorBlindExperiment: Experiment = { title: "Color Blind", component: ColorBlind, imgUrl, description };

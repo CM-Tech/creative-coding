@@ -166,5 +166,5 @@ export const Fireworks = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const FireworksExperiment: Experiment = { title: "Fireworks", component: Fireworks, imgUrl, description };

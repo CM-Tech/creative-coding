@@ -173,5 +173,5 @@ export const PenFlame = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const PenFlameExperiment: Experiment = { title: "Pen Flame", component: PenFlame, imgUrl, description };

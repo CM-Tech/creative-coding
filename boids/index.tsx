@@ -129,5 +129,5 @@ export const Boids = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const BoidsExperiment: Experiment = { title: "Boids", component: Boids, imgUrl, description };

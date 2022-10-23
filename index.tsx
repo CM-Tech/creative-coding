@@ -35,9 +35,9 @@ import im from "./traffic-dots/README.png?url";
 import im2 from "./boid-beats/README.png?url";
 import { Experiment } from "./shared/types";
 
-const tileWidth = 600;
-const tileIWidth = 500;
-const tileHeight = 250;
+const tileWidth = 300;
+const tileIWidth = 250;
+const tileHeight = 500;
 const TTile = (props) => {
   return createMemo(() => {
     if (props.inset)
@@ -101,7 +101,7 @@ const ExperimentTile = (props) => {
         width: tileIWidth + "px",
         height: tileHeight + "px",
         display: "flex",
-        "flex-direction": "row",
+        "flex-direction": "column",
         "box-sizing": "border-box",
         padding: "0px",
         "margin-right": `${(tileWidth - tileIWidth) / 2}px`,
@@ -113,8 +113,8 @@ const ExperimentTile = (props) => {
     >
       <TTile
         style={{
-          width: tileHeight + "px",
-          height: tileHeight + "px",
+          width: tileIWidth + "px",
+          height: tileIWidth + "px",
           // "background-image": `url(${im})`,
           "object-fit": "cover",
           "object-position": "center",
@@ -123,16 +123,16 @@ const ExperimentTile = (props) => {
           // "box-shadow":`0px 1px 2px rgba(0,0,0,0.25), 0px 0px 0px 1px rgba(0,0,0,0.5) inset,0px 1px 1px rgba(255,255,255,0.75) inset,0px -1px 1px rgba(255,255,255,0.5) inset`,
 
           "box-sizing": "border-box",
-          "border-radius": "8px 0px 0px 8px",
-          "border-right-width": "1px",
+          "border-radius": "8px 8px 0px 0px",
+          "border-bottom-width": "1px",
           padding: "0",
         }}
         fillImg={`url(${props?.experiment?.imgUrl ?? im2})`}
       ></TTile>
       <TTile
         style={{
-          width: tileIWidth - tileHeight + "px",
-          height: tileHeight + "px",
+          width: tileIWidth  + "px",
+          height: tileHeight-tileIWidth + "px",
           // "background-image": `url(${im})`,
           "object-fit": "cover",
           "object-position": "center",
@@ -141,8 +141,8 @@ const ExperimentTile = (props) => {
           // "box-shadow":`0px 1px 2px rgba(0,0,0,0.25), 0px 0px 0px 1px rgba(0,0,0,0.5) inset,0px 1px 1px rgba(255,255,255,0.75) inset,0px -1px 1px rgba(255,255,255,0.5) inset`,
 
           "box-sizing": "border-box",
-          "border-radius": "0px 8px 8px 0px",
-          "border-left-width": "0.0px",
+          "border-radius": "0px 0px 8px 8px",
+          "border-top-width": "0.0px",
           padding: "8px",
         }}
         fillColor="#111"
@@ -314,7 +314,7 @@ const Default:Component<{experiments:Record<string,Experiment>}> = (props) => {
           transition: "transform 0.125s",
         }}
       >
-        HI
+        {/* HI */}
       </div>
       <div
         style={{

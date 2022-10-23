@@ -296,5 +296,5 @@ export const Cobwebify = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const CobwebifyExperiment: Experiment = { title: "Cobwebify", component: Cobwebify, imgUrl, description };

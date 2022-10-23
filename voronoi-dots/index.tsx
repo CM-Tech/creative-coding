@@ -146,5 +146,5 @@ export const VoronoiDots = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = `TODO`;
+const description = ``;
 export const VoronoiDotsExperiment: Experiment = { title: "Voronoi Dots", component: VoronoiDots, imgUrl, description };
