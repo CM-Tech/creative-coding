@@ -164,4 +164,9 @@ export const MonsterSound = () => {
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
 const description = ``;
-export const MonsterSoundExperiment: Experiment = { title: "Monster Sound", component: MonsterSound, imgUrl, description };
+export const MonsterSoundExperiment: Experiment = {
+  title: "Monster Sound",
+  component: MonsterSound,
+  imgUrl,
+  description,
+};

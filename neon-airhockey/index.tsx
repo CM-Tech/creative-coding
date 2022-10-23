@@ -4,7 +4,6 @@ import vert from "./shaders/vert.glsl?raw";
 import frag from "./shaders/frag.glsl?raw";
 
 function main(canvas: HTMLCanvasElement) {
-
   const mouse = {
     x: 0.5,
     y: 0.5,
@@ -143,4 +142,9 @@ export const NeonAirhockey = () => {
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
 const description = ``;
-export const NeonAirhockeyExperiment: Experiment = { title: "Neon Airhockey", component: NeonAirhockey, imgUrl, description };
+export const NeonAirhockeyExperiment: Experiment = {
+  title: "Neon Airhockey",
+  component: NeonAirhockey,
+  imgUrl,
+  description,
+};

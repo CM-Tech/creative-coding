@@ -4,7 +4,6 @@ import { createEffect, onMount } from "solid-js";
 import { createSizeSignal } from "../utils";
 
 const main = (c: HTMLCanvasElement) => {
-
   const { width, height, dpr } = createSizeSignal();
   let w = window.innerWidth;
   let h = window.innerHeight;
@@ -31,8 +30,8 @@ const main = (c: HTMLCanvasElement) => {
   app.stage.interactive = true;
   createEffect(() => {
     app.renderer.resize(width() * dpr(), height() * dpr());
-    const sc = Math.min(width() * dpr() / r[0], height() * dpr() / r[1]);
-    app.stage.setTransform(width() * dpr() / 2 - sc * r[0] / 2, height() * dpr() / 2 - sc * r[1] / 2, sc, sc)
+    const sc = Math.min((width() * dpr()) / r[0], (height() * dpr()) / r[1]);
+    app.stage.setTransform((width() * dpr()) / 2 - (sc * r[0]) / 2, (height() * dpr()) / 2 - (sc * r[1]) / 2, sc, sc);
   });
 
   const graphics = new PIXI.Graphics();
@@ -357,7 +356,9 @@ export const Foosball = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!} width={width() * dpr()} height={height() * dpr()} style={{ width: "100vw", height: "100vh" }} />;
+  return (
+    <canvas ref={c!} width={width() * dpr()} height={height() * dpr()} style={{ width: "100vw", height: "100vh" }} />
+  );
 };
 
 import imgUrl from "./README.png?url";

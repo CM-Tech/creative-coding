@@ -17,10 +17,10 @@ export const CharacterRain = () => {
   const columns = 64; //number of columns for the rain
   const genDrop = () => {
     return {
-      y: 0,//Math.random() * c.height,
-      size: (Math.random() * 0.5 + 0.75) * Math.sqrt(area()) / columns,
+      y: 0, //Math.random() * c.height,
+      size: ((Math.random() * 0.5 + 0.75) * Math.sqrt(area())) / columns,
       x: Math.random() * c.width,
-      color: [CYAN_MUL, MAGENTA_MUL, YELLOW_MUL][Math.floor(Math.random() * 3)]
+      color: [CYAN_MUL, MAGENTA_MUL, YELLOW_MUL][Math.floor(Math.random() * 3)],
     };
   };
 
@@ -42,15 +42,14 @@ export const CharacterRain = () => {
 
     //x below is the x coordinate
     //1 = y co-ordinate of the drop(same for every drop initially)
-    for (let x = 0; x < columns; x++)
-      drops[x] = genDrop();
+    for (let x = 0; x < columns; x++) drops[x] = genDrop();
 
     //drawing the characters
 
     function draw() {
       //Black BG for the canvas
       //translucent BG to show trail
-      ctx.globalCompositeOperation = "multiply"
+      ctx.globalCompositeOperation = "multiply";
       ctx.fillStyle = "#fafafa";
       ctx.fillRect(0, 0, c.width, c.height);
 
@@ -62,23 +61,29 @@ export const CharacterRain = () => {
       }
       //looping over drops
       for (let i = 0; i < drops.length; i++) {
-        ctx.font = `${drops[i].size * 5 / 6}px ${"'Noto Sans Mono'"}`;
+        ctx.font = `${(drops[i].size * 5) / 6}px ${"'Noto Sans Mono'"}`;
 
         const text = characters[Math.floor(Math.random() * characters.length)];
-        const rWidth = drops[i].size * 3 / 6;
+        const rWidth = (drops[i].size * 3) / 6;
         const rHeight = drops[i].size;
         ctx.fillStyle = chroma(BASE_LIGHT).alpha(0.25).hex();
-        ctx.globalCompositeOperation = "lighter"
+        ctx.globalCompositeOperation = "lighter";
         ctx.fillRect(drops[i].x, drops[i].y * drops[i].size, rWidth, rHeight);
         ctx.fillStyle = drops[i].color;
 
-        ctx.globalCompositeOperation = "multiply"
+        ctx.globalCompositeOperation = "multiply";
         ctx.fillRect(drops[i].x, drops[i].y * drops[i].size, rWidth, rHeight);
 
         ctx.fillStyle = drops[i].color;
-        ctx.globalCompositeOperation = "source-over"
+        ctx.globalCompositeOperation = "source-over";
         const tDims = ctx.measureText(text);
-        ctx.fillText(text, drops[i].x + rWidth / 2 - (tDims.width / 2), drops[i].y * drops[i].size + rHeight / 2 + (tDims.actualBoundingBoxAscent - tDims.actualBoundingBoxDescent) / 2);
+        ctx.fillText(
+          text,
+          drops[i].x + rWidth / 2 - tDims.width / 2,
+          drops[i].y * drops[i].size +
+            rHeight / 2 +
+            (tDims.actualBoundingBoxAscent - tDims.actualBoundingBoxDescent) / 2
+        );
 
         //sending the drop back to the top randomly after it has crossed the screen
         //adding a randomness to the reset to make the drops scattered on the Y axis
@@ -86,9 +91,8 @@ export const CharacterRain = () => {
         if (drops[i].y * drops[i].size > c.height) {
           drops[i] = genDrop();
         }
-
       }
-      ctx.globalCompositeOperation = "source-over"
+      ctx.globalCompositeOperation = "source-over";
       // ctx.fillStyle = BASE_LIGHT;
       // ctx.font = `${64}px ${"'Noto Sans Mono'"}`;
       // ctx.fillText("Character Rain", 8, 64 + 8);
@@ -112,18 +116,23 @@ export const CharacterRain = () => {
     <>
       <canvas ref={c!} style={{ width: "100vw", height: "100vh" }} width={width() * dpr()} height={height() * dpr()} />
       <div style={{ bottom: 0, top: "auto", position: "fixed", left: 0, right: 0 }}>
-        <input ref={textbox!} placeholder="Rain Content" onkeypress={Check} style={{
-          margin: `${pUnit()}px`,
-          width: `${width() - pUnit() * 2}px`,
-          "font-size": `${pUnit()}px`,
-          padding: `${pUnit() * 0.5}px`,
-          "box-sizing": "border-box",
-          border: 0,
-          outline: 0,
-          "font-family": "'Noto Sans Mono'",
-          background: chroma(BASE_DARK).alpha(0.5).hex(),
-          color: BASE_LIGHT,
-        }} />
+        <input
+          ref={textbox!}
+          placeholder="Rain Content"
+          onkeypress={Check}
+          style={{
+            margin: `${pUnit()}px`,
+            width: `${width() - pUnit() * 2}px`,
+            "font-size": `${pUnit()}px`,
+            padding: `${pUnit() * 0.5}px`,
+            "box-sizing": "border-box",
+            border: 0,
+            outline: 0,
+            "font-family": "'Noto Sans Mono'",
+            background: chroma(BASE_DARK).alpha(0.5).hex(),
+            color: BASE_LIGHT,
+          }}
+        />
       </div>
     </>
   );
@@ -132,4 +141,9 @@ export const CharacterRain = () => {
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
 const description = ``;
-export const CharacterRainExperiment: Experiment = { title: "Character Rain", component: CharacterRain, imgUrl, description };
+export const CharacterRainExperiment: Experiment = {
+  title: "Character Rain",
+  component: CharacterRain,
+  imgUrl,
+  description,
+};

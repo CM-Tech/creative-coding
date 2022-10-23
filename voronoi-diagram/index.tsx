@@ -6,9 +6,9 @@ import { createAnimationFrame, createSizeSignal } from "../utils";
 // https://stackoverflow.com/a/41034697/3480193
 class Cursor {
   static getCurrentCursorPosition(parentElement) {
-    var selection = window.getSelection(),
-      charCount = -1,
-      node;
+    const selection = window.getSelection();
+    let charCount = -1;
+    let node;
 
     if (selection.focusNode) {
       if (Cursor._isChildOf(selection.focusNode, parentElement)) {
@@ -38,9 +38,9 @@ class Cursor {
 
   static setCurrentCursorPosition(chars, element) {
     if (chars >= 0) {
-      var selection = window.getSelection();
+      const selection = window.getSelection();
 
-      let range = Cursor._createRange(element, { count: chars });
+      const range = Cursor._createRange(element, { count: chars });
 
       if (range) {
         range.collapse(false);
@@ -52,7 +52,7 @@ class Cursor {
 
   static _createRange(node, chars, range) {
     if (!range) {
-      range = document.createRange()
+      range = document.createRange();
       range.selectNode(node);
       range.setStart(node, 0);
     }
@@ -68,7 +68,7 @@ class Cursor {
           chars.count = 0;
         }
       } else {
-        for (var lp = 0; lp < node.childNodes.length; lp++) {
+        for (let lp = 0; lp < node.childNodes.length; lp++) {
           range = Cursor._createRange(node.childNodes[lp], chars, range);
 
           if (chars.count === 0) {
@@ -93,7 +93,11 @@ class Cursor {
   }
 }
 
-const main = (textField: HTMLDivElement, ctx: CanvasRenderingContext2D, setRText: (v: { x: number, y: number, fontSize: number, text: string }[]) => void) => {
+const main = (
+  textField: HTMLDivElement,
+  ctx: CanvasRenderingContext2D,
+  setRText: (v: { x: number; y: number; fontSize: number; text: string }[]) => void
+) => {
   let hsize = 1;
   let speed = 1;
   const { width: windowWidth, height: windowHeight, dpr } = createSizeSignal();
@@ -102,8 +106,8 @@ const main = (textField: HTMLDivElement, ctx: CanvasRenderingContext2D, setRText
     y: window.innerHeight,
   };
   const gt = () => {
-    let c = [...textField.childNodes].map(x => x.textContent).join("\n");
-    return c;//.substring(0,c.length-1);
+    const c = [...textField.childNodes].map((x) => x.textContent).join("\n");
+    return c; //.substring(0,c.length-1);
   };
 
   function textChanged(event: Event | KeyboardEvent) {
@@ -113,7 +117,7 @@ const main = (textField: HTMLDivElement, ctx: CanvasRenderingContext2D, setRText
     // const vg=window.getSelection()?.getRangeAt(0);
     // let m=vg?.startContainer.
     // let [m,mm]=getCaretPosition(textField);
-    let v = gt();
+    const v = gt();
     // textField.innerText="";
     setText(v);
     // }
@@ -267,7 +271,7 @@ const main = (textField: HTMLDivElement, ctx: CanvasRenderingContext2D, setRText
 
     hsize = Math.min(Math.floor(heightOfFont / 20) + 1, Math.floor(Math.min(size.x, size.y) / 20) + 1);
 
-    let s2 = [];
+    const s2 = [];
     for (let i = 0; i < lines.length; i++) {
       ctx.font = fontSizes[i] * sScale + "px " + fontt;
       //   mtext = ctx.measureText(t).width;
@@ -286,8 +290,14 @@ const main = (textField: HTMLDivElement, ctx: CanvasRenderingContext2D, setRText
       );
       s2.push({
         x: (size.x + bbox.w) / 2 - measure.actualBoundingBoxRight + measure.actualBoundingBoxLeft,
-        y: size.y / 2 - fontMeasures[0].y * sScale - (bbbox.h * sScale) / 2 + runningYS[i] * sScale - 1 * fontSizes[i] * sScale,
-        fontSize: fontSizes[i] * sScale, text: lines[i]
+        y:
+          size.y / 2 -
+          fontMeasures[0].y * sScale -
+          (bbbox.h * sScale) / 2 +
+          runningYS[i] * sScale -
+          1 * fontSizes[i] * sScale,
+        fontSize: fontSizes[i] * sScale,
+        text: lines[i],
       });
     }
 
@@ -345,20 +355,43 @@ export const VoronoiDiagram = () => {
     textField.focus();
   });
   createEffect(() => {
-    let m = Cursor.getCurrentCursorPosition(textField);
+    const m = Cursor.getCurrentCursorPosition(textField);
 
     textField.innerHTML = "";
     rtext().map((x) => {
-      textField.appendChild(<div style={{ "font-size": `${x.fontSize}px`, position: "absolute", top: x.y + "px", left: x.x + "px" }}>{x.text === "" ? <span style={{}}>{""}</span> : x.text}</div>)
-    })
+      textField.appendChild(
+        <div style={{ "font-size": `${x.fontSize}px`, position: "absolute", top: x.y + "px", left: x.x + "px" }}>
+          {x.text === "" ? <span style={{}}>{""}</span> : x.text}
+        </div>
+      );
+    });
     // textField.appendChild(<span>.</span>);
 
     Cursor.setCurrentCursorPosition(m, textField);
-  })
+  });
   return (
     <div style={{ width: "100vw", height: "100vh", position: "fixed", top: 0, bottom: 0 }}>
-      <canvas ref={canvas!} width={windowWidth() * dpr()} height={windowHeight() * dpr()} style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, bottom: 0 }} />
-      <div ref={textField!} contentEditable={true} style={{ display: "block", color: "transparent", width: "100vw", height: "100vh", position: "absolute", top: 0, left: 0, "font-family": "'Noto Sans Mono'", "line-height": 1.22 }}></div>
+      <canvas
+        ref={canvas!}
+        width={windowWidth() * dpr()}
+        height={windowHeight() * dpr()}
+        style={{ width: "100vw", height: "100vh", position: "absolute", top: 0, bottom: 0 }}
+      />
+      <div
+        ref={textField!}
+        contentEditable={true}
+        style={{
+          display: "block",
+          color: "transparent",
+          width: "100vw",
+          height: "100vh",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          "font-family": "'Noto Sans Mono'",
+          "line-height": 1.22,
+        }}
+      ></div>
     </div>
   );
 };
@@ -366,4 +399,9 @@ export const VoronoiDiagram = () => {
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
 const description = ``;
-export const VoronoiDiagramExperiment: Experiment = { title: "Voronoi Diagram", component: VoronoiDiagram, imgUrl, description };
+export const VoronoiDiagramExperiment: Experiment = {
+  title: "Voronoi Diagram",
+  component: VoronoiDiagram,
+  imgUrl,
+  description,
+};

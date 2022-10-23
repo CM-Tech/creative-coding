@@ -286,4 +286,9 @@ export const CharacterType = () => {
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
 const description = ``;
-export const CharacterTypeExperiment: Experiment = { title: "Character Type", component: CharacterType, imgUrl, description };
+export const CharacterTypeExperiment: Experiment = {
+  title: "Character Type",
+  component: CharacterType,
+  imgUrl,
+  description,
+};

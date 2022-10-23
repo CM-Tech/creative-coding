@@ -240,8 +240,12 @@ export const PulsingSquare = () => {
   return <canvas ref={c!} width={window.innerWidth} height={window.innerHeight} />;
 };
 
-
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
 const description = ``;
-export const PulsingSquareExperiment: Experiment = { title: "Pulsing Square", component: PulsingSquare, imgUrl, description };
+export const PulsingSquareExperiment: Experiment = {
+  title: "Pulsing Square",
+  component: PulsingSquare,
+  imgUrl,
+  description,
+};

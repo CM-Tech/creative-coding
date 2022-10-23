@@ -11,7 +11,7 @@ const [mouseY, setMouseY] = createSignal(0);
 const [spaceMode, setSpaceMode] = createSignal(false);
 const [gtop, setGtop] = createSignal(0);
 function main(canvas: HTMLCanvasElement) {
-  const {width,height,dpr}=createSizeSignal();
+  const { width, height, dpr } = createSizeSignal();
   const c = { x: 0, y: 0, ratio: 1 };
   const ctx = canvas.getContext("2d")!;
   const wheelRatio = 1.001;
@@ -21,7 +21,7 @@ function main(canvas: HTMLCanvasElement) {
   const springLength = 50;
   const maxDisplacement = 1;
   const gravity = 0.5;
-  const colors = [CYAN_MUL,MAGENTA_MUL,YELLOW_MUL];
+  const colors = [CYAN_MUL, MAGENTA_MUL, YELLOW_MUL];
   const blackColor = "#2f3436";
 
   function computePhysics() {
@@ -41,7 +41,7 @@ function main(canvas: HTMLCanvasElement) {
       const dX = s.x - t.x;
       const dY = s.y - t.y;
       const d = Math.sqrt(dX * dX + dY * dY);
-      const v = (d < 2 * nodeRadius ? (2 * nodeRadius - d) / d / 2 : 0)*0 - springForce * (d - springLength);
+      const v = (d < 2 * nodeRadius ? (2 * nodeRadius - d) / d / 2 : 0) * 0 - springForce * (d - springLength);
 
       t.fX -= v * dX;
       t.fY -= v * dY;
@@ -53,10 +53,10 @@ function main(canvas: HTMLCanvasElement) {
       const s = nodes[i];
       s.dX += s.fX;
       s.dY += s.fY;
-      const d=Math.hypot(s.dX,s.dY);
-      if(d>maxDisplacement){
-        s.dX =s.dX/d*maxDisplacement;
-        s.dY =s.dY/d*maxDisplacement;
+      const d = Math.hypot(s.dX, s.dY);
+      if (d > maxDisplacement) {
+        s.dX = (s.dX / d) * maxDisplacement;
+        s.dY = (s.dY / d) * maxDisplacement;
       }
       s.x += s.dX;
       s.y += s.dY;
@@ -82,7 +82,7 @@ function main(canvas: HTMLCanvasElement) {
       x: (t.x - s.x) / d,
       y: (t.y - s.y) / d,
     };
-    ctx.globalCompositeOperation="multiply";
+    ctx.globalCompositeOperation = "multiply";
     ctx.fillStyle = colors[e.number % colors.length]; // "hsl(" + (d / t.size * 100 - 20) + ",100%,50%)";
     ctx.beginPath();
     ctx.moveTo(s.x + v.y * s.size, s.y - v.x * s.size);
@@ -105,7 +105,7 @@ function main(canvas: HTMLCanvasElement) {
     );
     ctx.closePath();
     ctx.fill();
-    ctx.globalCompositeOperation="source-over";
+    ctx.globalCompositeOperation = "source-over";
   }
 
   function draw_node(node: typeof nodes[number], ctx: CanvasRenderingContext2D) {
@@ -131,8 +131,8 @@ function main(canvas: HTMLCanvasElement) {
       y: -80,
       dX: 0,
       dY: 0,
-      fX:0,
-      fY:0
+      fX: 0,
+      fY: 0,
     },
     {
       size: nodeRadius,
@@ -140,8 +140,8 @@ function main(canvas: HTMLCanvasElement) {
       y: -100,
       dX: 0,
       dY: 0,
-      fX:0,
-      fY:0
+      fX: 0,
+      fY: 0,
     },
     {
       size: nodeRadius,
@@ -149,8 +149,8 @@ function main(canvas: HTMLCanvasElement) {
       y: -80,
       dX: 0,
       dY: 0,
-      fX:0,
-      fY:0
+      fX: 0,
+      fY: 0,
     },
   ];
   let edges = [
@@ -208,7 +208,7 @@ function main(canvas: HTMLCanvasElement) {
     }
 
     ctx.resetTransform();
-    ctx.fillStyle=BASE_LIGHT;
+    ctx.fillStyle = BASE_LIGHT;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.translate(canvas.width / 2, canvas.height / 2);
@@ -216,7 +216,7 @@ function main(canvas: HTMLCanvasElement) {
     ctx.translate(-c.x, -c.y);
 
     ctx.strokeStyle = spaceMode() ? "#f99" : "#9cf";
-    ctx.lineWidth=c.ratio*8*dpr();
+    ctx.lineWidth = c.ratio * 8 * dpr();
     const x = (mouseX() - canvas.width / 2) * c.ratio + c.x;
     const y = (mouseY() - canvas.height / 2) * c.ratio + c.y;
     ctx.beginPath();
@@ -248,8 +248,8 @@ function main(canvas: HTMLCanvasElement) {
         y: y + Math.random() / 10,
         dX: 0,
         dY: 0,
-        fX:0,
-        fY:0
+        fX: 0,
+        fY: 0,
       });
       neighbors.forEach((n) => {
         edges.push({
@@ -293,7 +293,6 @@ export const RainbowGoo = () => {
     </>
   );
 };
-
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";

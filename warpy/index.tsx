@@ -15,7 +15,9 @@ export const Warpy = () => {
   const { width: windowWidth, height: windowHeight, dpr: DP } = createSizeSignal();
   const minDimS = createMemo(() => Math.min(windowWidth(), windowHeight()));
   const [time, setTime] = createSignal(0);
-  const zoom = createMemo(() => DP() * 0.5 * minDimS() / 4 * (Math.min(1, time() / 25)) * (1 + Math.max(0, Math.min(1, (time()) / hard_time))));
+  const zoom = createMemo(
+    () => ((DP() * 0.5 * minDimS()) / 4) * Math.min(1, time() / 25) * (1 + Math.max(0, Math.min(1, time() / hard_time)))
+  );
   const [camX, setCamX] = createSignal(0);
   const [camY, setCamY] = createSignal(0);
   const [camZZ, setCamZZ] = createSignal(1);
@@ -29,7 +31,7 @@ export const Warpy = () => {
     };
 
     function randomThird(axis: number) {
-      return axis / 2 + (1 * (Math.floor(Math.random() * 3) - 1));
+      return axis / 2 + 1 * (Math.floor(Math.random() * 3) - 1);
     }
     class Bullet {
       x: number;
@@ -41,13 +43,13 @@ export const Warpy = () => {
         this.x = wall
           ? spawn_range * 2 * (Math.round(Math.random()) - 0.5)
           : Math.random() > (time() >= hard_time ? 0.9 : 0.25)
-            ? randomThird(0)
-            : you.x;
+          ? randomThird(0)
+          : you.x;
         this.y = !wall
           ? spawn_range * 2 * (Math.round(Math.random()) - 0.5)
           : Math.random() > (time() >= hard_time ? 0.9 : 0.25)
-            ? randomThird(0)
-            : you.y;
+          ? randomThird(0)
+          : you.y;
         this.vx = wall ? Math.sign(0 - this.x) : 0;
         this.vy = !wall ? Math.sign(0 - this.y) : 0;
         const len = Math.sqrt(this.vy ** 2 + this.vx ** 2) || 1;
@@ -59,15 +61,24 @@ export const Warpy = () => {
         this.y += (this.vy * 3) / (time() >= hard_time ? 200 : 300);
       }
       draw() {
-
-        ctx.fillStyle = chroma(time() >= hard_time - 50 ? BASE_DARK : BO).alpha(Math.min(1, Math.max(0, 4 / (1 + Math.max(0, Math.min(1, (time() - hard_time + 50) / 50))) - Math.max(Math.abs(this.x), Math.abs(this.y))))).hex();
+        ctx.fillStyle = chroma(time() >= hard_time - 50 ? BASE_DARK : BO)
+          .alpha(
+            Math.min(
+              1,
+              Math.max(
+                0,
+                4 / (1 + Math.max(0, Math.min(1, (time() - hard_time + 50) / 50))) -
+                  Math.max(Math.abs(this.x), Math.abs(this.y))
+              )
+            )
+          )
+          .hex();
         ctx.fillRect(this.x - 1 / 8 / 2, this.y - 1 / 8 / 2, 1 / 8, 1 / 8);
       }
       die() {
         return this.x > spawn_range || this.x < -spawn_range || this.y > spawn_range || this.y < -spawn_range;
       }
     }
-
 
     class Blink {
       x: number;
@@ -89,7 +100,7 @@ export const Warpy = () => {
         ctx.beginPath();
         ctx.strokeStyle = BASE_LIGHT;
         ctx.lineWidth = 1 / 64;
-        ctx.rect(- this.time / 2, - this.time / 2, this.time, this.time);
+        ctx.rect(-this.time / 2, -this.time / 2, this.time, this.time);
         ctx.stroke();
         ctx.restore();
         this.time -= 1 / 64;
@@ -204,7 +215,7 @@ export const Warpy = () => {
           you.x = 0;
           you.y = 0;
           bullets = [];
-          setTime(0)
+          setTime(0);
           running = true;
         }
       }
@@ -251,7 +262,7 @@ export const Warpy = () => {
         you.x = 0;
         you.y = 0;
         bullets = [];
-        setTime(0)
+        setTime(0);
         running = true;
       }
     });
@@ -259,11 +270,15 @@ export const Warpy = () => {
 
   return (
     <>
-      <canvas ref={c!} width={windowWidth() * DP()} height={windowHeight() * DP()} style={{ width: "100%", height: "100%" }} />
+      <canvas
+        ref={c!}
+        width={windowWidth() * DP()}
+        height={windowHeight() * DP()}
+        style={{ width: "100%", height: "100%" }}
+      />
     </>
   );
 };
-
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";

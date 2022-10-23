@@ -23,7 +23,7 @@ export const createSizeSignal = () => {
     window.addEventListener("resize", handler);
     onCleanup(() => {
       window.removeEventListener("resize", handler);
-    })
+    });
   });
   return { width: windowWidth, height: windowHeight, dpr: DP };
-}
+};

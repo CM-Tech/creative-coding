@@ -188,4 +188,9 @@ export const FlockingDots = () => {
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
 const description = ``;
-export const FlockingDotsExperiment: Experiment = { title: "Flocking Dots", component: FlockingDots, imgUrl, description };
+export const FlockingDotsExperiment: Experiment = {
+  title: "Flocking Dots",
+  component: FlockingDots,
+  imgUrl,
+  description,
+};

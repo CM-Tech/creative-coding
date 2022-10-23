@@ -131,8 +131,8 @@ const ExperimentTile = (props) => {
       ></TTile>
       <TTile
         style={{
-          width: tileIWidth  + "px",
-          height: tileHeight-tileIWidth + "px",
+          width: tileIWidth + "px",
+          height: tileHeight - tileIWidth + "px",
           // "background-image": `url(${im})`,
           "object-fit": "cover",
           "object-position": "center",
@@ -248,7 +248,7 @@ const ExperimentTile = (props) => {
     </div>
   );
 };
-const Default:Component<{experiments:Record<string,Experiment>}> = (props) => {
+const Default: Component<{ experiments: Record<string, Experiment> }> = (props) => {
   const [selectedIndexx, setSelectedIndexx] = createSignal(0);
   const setSelectedIndex = (v: number) => setSelectedIndexx(Math.max(0, Math.min(28, v)));
   const selectedIndex = () => Math.max(0, Math.min(28, selectedIndexx()));
@@ -328,15 +328,17 @@ const Default:Component<{experiments:Record<string,Experiment>}> = (props) => {
           transition: "transform 0.125s",
         }}
       >
-        {Object.entries(props.experiments).map(([a,b],i)=>{
-         return <ExperimentTile
-          href={a}
-          title={b.title}
-          experiment={b}
-          index={i}
-          selectedIndex={selectedIndex()}
-          setSelectedIndex={setSelectedIndex}
-        />
+        {Object.entries(props.experiments).map(([a, b], i) => {
+          return (
+            <ExperimentTile
+              href={a}
+              title={b.title}
+              experiment={b}
+              index={i}
+              selectedIndex={selectedIndex()}
+              setSelectedIndex={setSelectedIndex}
+            />
+          );
         })}
         {/* <ExperimentTile
           href="/attraction"
@@ -547,45 +549,51 @@ const Default:Component<{experiments:Record<string,Experiment>}> = (props) => {
   );
 };
 const App = () => {
-  const experiments:Record<string,Experiment> ={
-    "/attraction":AttractionExperiment,
-    "/boid-beats":BoidBeatsExperiment,
-    "/boids":BoidsExperiment,
+  const experiments: Record<string, Experiment> = {
+    "/attraction": AttractionExperiment,
+    "/boid-beats": BoidBeatsExperiment,
+    "/boids": BoidsExperiment,
     "/character-rain": CharacterRainExperiment,
-        "/character-type": CharacterTypeExperiment,
-        "/cobwebify": CobwebifyExperiment,
-        "/color-blind": ColorBlindExperiment,
-        "/diacritic-sound": DiacriticSoundExperiment,
-        "/fireworks": FireworksExperiment,
-        "/flocking-dots": FlockingDotsExperiment,
-        "/foosball": FoosballExperiment,
-        "/hex-life": HexLifeExperiment,
-        "/light-beamer": LightBeamerExperiment,
-        "/lights-motion": LightsMotionExperiment,
-        "/monster-sound": MonsterSoundExperiment,
-        "/name-rain": NameRainExperiment,
-        "/neon-airhockey": NeonAirhockeyExperiment,
-        "/pen-flame": PenFlameExperiment,
-        "/pixel-rush": PixelRushExperiment,
-        "/plasma-ball": PlasmaBallExperiment,
-        "/prismatic": PrismaticExperiment,
-        "/pulsing-square": PulsingSquareExperiment,
-        "/rainbow-goo": RainbowGooExperiment,
-        "/sph-water": SPHWaterExperiment,
-        "/traffic-dots": TrafficDotsExperiment,
-        "/valentines-day": ValentinesDayExperiment,
-        "/voronoi-diagram": VoronoiDiagramExperiment,
-        "/voronoi-dots": VoronoiDotsExperiment,
-        "/warpy": WarpyExperiment,
-  }
+    "/character-type": CharacterTypeExperiment,
+    "/cobwebify": CobwebifyExperiment,
+    "/color-blind": ColorBlindExperiment,
+    "/diacritic-sound": DiacriticSoundExperiment,
+    "/fireworks": FireworksExperiment,
+    "/flocking-dots": FlockingDotsExperiment,
+    "/foosball": FoosballExperiment,
+    "/hex-life": HexLifeExperiment,
+    "/light-beamer": LightBeamerExperiment,
+    "/lights-motion": LightsMotionExperiment,
+    "/monster-sound": MonsterSoundExperiment,
+    "/name-rain": NameRainExperiment,
+    "/neon-airhockey": NeonAirhockeyExperiment,
+    "/pen-flame": PenFlameExperiment,
+    "/pixel-rush": PixelRushExperiment,
+    "/plasma-ball": PlasmaBallExperiment,
+    "/prismatic": PrismaticExperiment,
+    "/pulsing-square": PulsingSquareExperiment,
+    "/rainbow-goo": RainbowGooExperiment,
+    "/sph-water": SPHWaterExperiment,
+    "/traffic-dots": TrafficDotsExperiment,
+    "/valentines-day": ValentinesDayExperiment,
+    "/voronoi-diagram": VoronoiDiagramExperiment,
+    "/voronoi-dots": VoronoiDotsExperiment,
+    "/warpy": WarpyExperiment,
+  };
   return (
     <Routes>
-       {Object.entries(experiments).map(([a,b],i)=>{
-         return <Route path={a} element={b.component} />
-        }).concat([
-        
-        <Route path="/" element={()=>{return <Default experiments={experiments}/>}} />])}
-      
+      {Object.entries(experiments)
+        .map(([a, b], i) => {
+          return <Route path={a} element={b.component} />;
+        })
+        .concat([
+          <Route
+            path="/"
+            element={() => {
+              return <Default experiments={experiments} />;
+            }}
+          />,
+        ])}
     </Routes>
   );
 };

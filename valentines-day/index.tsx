@@ -39,9 +39,7 @@ function main(c: HTMLCanvasElement, textField: HTMLTextAreaElement) {
       this.fillColor = chroma
         .blend(chroma(MAGENTA_MUL).brighten(true ? -1 : 1), BASE_DARK, true ? "screen" : "multiply")
         .hex();
-      this.strokeColor = chroma
-        .blend(chroma(MAGENTA_MUL), BASE_DARK, true ? "screen" : "multiply")
-        .hex();
+      this.strokeColor = chroma.blend(chroma(MAGENTA_MUL), BASE_DARK, true ? "screen" : "multiply").hex();
       this.c = hsize + random(1) * hsize;
     }
     heart() {
@@ -181,4 +179,9 @@ export const ValentinesDay = () => {
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
 const description = ``;
-export const ValentinesDayExperiment: Experiment = { title: "Valentines Day", component: ValentinesDay, imgUrl, description };
+export const ValentinesDayExperiment: Experiment = {
+  title: "Valentines Day",
+  component: ValentinesDay,
+  imgUrl,
+  description,
+};

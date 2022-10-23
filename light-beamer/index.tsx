@@ -4,7 +4,6 @@ import { BASE_DARK } from "../shared/constants";
 import { createAnimationFrame, createSizeSignal } from "../utils";
 
 const main = (c: HTMLCanvasElement) => {
-
   let w = window.innerWidth * (window.devicePixelRatio ?? 1);
   let h = window.innerHeight * (window.devicePixelRatio ?? 1);
   c.width = w;
@@ -121,7 +120,15 @@ const main = (c: HTMLCanvasElement) => {
         const splitter = this.linesLeft[0];
         const restLines = this.linesLeft.slice(1);
         if (!this.lineInCone(splitter)) {
-          const l = new LineProjection(this.origin, this.horizon, this.hFar, this.nearClip, restLines, this.allLines, this.color);
+          const l = new LineProjection(
+            this.origin,
+            this.horizon,
+            this.hFar,
+            this.nearClip,
+            restLines,
+            this.allLines,
+            this.color
+          );
           if (this.nearMirror !== null) {
             l.nearMirror = this.nearMirror;
           }
@@ -166,7 +173,7 @@ const main = (c: HTMLCanvasElement) => {
               [
                 x,
                 (((Math.atan2(x.y - this.origin.y, x.x - this.origin.x) - leftAtan) % (Math.PI * 2)) + Math.PI * 2) %
-                (Math.PI * 2),
+                  (Math.PI * 2),
               ] as const
           );
           q.sort((a, b) => a[1] - b[1]);
@@ -201,7 +208,15 @@ const main = (c: HTMLCanvasElement) => {
             if (hitLine) {
               newFC = lineC;
             }
-            const l = new LineProjection(this.origin, newFC, this.hFar && !hitLine, newNC, restLines, this.allLines, this.color);
+            const l = new LineProjection(
+              this.origin,
+              newFC,
+              this.hFar && !hitLine,
+              newNC,
+              restLines,
+              this.allLines,
+              this.color
+            );
             if (this.nearMirror !== null) {
               l.nearMirror = this.nearMirror;
             }
@@ -272,7 +287,12 @@ const main = (c: HTMLCanvasElement) => {
         for (let i = 0; i < slices; i++) {
           const r = (range / slices) * i;
           const b = 1000 / (r + 1) / (r + 1);
-          gradient.addColorStop(r / range, chroma(this.color).mix(chroma("black"), Math.min(Math.max(1 - b, 0), 1)).hex());
+          gradient.addColorStop(
+            r / range,
+            chroma(this.color)
+              .mix(chroma("black"), Math.min(Math.max(1 - b, 0), 1))
+              .hex()
+          );
         }
         ctx.globalCompositeOperation = "lighter";
         ctx.fillStyle = gradient;
@@ -471,7 +491,9 @@ export const LightBeamer = () => {
   onMount(() => {
     main(c);
   });
-  return <canvas ref={c!} width={width() * dpr()} height={height() * dpr()} style={{ width: "100%", height: "100%" }} />;
+  return (
+    <canvas ref={c!} width={width() * dpr()} height={height() * dpr()} style={{ width: "100%", height: "100%" }} />
+  );
 };
 
 import imgUrl from "./README.png?url";

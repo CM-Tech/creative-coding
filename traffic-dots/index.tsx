@@ -17,7 +17,14 @@ function roundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: num
   ctx.closePath();
 }
 
-const surfacePointOnRoundedRect = ({ x: px, y: py }: { x: number, y: number }, x: number, y: number, w: number, h: number, rr: number): { x: number, y: number, signedDistance: number } => {
+const surfacePointOnRoundedRect = (
+  { x: px, y: py }: { x: number; y: number },
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  rr: number
+): { x: number; y: number; signedDistance: number } => {
   let r = Math.max(rr, 0);
   if (w < 2 * r) r = w / 2;
   if (h < 2 * r) r = h / 2;
@@ -45,7 +52,9 @@ const surfacePointOnRoundedRect = ({ x: px, y: py }: { x: number, y: number }, x
     surfaceNormal = { x: 0, y: 1 };
     onSharp.y = y1;
   }
-  const insideOrOnSharp = (Math.abs(x0 - (x0 / 2 + x1 / 2)) >= Math.abs(px - (x0 / 2 + x1 / 2))) && (Math.abs(y0 - (y0 / 2 + y1 / 2)) >= Math.abs(py - (y0 / 2 + y1 / 2)));
+  const insideOrOnSharp =
+    Math.abs(x0 - (x0 / 2 + x1 / 2)) >= Math.abs(px - (x0 / 2 + x1 / 2)) &&
+    Math.abs(y0 - (y0 / 2 + y1 / 2)) >= Math.abs(py - (y0 / 2 + y1 / 2));
 
   const dx = px - onSharp.x;
   const dy = py - onSharp.y;
@@ -57,10 +66,16 @@ const surfacePointOnRoundedRect = ({ x: px, y: py }: { x: number, y: number }, x
     signedDistance = -sharpUnsignedDistance - r;
   }
   return { x: px - signedDistance * surfaceNormal.x, y: py - signedDistance * surfaceNormal.y, signedDistance };
+};
 
-}
-
-const M_PALETTE = ([CYAN_MUL, chroma.blend(CYAN_MUL, MAGENTA_MUL, "multiply").hex(), MAGENTA_MUL, chroma.blend(MAGENTA_MUL, YELLOW_MUL, "multiply").hex(), YELLOW_MUL, chroma.blend(YELLOW_MUL, CYAN_MUL, "multiply").hex()]);
+const M_PALETTE = [
+  CYAN_MUL,
+  chroma.blend(CYAN_MUL, MAGENTA_MUL, "multiply").hex(),
+  MAGENTA_MUL,
+  chroma.blend(MAGENTA_MUL, YELLOW_MUL, "multiply").hex(),
+  YELLOW_MUL,
+  chroma.blend(YELLOW_MUL, CYAN_MUL, "multiply").hex(),
+];
 type TrafficDotSimulationNodeDatum = d3.SimulationNodeDatum & { r: number };
 export const TrafficDots = () => {
   const [lightMode, setLightMode] = createSignal(true);
@@ -70,23 +85,26 @@ export const TrafficDots = () => {
   const { width: windowWidth, height: windowHeight, dpr: DP } = createSizeSignal();
 
   const unit = createMemo(() => Math.sqrt((windowWidth() * windowHeight()) / 16000000) * 5);
-  const rBK = createMemo(() => lightMode() ? BASE_LIGHT : BASE_DARK);
-  const PALETTE_FILL = createMemo(() => M_PALETTE.map((c) => chroma
-    .blend(chroma(c).brighten(!lightMode() ? -1 : 1), rBK(), !lightMode() ? "screen" : "multiply")
-    .hex()));
-  const PALETTE_STROKE = createMemo(() => M_PALETTE.map((c) => chroma
-    .blend(chroma(c), rBK(), !lightMode() ? "screen" : "multiply")
-    .hex()));
-
+  const rBK = createMemo(() => (lightMode() ? BASE_LIGHT : BASE_DARK));
+  const PALETTE_FILL = createMemo(() =>
+    M_PALETTE.map((c) =>
+      chroma.blend(chroma(c).brighten(!lightMode() ? -1 : 1), rBK(), !lightMode() ? "screen" : "multiply").hex()
+    )
+  );
+  const PALETTE_STROKE = createMemo(() =>
+    M_PALETTE.map((c) => chroma.blend(chroma(c), rBK(), !lightMode() ? "screen" : "multiply").hex())
+  );
 
   const gridSize = createMemo(() => unit() * 48);
   const roadWidth = createMemo(() => unit() * 12);
   const blockBorderRadius = createMemo(() => unit() * 9);
   const citySize = createMemo(() => {
-    return { x: Math.floor(windowWidth() / gridSize() - 1), y: Math.floor(windowHeight() / gridSize() - 1) }
+    return { x: Math.floor(windowWidth() / gridSize() - 1), y: Math.floor(windowHeight() / gridSize() - 1) };
   });
   const cityGrid = createMemo(() => {
-    const cg = new Array(citySize().y).fill(0).map((_, y) => new Array(citySize().x).fill(0).map((_, x) => ({ x, y, w: 1, h: 1 })));
+    const cg = new Array(citySize().y)
+      .fill(0)
+      .map((_, y) => new Array(citySize().x).fill(0).map((_, x) => ({ x, y, w: 1, h: 1 })));
     const setCityBlock = (x: number, y: number, w: number, h: number) => {
       for (let yy = y; yy < y + h; yy++) {
         for (let xx = x; xx < x + w; xx++) {
@@ -96,7 +114,7 @@ export const TrafficDots = () => {
           cg[yy][xx].h = h;
         }
       }
-    }
+    };
     setCityBlock(0, 0, 4, 1);
     setCityBlock(0, 1, 2, 1);
     setCityBlock(2, 1, 3, 1);
@@ -106,13 +124,9 @@ export const TrafficDots = () => {
     let nodes: TrafficDotSimulationNodeDatum[] = [];
     const chargeRef: d3.ForceManyBody<TrafficDotSimulationNodeDatum> = d3.forceManyBody().strength(0);
 
-
-    const canvas = d3
-      .select(canvasNode);
+    const canvas = d3.select(canvasNode);
     createEffect(() => {
-
-      canvas.attr("width", windowWidth() * DP())
-        .attr("height", windowHeight() * DP())
+      canvas.attr("width", windowWidth() * DP()).attr("height", windowHeight() * DP());
     });
     const context = canvasNode.getContext("2d")!;
 
@@ -120,19 +134,20 @@ export const TrafficDots = () => {
     console.log("Q", windowWidth(), windowHeight());
 
     nodes = d3.range(200).map(() => ({
-      r: (6) * unit(),
+      r: 6 * unit(),
       x: Math.random() * windowWidth(),
       y: Math.random() * windowHeight(),
     }));
     nodes[0].r = 6 * unit();
     createEffect(() => {
       nodes.forEach((x) => {
-        x.r = 6 * unit()
-      })
+        x.r = 6 * unit();
+      });
     });
-    const fSim = d3.forceSimulation(nodes)
+    const fSim = d3
+      .forceSimulation(nodes)
       .alphaDecay(0)
-      .velocityDecay(0.00)
+      .velocityDecay(0.0)
       .force("charge", chargeRef)
       .force(
         "collide",
@@ -149,9 +164,9 @@ export const TrafficDots = () => {
           ? !lightMode()
             ? "rgba(0,0,0,.1)"
             : "rgba(255,255,255,.1)"
-          : chroma(!lightMode()
-            ? chroma(BASE_DARK).darken(0).hex()
-            : chroma(BASE_LIGHT).darken(0).hex()).brighten(!lightMode() ? -1 : 1).hex();
+          : chroma(!lightMode() ? chroma(BASE_DARK).darken(0).hex() : chroma(BASE_LIGHT).darken(0).hex())
+              .brighten(!lightMode() ? -1 : 1)
+              .hex();
         context.fillRect(0, 0, windowWidth(), windowHeight());
         const lc = 1;
         context.lineWidth = lc;
@@ -159,33 +174,55 @@ export const TrafficDots = () => {
         context.lineWidth = lw;
         context.strokeStyle = chroma.mix(BASE_DARK, BASE_LIGHT, lightMode() ? 1 : 0).hex();
 
-        context.fillStyle = chroma(!lightMode()
-          ? chroma(BASE_DARK).darken(0).hex()
-          : chroma(BASE_LIGHT).darken(0).hex()).brighten(!lightMode() ? -1 : 1).hex();
-        roundedRect(context, gridSize() / 2 - roadWidth() / 2 - lw / 2, gridSize() / 2 - roadWidth() / 2 - lw / 2, gridSize() * citySize().x + roadWidth() + lw, gridSize() * citySize().y + roadWidth() + lw, blockBorderRadius() + roadWidth() + lw / 2);
+        context.fillStyle = chroma(
+          !lightMode() ? chroma(BASE_DARK).darken(0).hex() : chroma(BASE_LIGHT).darken(0).hex()
+        )
+          .brighten(!lightMode() ? -1 : 1)
+          .hex();
+        roundedRect(
+          context,
+          gridSize() / 2 - roadWidth() / 2 - lw / 2,
+          gridSize() / 2 - roadWidth() / 2 - lw / 2,
+          gridSize() * citySize().x + roadWidth() + lw,
+          gridSize() * citySize().y + roadWidth() + lw,
+          blockBorderRadius() + roadWidth() + lw / 2
+        );
 
         context.fill();
         context.stroke();
         context.fillStyle = lightMode() ? chroma(BASE_LIGHT).darken(-0.5).hex() : chroma(BASE_DARK).darken(-0.5).hex();
 
-        const fCg = chroma(!lightMode() ? BASE_DARK : BASE_LIGHT).darken(0).hex();
-        context.fillStyle = chroma(fCg).brighten(!lightMode() ? -1 : 1).hex();
+        const fCg = chroma(!lightMode() ? BASE_DARK : BASE_LIGHT)
+          .darken(0)
+          .hex();
+        context.fillStyle = chroma(fCg)
+          .brighten(!lightMode() ? -1 : 1)
+          .hex();
 
         context.lineWidth = lw;
-        context.strokeStyle = chroma(fCg).brighten(!lightMode() ? 0 : 0).hex();
+        context.strokeStyle = chroma(fCg)
+          .brighten(!lightMode() ? 0 : 0)
+          .hex();
 
         for (let jg = 0; jg < citySize().x; jg++) {
           for (let jkg = 0; jkg < citySize().y; jkg++) {
             const gx = jg;
             const gy = jkg;
-            const { w, h, x, y } = cityGrid()[Math.min(Math.max(gy, 0), citySize().y - 1)][Math.min(Math.max(gx, 0), citySize().x - 1)];
-            if ((gx === x) && (gy === y)) {
-              roundedRect(context, gridSize() * (x + 1 / 2) + roadWidth() / 2 + lw / 2, gridSize() * (y + 1 / 2) + roadWidth() / 2 + lw / 2, gridSize() * w - roadWidth() - lw, gridSize() * h - roadWidth() - lw, blockBorderRadius() - lw / 2);
+            const { w, h, x, y } =
+              cityGrid()[Math.min(Math.max(gy, 0), citySize().y - 1)][Math.min(Math.max(gx, 0), citySize().x - 1)];
+            if (gx === x && gy === y) {
+              roundedRect(
+                context,
+                gridSize() * (x + 1 / 2) + roadWidth() / 2 + lw / 2,
+                gridSize() * (y + 1 / 2) + roadWidth() / 2 + lw / 2,
+                gridSize() * w - roadWidth() - lw,
+                gridSize() * h - roadWidth() - lw,
+                blockBorderRadius() - lw / 2
+              );
 
               context.fill();
               context.stroke();
             }
-
           }
         }
         context.fillStyle = lightMode() ? BASE_DARK : BASE_LIGHT;
@@ -196,29 +233,30 @@ export const TrafficDots = () => {
           const d = dg;
           if (d.x !== undefined && d.y !== undefined && d.r !== undefined) {
             const fC = i === 0 ? (lightMode() ? BASE_DARK : BASE_LIGHT) : M_PALETTE[i % 6];
-            context.fillStyle = i === 0 ?
-
-              chroma
-                .blend(chroma(fC).brighten(!lightMode() ? -1 : 1), rBK(), !lightMode() ? "screen" : "multiply")
-                .hex() : PALETTE_FILL()[i % 6];
+            context.fillStyle =
+              i === 0
+                ? chroma
+                    .blend(chroma(fC).brighten(!lightMode() ? -1 : 1), rBK(), !lightMode() ? "screen" : "multiply")
+                    .hex()
+                : PALETTE_FILL()[i % 6];
             context.lineWidth = lw;
-            context.strokeStyle = i === 0 ?
-
-              chroma
-                .blend(chroma(fC).brighten(!lightMode() ? -1 : 1), rBK(), !lightMode() ? "screen" : "multiply")
-                .hex() : PALETTE_STROKE()[i % 6];
+            context.strokeStyle =
+              i === 0
+                ? chroma
+                    .blend(chroma(fC).brighten(!lightMode() ? -1 : 1), rBK(), !lightMode() ? "screen" : "multiply")
+                    .hex()
+                : PALETTE_STROKE()[i % 6];
 
             context.save();
-            const vg = { x: d.x % gridSize() - gridSize() / 2, y: d.y % gridSize() - gridSize() / 2 };
+            const vg = { x: (d.x % gridSize()) - gridSize() / 2, y: (d.y % gridSize()) - gridSize() / 2 };
 
             context.translate(d.x, d.y);
             if (i === 0) {
-              roundedRect(context, - d.r + lw / 2, - d.r + lw / 2, d.r * 2 - lw, d.r * 2 - lw, d.r - lw / 2);
+              roundedRect(context, -d.r + lw / 2, -d.r + lw / 2, d.r * 2 - lw, d.r * 2 - lw, d.r - lw / 2);
             } else {
               context.rotate(-Math.atan2(vg.y, vg.x));
-              roundedRect(context, - d.r + lw / 2, - d.r + lw / 2, d.r * 2 - lw, d.r * 2 - lw, d.r / 2 - lw / 2);
+              roundedRect(context, -d.r + lw / 2, -d.r + lw / 2, d.r * 2 - lw, d.r * 2 - lw, d.r / 2 - lw / 2);
             }
-
 
             context.fill();
             context.stroke();
@@ -232,36 +270,55 @@ export const TrafficDots = () => {
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
         if (node.x !== undefined && node.y !== undefined) {
-          node.x = Math.max(Math.min(node.x, gridSize() * (Math.floor(windowWidth() / gridSize()) - 0.5) + roadWidth() / 2 - node.r), gridSize() / 2 - roadWidth() / 2 + node.r);
-          node.y = Math.max(Math.min(node.y, gridSize() * (Math.floor(windowHeight() / gridSize()) - 0.5) + roadWidth() / 2 - node.r), gridSize() / 2 - roadWidth() / 2 + node.r);
-          const close0 = surfacePointOnRoundedRect({ x: node.x, y: node.y }, gridSize() / 2 - roadWidth() / 2 + node.r, gridSize() / 2 - roadWidth() / 2 + node.r, gridSize() * citySize().x + roadWidth() - node.r * 2, gridSize() * (Math.floor(windowHeight() / gridSize()) - 1) + roadWidth() - node.r * 2, blockBorderRadius() + roadWidth() - node.r);
+          node.x = Math.max(
+            Math.min(node.x, gridSize() * (Math.floor(windowWidth() / gridSize()) - 0.5) + roadWidth() / 2 - node.r),
+            gridSize() / 2 - roadWidth() / 2 + node.r
+          );
+          node.y = Math.max(
+            Math.min(node.y, gridSize() * (Math.floor(windowHeight() / gridSize()) - 0.5) + roadWidth() / 2 - node.r),
+            gridSize() / 2 - roadWidth() / 2 + node.r
+          );
+          const close0 = surfacePointOnRoundedRect(
+            { x: node.x, y: node.y },
+            gridSize() / 2 - roadWidth() / 2 + node.r,
+            gridSize() / 2 - roadWidth() / 2 + node.r,
+            gridSize() * citySize().x + roadWidth() - node.r * 2,
+            gridSize() * (Math.floor(windowHeight() / gridSize()) - 1) + roadWidth() - node.r * 2,
+            blockBorderRadius() + roadWidth() - node.r
+          );
           if (close0.signedDistance > 0) {
             const dig = { x: close0.x - node.x, y: close0.y - node.y };
             const lD = Math.hypot(dig.x, dig.y);
             const normal = { x: dig.x / (lD <= 0 ? 1 : lD), y: dig.y / (lD <= 0 ? 1 : lD) };
             node.x = close0.x;
             node.y = close0.y;
-            const velocityAlongNormal = (lD <= 0 ? 0 : normal.x * (node.vx ?? 0) + normal.y * (node.vy ?? 0));
+            const velocityAlongNormal = lD <= 0 ? 0 : normal.x * (node.vx ?? 0) + normal.y * (node.vy ?? 0);
             node.vx = (node.vx ?? 0) - normal.x * velocityAlongNormal;
             node.vy = (node.vy ?? 0) - normal.y * velocityAlongNormal;
-
           }
 
           const gx = Math.floor(node.x / gridSize() - 0.5);
           const gy = Math.floor(node.y / gridSize() - 0.5);
-          const { w, h, x, y } = cityGrid()[Math.min(Math.max(gy, 0), citySize().y - 1)][Math.min(Math.max(gx, 0), citySize().x - 1)];
+          const { w, h, x, y } =
+            cityGrid()[Math.min(Math.max(gy, 0), citySize().y - 1)][Math.min(Math.max(gx, 0), citySize().x - 1)];
 
-          const close2 = surfacePointOnRoundedRect({ x: node.x, y: node.y }, (x + 0.5) * gridSize() + roadWidth() / 2 - node.r, (y + 0.5) * gridSize() + roadWidth() / 2 - node.r, gridSize() * w - roadWidth() + node.r * 2, gridSize() * h - roadWidth() + node.r * 2, blockBorderRadius() + node.r);
+          const close2 = surfacePointOnRoundedRect(
+            { x: node.x, y: node.y },
+            (x + 0.5) * gridSize() + roadWidth() / 2 - node.r,
+            (y + 0.5) * gridSize() + roadWidth() / 2 - node.r,
+            gridSize() * w - roadWidth() + node.r * 2,
+            gridSize() * h - roadWidth() + node.r * 2,
+            blockBorderRadius() + node.r
+          );
           if (close2.signedDistance < 0) {
             const dig = { x: close2.x - node.x, y: close2.y - node.y };
             const lD = Math.hypot(dig.x, dig.y);
             const normal = { x: dig.x / (lD <= 0 ? 1 : lD), y: dig.y / (lD <= 0 ? 1 : lD) };
             node.x = close2.x;
             node.y = close2.y;
-            const velocityAlongNormal = (lD <= 0 ? 0 : normal.x * (node.vx ?? 0) + normal.y * (node.vy ?? 0));
+            const velocityAlongNormal = lD <= 0 ? 0 : normal.x * (node.vx ?? 0) + normal.y * (node.vy ?? 0);
             node.vx = (node.vx ?? 0) - normal.x * velocityAlongNormal;
             node.vy = (node.vy ?? 0) - normal.y * velocityAlongNormal;
-
           }
 
           if (Math.random() < 0.0015) {
@@ -297,20 +354,31 @@ export const TrafficDots = () => {
         style={{
           background: "transparent",
           color: lightMode() ? BASE_DARK : BASE_LIGHT,
-          top: gridSize() * (0.5) + "px",
+          top: gridSize() * 0.5 + "px",
           left: gridSize() * 0.5 + "px",
           "line-height": gridSize() + "px",
           position: "absolute",
           "font-size": gridSize() / 2.1 + "px",
           "font-family": "'Noto Sans Mono'",
           "font-weight": "bold",
-          "pointer-events": "none"
+          "pointer-events": "none",
         }}
       >
         <div style={{ display: "flex" }}>
-          <div onClick={() => setLightMode((v) => !v)}
+          <div
+            onClick={() => setLightMode((v) => !v)}
             style={{
-              "pointer-events": "auto", background: "transparent", border: "none", display: "flex", color: lightMode() ? BASE_DARK : BASE_LIGHT, width: (gridSize() - roadWidth()) + "px", height: (gridSize() - roadWidth()) + "px", "margin": roadWidth() * 0.5 + "px", "margin-left": `${gridSize() * 4 + roadWidth() * 0.5}px`, "padding": `${gridSize() * 0.25 - roadWidth() / 2}px`, "box-sizing": "border-box"
+              "pointer-events": "auto",
+              background: "transparent",
+              border: "none",
+              display: "flex",
+              color: lightMode() ? BASE_DARK : BASE_LIGHT,
+              width: gridSize() - roadWidth() + "px",
+              height: gridSize() - roadWidth() + "px",
+              margin: roadWidth() * 0.5 + "px",
+              "margin-left": `${gridSize() * 4 + roadWidth() * 0.5}px`,
+              padding: `${gridSize() * 0.25 - roadWidth() / 2}px`,
+              "box-sizing": "border-box",
             }}
           >
             {lightMode() ? (
@@ -347,13 +415,35 @@ export const TrafficDots = () => {
           </div>
         </div>
         <div style={{ display: "flex" }}>
-          <div style={{ "padding-left": `${gridSize() * 0.25}px`, "padding-right": `${gridSize() * 0.25}px`, "box-sizing": "border-box", width: `${gridSize() * 2}px` }}>Force</div>
-          <div style={{
-            "padding": `${gridSize() * 0.5 - 1 * DP()}px`, "box-sizing": "border-box", width: `${gridSize() * 3}px`, height: `${gridSize() * 1}px`,
+          <div
+            style={{
+              "padding-left": `${gridSize() * 0.25}px`,
+              "padding-right": `${gridSize() * 0.25}px`,
+              "box-sizing": "border-box",
+              width: `${gridSize() * 2}px`,
+            }}
+          >
+            Force
+          </div>
+          <div
+            style={{
+              padding: `${gridSize() * 0.5 - 1 * DP()}px`,
+              "box-sizing": "border-box",
+              width: `${gridSize() * 3}px`,
+              height: `${gridSize() * 1}px`,
 
-            display: "flex"
-          }}>
-            <input type="range" min={-250} max={250} value={250} ref={sliderRef!} style={{ "pointer-events": "auto", width: "100%" }} className={"cool-slider" + " " + (lightMode() ? "light" : 'dark')} />
+              display: "flex",
+            }}
+          >
+            <input
+              type="range"
+              min={-250}
+              max={250}
+              value={250}
+              ref={sliderRef!}
+              style={{ "pointer-events": "auto", width: "100%" }}
+              className={"cool-slider" + " " + (lightMode() ? "light" : "dark")}
+            />
           </div>
         </div>
       </div>
