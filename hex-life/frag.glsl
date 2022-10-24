@@ -1,6 +1,8 @@
 //copied from http://glslsandbox.com/e#21245.3
 precision highp float;
 uniform float time;
+uniform float fTick;
+uniform float lastFTick;
 uniform float msize;
 uniform float white;
 uniform float hexR;
@@ -54,7 +56,7 @@ float maxNorm(vec3 x) {
     return max(x.x, max(x.y, x.z));
 }
 vec2 neighbourHex(vec2 x, float d, int i) {
-    return x - 2. * d * vec2(cos(float(i) * deg60), sin(float(i) * deg60));
+    return nearestHex(x - 2. * d * vec2(cos(float(i) * deg60), sin(float(i) * deg60)));
 }
 void main(void) {
     vec3 col = vec3(0.);
@@ -81,5 +83,14 @@ void main(void) {
     vec2 position = hexCoord / resolution.xy;
     if (distance(resolution.xy * mouse, hexCoord) <= msize) col = vec3(0.5+0.5*sin(0.01*hexCoord.x+0.2*time),0.5+0.5*sin(0.01*hexCoord.y+0.3*time),0.5); //vec3(-(white-1.));
     col /= maxNorm(col);
+     
+    if((length(gl_FragCoord.xy-hexCoord)-2.0)/hexR>max(0.0,min(mod(fTick,1.0),1.0-mod(fTick,1.0)))){
+       // col = vec3(white);
+    }else{
+        if(floor(fTick)==floor(lastFTick)){
+        col = selfcol;
+    }
+    }
+    
     gl_FragColor = vec4(col, 1.);
 }

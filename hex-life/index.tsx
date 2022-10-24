@@ -7,7 +7,7 @@ const mouse = {
   x: 0.5,
   y: 0.5,
 };
-let hexR = 10;
+let hexR = 20;
 let white = false;
 function twhite() {
   white = !white;
@@ -31,6 +31,8 @@ const draw = (canvas: HTMLCanvasElement, slider: HTMLInputElement) => {
   let t1 = createTarget(window.innerWidth, window.innerHeight);
   let t2 = createTarget(window.innerWidth, window.innerHeight);
   const resolution = gl.getUniformLocation(program, "resolution");
+  const fTick = gl.getUniformLocation(program, "fTick");
+  const lastFTick = gl.getUniformLocation(program, "lastFTick");
   const ptime = gl.getUniformLocation(program, "time");
   const pmouse = gl.getUniformLocation(program, "mouse");
   const msize = gl.getUniformLocation(program, "msize");
@@ -38,7 +40,9 @@ const draw = (canvas: HTMLCanvasElement, slider: HTMLInputElement) => {
   const phexR = gl.getUniformLocation(program, "hexR");
   const backbuffer = gl.getUniformLocation(program, "backbuffer");
   const position = gl.getAttribLocation(program, "vertPosition");
+  let tick=0;
   function render(time: number) {
+    tick+=1;
     gl.useProgram(program);
     gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
     gl.bufferData(gl.ARRAY_BUFFER, triangleVertices, gl.STATIC_DRAW);
@@ -46,6 +50,8 @@ const draw = (canvas: HTMLCanvasElement, slider: HTMLInputElement) => {
     gl.bindTexture(gl.TEXTURE_2D, t2.texture);
     gl.bindFramebuffer(gl.FRAMEBUFFER, t1.framebuffer);
     gl.uniform1f(ptime, time / 1000);
+    gl.uniform1f(fTick, tick/4);
+    gl.uniform1f(lastFTick, (tick-1)/4);
     gl.uniform1f(pwhite, +white);
     gl.uniform1f(msize, +slider.value * 20);
     gl.uniform1f(phexR, hexR);
@@ -127,7 +133,7 @@ export const HexLife = () => {
         >
           Toggle Theme
         </button>
-        <input type="range" max="10" min="1" value="1" style="width: 400px" ref={slider!} />
+        <input type="range" max="10" min="2" value="5" style="width: 400px" ref={slider!} />
       </div>
       <canvas ref={c!} />
     </>
