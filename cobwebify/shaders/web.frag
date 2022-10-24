@@ -2,6 +2,7 @@ precision mediump float;
 varying vec2 uv;
 uniform sampler2D canvas;
 uniform vec2 resolution;
+uniform vec3 BACKGROUND_COLOR;
 
 vec4 mod289(vec4 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -34,7 +35,7 @@ float noise(vec3 p) {
 void main() {
     vec2 texelSize = 1.0 / resolution;
     vec4 currentColor = texture2D(canvas, uv.xy);
-    vec4 webColor = vec4(0.0);
+    vec4 webColor = vec4(BACKGROUND_COLOR,0.0);
     for(float angle = 0.0; angle < float(3.14159265); angle += 0.5) {
         vec2 angleV = vec2(cos(angle), sin(angle));
 
@@ -49,8 +50,14 @@ void main() {
             if(noise(vec3(corA * resolution / 2.0, angle)) > 0.5 && length(aColor.xyz * aColor.w) * length(bColor.xyz * bColor.w) > 1.0) {
                 amount = 1.0;
             }
-            webColor += vec4(vec3(amount), 0.0) * (aColor + bColor) / 2.0;
+            webColor =1.0-webColor ;
+            if(amount>0.0){
+                webColor =webColor*(1.0-aColor);
+                webColor =webColor*(1.0-bColor);
+            }
+            //webColor = vec4(vec3(amount), 0.0) * (aColor + bColor) / 2.0;
+            webColor =1.0-webColor ;
         }
     }
-    gl_FragColor = currentColor + webColor;
+    gl_FragColor = currentColor*0.0 + webColor;
 }

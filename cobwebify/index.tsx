@@ -9,13 +9,9 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
   const mousePos = { x: 100, y: 100 };
   let boidBeingDragged: Boid | null = null;
   const colors: [number, number, number][] = [
-    [0, 255, 255],
-    [255, 255, 0],
-    [225, 0, 255],
-
-    [100, 100, 255],
-    [100, 255, 100],
-    [225, 100, 100],
+    chroma(CYAN_MUL).rgb(),
+    chroma(MAGENTA_MUL).rgb(),
+    chroma(YELLOW_MUL).rgb()
   ];
 
   const s = 256 * 2;
@@ -177,12 +173,12 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
     t = Date.now();
     for (let i = 0; i < 3; i++) physics(delta / 1500);
 
-    ctx.fillStyle = "#00000040";
+    ctx.fillStyle = "#000000ff";
 
     ctx.fillRect(0, 0, size.w, size.h);
 
     ctx.filter = "blur(0px)";
-    ctx.globalCompositeOperation = "default";
+    ctx.globalCompositeOperation = "source-over";
     for (const b of boids) {
       b.draw();
     }
@@ -236,6 +232,7 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
 
   interface ReglProp {
     color: [number, number, number];
+    BACKGROUND_COLOR: [number, number, number];
   }
   const drawTriangle = regl({
     frag: webShader,
@@ -261,6 +258,7 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
       color: regl.prop<ReglProp, "color">("color"),
       canvas: () => tex_canvas,
       resolution: () => [size.w, size.h],
+      BACKGROUND_COLOR:  regl.prop<ReglProp, "BACKGROUND_COLOR">("BACKGROUND_COLOR"),
     },
 
     count: 3,
@@ -274,6 +272,7 @@ const main = (c: HTMLCanvasElement, input: HTMLTextAreaElement) => {
 
     drawTriangle({
       color: [Math.cos(time * 0.001), Math.sin(time * 0.0008), Math.cos(time * 0.003), 1],
+      BACKGROUND_COLOR:chroma(BASE_DARK).rgb().map(x=>x/255)
     });
   });
 };
@@ -296,5 +295,7 @@ export const Cobwebify = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
+import chroma from "chroma-js";
+import { BASE_DARK, CYAN_MUL, MAGENTA_MUL, YELLOW_MUL } from "../shared/constants";
 const description = ``;
 export const CobwebifyExperiment: Experiment = { title: "Cobwebify", component: Cobwebify, imgUrl, description };

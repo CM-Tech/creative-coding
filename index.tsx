@@ -265,62 +265,62 @@ const Default: Component<{ experiments: Record<string, Experiment> }> = (props) 
   };
   return (
     <TTile
-        style={{
-          left: 0,
-          position: "relative",
-          top: 0,
-          overflow: "hidden",
-          width: "100vw",
-          height: "100vh",
-          "touch-action": "none",
-          "object-fit": "cover",
-          "object-position": "center",
-          "background-size": "cover",
-          "background-position": "center",
-          // "box-shadow":`0px 1px 2px rgba(0,0,0,0.25), 0px 0px 0px 1px rgba(0,0,0,0.5) inset,0px 1px 1px rgba(255,255,255,0.75) inset,0px -1px 1px rgba(255,255,255,0.5) inset`,
+      style={{
+        left: 0,
+        position: "relative",
+        top: 0,
+        overflow: "hidden",
+        width: "100vw",
+        height: "100vh",
+        "touch-action": "none",
+        "object-fit": "cover",
+        "object-position": "center",
+        "background-size": "cover",
+        "background-position": "center",
+        // "box-shadow":`0px 1px 2px rgba(0,0,0,0.25), 0px 0px 0px 1px rgba(0,0,0,0.5) inset,0px 1px 1px rgba(255,255,255,0.75) inset,0px -1px 1px rgba(255,255,255,0.5) inset`,
 
-          "box-sizing": "border-box",
-          "border-radius": "0px",
-          "border-top-width": "0.0px",
-          // padding: "8px",
-        }}
-        fillColor={BASE_DARK}
-        // fillColor="#f48444"
-    props={{
-      onMouseDown:(e) => {
-        pointer.x = e.clientX;
-        pointer.y = e.clientY;
-        pointer.down = true;
-        start = { x: pointer.x, y: pointer.y, sIndex: selectedIndex() + 0 };
-      },
-      onMouseMove:(e) => {
-        pointer.x = e.clientX;
-        pointer.y = e.clientY;
-        triggerMove();
-      },
-      onMouseUp:(e) => {
-        pointer.x = e.clientX;
-        pointer.y = e.clientY;
-        pointer.down = false;
-      },
-      onTouchStart:(e) => {
-        pointer.x = e.changedTouches[0].clientX;
-        pointer.y = e.changedTouches[0].clientY;
-        pointer.down = true;
-        start = { x: pointer.x, y: pointer.y, sIndex: selectedIndex() + 0 };
-      },
-      onTouchMove:(e) => {
-        pointer.x = e.changedTouches[0].clientX;
-        pointer.y = e.changedTouches[0].clientY;
+        "box-sizing": "border-box",
+        "border-radius": "0px",
+        "border-top-width": "0.0px",
+        // padding: "8px",
+      }}
+      fillColor={BASE_DARK}
+      // fillColor="#f48444"
+      props={{
+        onMouseDown: (e) => {
+          pointer.x = e.clientX;
+          pointer.y = e.clientY;
+          pointer.down = true;
+          start = { x: pointer.x, y: pointer.y, sIndex: selectedIndex() + 0 };
+        },
+        onMouseMove: (e) => {
+          pointer.x = e.clientX;
+          pointer.y = e.clientY;
+          triggerMove();
+        },
+        onMouseUp: (e) => {
+          pointer.x = e.clientX;
+          pointer.y = e.clientY;
+          pointer.down = false;
+        },
+        onTouchStart: (e) => {
+          pointer.x = e.changedTouches[0].clientX;
+          pointer.y = e.changedTouches[0].clientY;
+          pointer.down = true;
+          start = { x: pointer.x, y: pointer.y, sIndex: selectedIndex() + 0 };
+        },
+        onTouchMove: (e) => {
+          pointer.x = e.changedTouches[0].clientX;
+          pointer.y = e.changedTouches[0].clientY;
 
-        triggerMove();
-      },
-      onTouchEnd:(e) => {
-        pointer.x = e.changedTouches[0].clientX;
-        pointer.y = e.changedTouches[0].clientY;
-        pointer.down = false;
-      }
-    }}
+          triggerMove();
+        },
+        onTouchEnd: (e) => {
+          pointer.x = e.changedTouches[0].clientX;
+          pointer.y = e.changedTouches[0].clientY;
+          pointer.down = false;
+        },
+      }}
     >
       <div
         style={{
@@ -357,8 +357,8 @@ const Default: Component<{ experiments: Record<string, Experiment> }> = (props) 
             />
           );
         })}
-        
-      </div></TTile>
+      </div>
+    </TTile>
   );
 };
 const App = () => {
