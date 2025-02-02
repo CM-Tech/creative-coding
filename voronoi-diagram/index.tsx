@@ -191,7 +191,7 @@ const main = (
   }
 
   function background() {
-    ctx.fillStyle = "#333";
+    ctx.fillStyle = BASE_DARK;
     ctx.fillRect(0, 0, size.x, size.y);
   }
 
@@ -398,6 +398,7 @@ export const VoronoiDiagram = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
+import { BASE_DARK } from "../shared/constants";
 const description = ``;
 export const VoronoiDiagramExperiment: Experiment = {
   title: "Voronoi Diagram",

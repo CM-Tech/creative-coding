@@ -1,4 +1,5 @@
 import { onMount } from "solid-js";
+import { PALETTE } from "../shared/constants";
 import { Experiment } from "../shared/types";
 import { createAnimationFrame } from "../utils";
 
@@ -206,7 +207,7 @@ export const Attraction = () => {
     });
   });
 
-  return <canvas ref={c} />;
+  return <canvas ref={c} style={{ "background-color": PALETTE.WHITE }} />;
 };
 
 import imgUrl from "./README.png?url";

@@ -1,6 +1,6 @@
 import "./style.scss";
 import { render } from "solid-js/web";
-import { Link, Route, Router, Routes } from "solid-app-router";
+import { A as Link, Route, Router } from "@solidjs/router";
 import { Attraction, AttractionExperiment } from "./attraction";
 import { BoidBeats, BoidBeatsExperiment } from "./boid-beats";
 import { Boids, BoidsExperiment } from "./boids";
@@ -36,7 +36,38 @@ import im2 from "./boid-beats/README.png?url";
 import { Experiment } from "./shared/types";
 import { BASE_DARK, BASE_LIGHT } from "./shared/constants";
 import chroma from "chroma-js";
-
+import { Box, Button, createTheme, Paper, ThemeProvider } from "@suid/material";
+import ArrowRightAlt from "@suid/icons-material/ArrowRight";
+import { CYAN_MUL, MAGENTA_MUL, PALETTE, YELLOW_MUL } from "./shared/constants/colors";
+import OpenInNew from "@suid/icons-material/OpenInNew";
+const theme = createTheme({
+  palette: {
+    primary: { main: "#312D32", contrastText: "#EAE8E5" },
+    warning: { main: chroma.blend(YELLOW_MUL, PALETTE.WHITE, "multiply").hex(), contrastText: "#EAE8E5" },
+    error: {
+      main: chroma.blend(YELLOW_MUL, chroma.blend(MAGENTA_MUL, PALETTE.WHITE, "multiply").hex(), "multiply").hex(),
+      contrastText: "#EAE8E5",
+    },
+    info: {
+      main: chroma.blend(CYAN_MUL, chroma.blend(MAGENTA_MUL, PALETTE.WHITE, "multiply").hex(), "multiply").hex(),
+      contrastText: "#EAE8E5",
+    },
+    success: {
+      main: chroma.blend(CYAN_MUL, chroma.blend(YELLOW_MUL, PALETTE.WHITE, "multiply").hex(), "multiply").hex(),
+      contrastText: "#EAE8E5",
+    },
+    divider: "#44372f",
+  },
+  typography: {
+    fontFamily: "'Inter var', sans-serif",
+    button: {
+      textTransform: "capitalize",
+      // fontSize: 0.875 * 1.75 + "rem",
+      // lineHeight: 1.75 / 1.75,
+    },
+  },
+  shape: { borderRadius: 8 },
+});
 const tileWidth = 300;
 const tileIWidth = 250;
 const tileHeight = 500;
@@ -105,7 +136,7 @@ const ExperimentTile = (props) => {
         display: "flex",
         "flex-direction": "column",
         "box-sizing": "border-box",
-        padding: "0px",
+        padding: 0,
         "margin-right": `${(tileWidth - tileIWidth) / 2}px`,
         "margin-left": `${(tileWidth - tileIWidth) / 2}px`,
       }}
@@ -113,11 +144,12 @@ const ExperimentTile = (props) => {
       // props={{onClick:() => props.setSelectedIndex(props.index)}}
       onClick={() => props.setSelectedIndex(props.index)}
     >
-      <TTile
-        style={{
+      <Paper
+        elevation={0}
+        sx={{
           width: tileIWidth + "px",
           height: tileIWidth + "px",
-          // "background-image": `url(${im})`,
+          "background-image": `url(${props?.experiment?.imgUrl ?? im2})`,
           "object-fit": "cover",
           "object-position": "center",
           "background-size": "cover",
@@ -127,12 +159,14 @@ const ExperimentTile = (props) => {
           "box-sizing": "border-box",
           "border-radius": "8px 8px 0px 0px",
           "border-bottom-width": "1px",
-          padding: "0",
+          padding: 0,
         }}
-        fillImg={`url(${props?.experiment?.imgUrl ?? im2})`}
-        inset
-      ></TTile>
-      <TTile
+      ></Paper>
+      <Paper
+        elevation={0}
+        sx={{
+          backgroundColor: PALETTE.WHITE,
+        }}
         style={{
           width: tileIWidth + "px",
           height: tileHeight - tileIWidth + "px",
@@ -147,17 +181,12 @@ const ExperimentTile = (props) => {
           "border-radius": "0px 0px 8px 8px",
           "border-top-width": "0.0px",
           padding: "8px",
+          display: "flex",
+          "flex-direction": "column",
         }}
-        fillColor={BASE_DARK}
-        inset
-        // fillColor="#f48444"
       >
         <h1
           style={{
-            "background-color": "white",
-            color: "transparent",
-            "background-image": `linear-gradient(0deg, #00000020, #ffffff20, #ffffff80)`,
-            "-webkit-background-clip": "text",
             margin: "0",
           }}
         >
@@ -165,30 +194,47 @@ const ExperimentTile = (props) => {
         </h1>
         <p
           style={{
-            "background-color": "white",
-            color: "transparent",
-            "background-image": `linear-gradient(0deg, #00000020, #ffffff20, #ffffff80)`,
-            "-webkit-background-clip": "text",
             margin: "0",
+            "flex-grow": "1",
           }}
         >
           {props?.experiment?.description ?? ""}
         </p>
-        <TTile
-          style={{
-            display: "inline-block",
-            "margin-right": "10px",
-            "margin-top": "10px",
-            height: "40px",
-            padding: "8px",
-          }}
-          fillColor="#1188ff"
-        >
-          <Link href={props.href} style={{ "text-decoration": "none", color: "white" }}>
-            {"Open"}
-          </Link>
-        </TTile>
-      </TTile>
+        <div style={{ "text-align": "right", display: "flex", "flex-direction": "row", "justify-content": "end" }}>
+          <Button
+            disableElevation
+            size="medium"
+            color="info"
+            LinkComponent={Link}
+            href={props.href}
+            sx={{
+              padding: 0,
+              "&:hover div": {
+                paddingRight: 3,
+                transition: "padding-right 0.25s",
+              },
+            }}
+          >
+            <Box
+              component="div"
+              sx={{
+                letterSpacing: "-0.044em",
+                fontWeight: 600,
+                bgcolor: "info.main",
+                padding: 1,
+                color: "info.contrastText",
+                fontSize: "24px",
+                lineHeight: 1,
+                transition: "padding-right 0.25s",
+                borderRadius: 1,
+              }}
+            >
+              Open
+            </Box>
+            {/* <OpenInNew sx={{ fontSize: "24px", marginRight: 1, marginLeft: 1 }} /> */}
+          </Button>
+        </div>
+      </Paper>
       {/* <TTile
       style={{
         // background: selected() ? `linear-gradient(135deg, #e0e0e0, #f0f0f0)`:"none",//#e4e4e4",//"#deddd7" : "#e4e4e4",
@@ -215,7 +261,7 @@ const ExperimentTile = (props) => {
           "background-size": "cover",
           "background-position": "center",
           // "box-shadow":`0px 1px 2px rgba(0,0,0,0.25), 0px 0px 0px 1px rgba(0,0,0,0.5) inset,0px 1px 1px rgba(255,255,255,0.75) inset,0px -1px 1px rgba(255,255,255,0.5) inset`,
-       
+
         "box-sizing": "border-box",
         "border-radius":"7px",
         "border-bottom-right-radius":"0",
@@ -225,12 +271,12 @@ const ExperimentTile = (props) => {
         }}
         fillImg={`url(${im})`}
         inset
-      ><TTile style={{display:"block",margin:-2}} 
+      ><TTile style={{display:"block",margin:-2}}
       fillColor={"#deddd7"}>
         {props.title}</TTile>
-         
+
       </TTile>
-     
+
       <h1>
       <TTile style={{display:"inline-block"}}
       fillColor={"#deddd7"}><TTile style={{display:"inline-block","margin-right":"10px"}}
@@ -243,7 +289,7 @@ const ExperimentTile = (props) => {
       fillColor={"#ffaa22"}>
         <Link href={props.href} style={{ "text-decoration": "none" }}>
           Go
-        </Link></TTile><TTile style={{display:"inline-block","margin-right":"0px"}} 
+        </Link></TTile><TTile style={{display:"inline-block","margin-right":"0px"}}
       fillColor={"#ffaa22"}>
         <Link href={props.href} style={{ "text-decoration": "none" }}>
           Go
@@ -284,7 +330,7 @@ const Default: Component<{ experiments: Record<string, Experiment> }> = (props) 
         "border-top-width": "0.0px",
         // padding: "8px",
       }}
-      fillColor={BASE_DARK}
+      fillColor={PALETTE.WHITISH}
       // fillColor="#f48444"
       props={{
         onMouseDown: (e) => {
@@ -363,20 +409,25 @@ const Default: Component<{ experiments: Record<string, Experiment> }> = (props) 
 };
 const App = () => {
   const experiments: Record<string, Experiment> = {
-    "/attraction": AttractionExperiment,
+    "/traffic-dots": TrafficDotsExperiment,
     "/boid-beats": BoidBeatsExperiment,
-    "/boids": BoidsExperiment,
+    "/sph-water": SPHWaterExperiment,
+    "/warpy": WarpyExperiment,
+    "/voronoi-diagram": VoronoiDiagramExperiment,
+    "/rainbow-goo": RainbowGooExperiment,
+    "/lights-motion": LightsMotionExperiment,
+    "/light-beamer": LightBeamerExperiment,
+    "/fireworks": FireworksExperiment,
+    "/diacritic-sound": DiacriticSoundExperiment,
+    "/attraction": AttractionExperiment,
     "/character-rain": CharacterRainExperiment,
+    "/boids": BoidsExperiment,
     "/character-type": CharacterTypeExperiment,
     "/cobwebify": CobwebifyExperiment,
     "/color-blind": ColorBlindExperiment,
-    "/diacritic-sound": DiacriticSoundExperiment,
-    "/fireworks": FireworksExperiment,
     "/flocking-dots": FlockingDotsExperiment,
     "/foosball": FoosballExperiment,
     "/hex-life": HexLifeExperiment,
-    "/light-beamer": LightBeamerExperiment,
-    "/lights-motion": LightsMotionExperiment,
     "/monster-sound": MonsterSoundExperiment,
     "/name-rain": NameRainExperiment,
     "/neon-airhockey": NeonAirhockeyExperiment,
@@ -385,37 +436,34 @@ const App = () => {
     "/plasma-ball": PlasmaBallExperiment,
     "/prismatic": PrismaticExperiment,
     "/pulsing-square": PulsingSquareExperiment,
-    "/rainbow-goo": RainbowGooExperiment,
-    "/sph-water": SPHWaterExperiment,
-    "/traffic-dots": TrafficDotsExperiment,
     "/valentines-day": ValentinesDayExperiment,
-    "/voronoi-diagram": VoronoiDiagramExperiment,
     "/voronoi-dots": VoronoiDotsExperiment,
-    "/warpy": WarpyExperiment,
   };
   return (
-    <Routes>
+    <>
       {Object.entries(experiments)
         .map(([a, b], i) => {
-          return <Route path={a} element={b.component} />;
+          return <Route path={a} component={b.component} />;
         })
         .concat([
           <Route
             path="/"
-            element={() => {
+            component={() => {
               return <Default experiments={experiments} />;
             }}
           />,
         ])}
-    </Routes>
+    </>
   );
 };
 
 render(
   () => (
-    <Router>
-      <App />
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <App />
+      </Router>
+    </ThemeProvider>
   ),
   document.getElementById("app")!
 );

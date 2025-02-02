@@ -453,5 +453,5 @@ export const TrafficDots = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = ``;
+const description = `Dot's that move around on a city grid, click to either attract them or make them flee!`;
 export const TrafficDotsExperiment: Experiment = { title: "Traffic Dots", component: TrafficDots, imgUrl, description };

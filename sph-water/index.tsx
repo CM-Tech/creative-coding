@@ -412,5 +412,5 @@ export const SPHWater = () => {
 
 import imgUrl from "./README.png?url";
 import { Experiment } from "../shared/types";
-const description = ``;
+const description = `Click to sploosh!`;
 export const SPHWaterExperiment: Experiment = { title: "SPH Water", component: SPHWater, imgUrl, description };
