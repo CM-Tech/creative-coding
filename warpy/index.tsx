@@ -24,7 +24,7 @@ export const Warpy = () => {
   const [camY, setCamY] = createSignal(0);
   const [camZZ, setCamZZ] = createSignal(1);
   const [cDistance, setCDistance] = createSignal(2);
-  const timeWarp = () => cDistance() / (9 / 8);
+  const timeWarp = () => cDistance();
   onMount(() => {
     const ctx = c.getContext("2d")!;
     const you = {
