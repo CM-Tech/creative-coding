@@ -15,12 +15,16 @@ export const Warpy = () => {
   const { width: windowWidth, height: windowHeight, dpr: DP } = createSizeSignal();
   const minDimS = createMemo(() => Math.min(windowWidth(), windowHeight()));
   const [time, setTime] = createSignal(0);
+  const [lastSpawn, setLastSpawn] = createSignal(0);
   const zoom = createMemo(
-    () => ((DP() * 0.5 * minDimS()) / 4) * Math.min(1, time() / 25) * (1 + Math.max(0, Math.min(1, time() / hard_time)))
+    () =>
+      ((DP() * 0.5 * minDimS()) / 4) * Math.min(1, time() / 25) * (1 + Math.max(0, Math.min(1, time() / hard_time))),
   );
   const [camX, setCamX] = createSignal(0);
   const [camY, setCamY] = createSignal(0);
   const [camZZ, setCamZZ] = createSignal(1);
+  const [cDistance, setCDistance] = createSignal(2);
+  const timeWarp = () => cDistance() / (9 / 8);
   onMount(() => {
     const ctx = c.getContext("2d")!;
     const you = {
@@ -43,13 +47,13 @@ export const Warpy = () => {
         this.x = wall
           ? spawn_range * 2 * (Math.round(Math.random()) - 0.5)
           : Math.random() > (time() >= hard_time ? 0.9 : 0.25)
-          ? randomThird(0)
-          : you.x;
+            ? randomThird(0)
+            : you.x;
         this.y = !wall
           ? spawn_range * 2 * (Math.round(Math.random()) - 0.5)
           : Math.random() > (time() >= hard_time ? 0.9 : 0.25)
-          ? randomThird(0)
-          : you.y;
+            ? randomThird(0)
+            : you.y;
         this.vx = wall ? Math.sign(0 - this.x) : 0;
         this.vy = !wall ? Math.sign(0 - this.y) : 0;
         const len = Math.sqrt(this.vy ** 2 + this.vx ** 2) || 1;
@@ -57,8 +61,8 @@ export const Warpy = () => {
         this.vy /= len;
       }
       move() {
-        this.x += (this.vx * 3) / (time() >= hard_time ? 200 : 300);
-        this.y += (this.vy * 3) / (time() >= hard_time ? 200 : 300);
+        this.x += ((this.vx * 3) / (time() >= hard_time ? 200 : 300)) * timeWarp();
+        this.y += ((this.vy * 3) / (time() >= hard_time ? 200 : 300)) * timeWarp();
       }
       draw() {
         ctx.fillStyle = chroma(time() >= hard_time - 50 ? BASE_DARK : BO)
@@ -68,9 +72,9 @@ export const Warpy = () => {
               Math.max(
                 0,
                 4 / (1 + Math.max(0, Math.min(1, (time() - hard_time + 50) / 50))) -
-                  Math.max(Math.abs(this.x), Math.abs(this.y))
-              )
-            )
+                  Math.max(Math.abs(this.x), Math.abs(this.y)) / 2,
+              ),
+            ),
           )
           .hex();
         ctx.fillRect(this.x - 1 / 8 / 2, this.y - 1 / 8 / 2, 1 / 8, 1 / 8);
@@ -124,14 +128,17 @@ export const Warpy = () => {
       ctx.textBaseline = "top";
       ctx.textAlign = "left";
       ctx.fillStyle = BASE_LIGHT;
-      ctx.fillText(`${time()}`, 10, 10);
+      ctx.fillText(`${Math.floor(time())}`, 10, 10);
 
       ctx.translate(c.width / 2, c.height / 2);
       ctx.scale(zoom(), zoom());
       ctx.scale(camZZ(), camZZ());
       ctx.translate(-camX(), -camY());
 
-      if (time() % (time() >= hard_time ? 20 : 40) == 0 && running) bullets.push(new Bullet());
+      if (time() - lastSpawn() > (hard_time ? 30 : 40) && running) {
+        setLastSpawn(time());
+        bullets.push(new Bullet());
+      }
       bullets = bullets.filter((b) => !b.die());
       let CD = 2;
       for (const b of bullets) {
@@ -144,11 +151,13 @@ export const Warpy = () => {
           Math.max(Math.abs(b.x - you.x), Math.abs(you.y - b.y)) < 1 / 8
         ) {
           running = false;
+          setLastSpawn(0);
         }
       }
-      setCamX(you.x * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8) * 32, 0)), 1));
-      setCamY(you.y * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8) * 32, 0)), 1));
-      setCamZZ(1 + Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8) * 32, 0)), 1));
+      setCDistance(Math.min(CD, 1));
+      setCamX(you.x * 0); // * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8) * 32, 0)), 1));
+      setCamY(you.y * 0); // * Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8) * 32, 0)), 1));
+      setCamZZ(1); // + Math.pow(Math.min(1, Math.max(1 - (CD - 1 / 8) * 32, 0)), 1));
 
       animations = animations.filter((a) => !a.die());
       for (const a of animations) {
@@ -181,10 +190,10 @@ export const Warpy = () => {
         ctx.fillText(
           "ontouchstart" in window ? "Tap to play again" : "Press space to play again",
           c.width / 2,
-          c.height / 2
+          c.height / 2,
         );
       }
-      if (running) setTime(time() + 1);
+      if (running) setTime(time() + timeWarp());
     }
     createAnimationFrame(tick);
 
